@@ -50,7 +50,7 @@
             <ul class="nav navbar-top-links navbar-right pull-right">
                 <li class="dropdown">
                     <a class="dropdown-toggle profile-pic" data-toggle="dropdown" href="#">
-                        <b class="hidden-xs">{{Auth::guard('admin')->user()->name}}</b>
+                        <b class="hidden-xs">{{Auth::user()->name}}</b>
                         <span class="caret"></span>
                     </a>
                     <ul class="dropdown-menu dropdown-user animated flipInY">
@@ -60,7 +60,7 @@
                                 <i class="fa fa-power-off"></i>Logout
                             </a>
                         </li>
-                        <form id="logout-form" action="/admin/logout" method="POST" style="display: none;">
+                        <form id="logout-form" action="/logout" method="POST" style="display: none;">
                             @csrf
                         </form>
                     </ul>
@@ -77,123 +77,19 @@
                         <i class="fas fa-align-justify hidden-xs"></i>
                         <i class="fas fa-times visible-xs"></i>
                     </span>
-                    <span class="hide-menu">Navigation</span>
+                    <span class="hide-menu">Նավարկություն</span>
                 </h3>
             </div>
 
             <ul class="nav" id="side-menu">
-
-                <li>
-                    <a href="javascript:void(0);" class="waves-effect"><i class="mdi mdi-home fa-fw"></i> <span
-                            class="hide-menu">Home<span class="fa arrow"></span></span>
-                    </a>
-                    <ul class="nav nav-second-level">
-
-                        <li><a href="/admin/month-players" class="waves-effect"><i class="mdi mdi-diamond fa-fw"></i>
-                                <span class="hide-menu">Players of the month</span></a>
-                        </li>
-
-                        <li><a href="/admin/gallery-home" class="waves-effect"><i class="mdi mdi-image-area fa-fw"></i>
-                                <span class="hide-menu">Gallery ( Home )</span></a>
-                        </li>
-
-                    </ul>
+                <li><a href="/" class="waves-effect"><i class="mdi mdi-home fa-fw"></i>
+                        <span class="hide-menu">Տուն</span></a>
                 </li>
 
                 <li class="devider"></li>
 
-                <li><a href="/admin/players" class="waves-effect"><i class="mdi mdi-account fa-fw"></i>
-                        <span class="hide-menu">Players</span></a>
-                </li>
-
-                <li><a href="/admin/games" class="waves-effect"><i class="mdi mdi-gamepad-variant fa-fw"></i>
-                        <span class="hide-menu">Games</span></a>
-                </li>
-
-                <li><a href="/admin/coaches" class="waves-effect"><i class="mdi mdi-android-studio fa-fw"></i>
-                        <span class="hide-menu">Coaches</span></a>
-                </li>
-
-                <li><a href="/admin/center" class="waves-effect"><i class="mdi mdi-stadium fa-fw"></i>
-                        <span class="hide-menu">Venues</span></a>
-                </li>
-
-                <li>
-                    <a href="javascript:void(0);" class="waves-effect"><i class="mdi mdi-barley fa-fw"></i> <span
-                            class="hide-menu">Teams<span class="fa arrow"></span></span>
-                    </a>
-                    <ul class="nav nav-second-level">
-                        <li><a href="/admin/teams" class="waves-effect"><i class="mdi mdi-steam fa-fw"></i>
-                                <span class="hide-menu">Teams (Academic)</span></a>
-                        </li>
-
-                        <li><a href="/admin/league" class="waves-effect"><i class="mdi mdi-windows fa-fw"></i>
-                                <span class="hide-menu">Teams (League)</span></a>
-                        </li>
-                    </ul>
-                </li>
-
-                <li class="devider"></li>
-
-                <li><a href="/admin/partners" class="waves-effect"><i class="mdi mdi-heart fa-fw"></i>
-                        <span class="hide-menu">Partners</span></a>
-                </li>
-
-                {{--gallery--}}
-                <li><a href="/admin/gallery" class="waves-effect"><i class="mdi mdi-image-album fa-fw"></i>
-                        <span class="hide-menu">Gallery</span></a>
-                </li>
-
-                {{--about_us--}}
-                <li class="devider"></li>
-                <li>
-                    <a href="javascript:void(0);" class="waves-effect"><i class="mdi mdi-pen fa-fw"></i> <span
-                            class="hide-menu">About Us<span class="fa arrow"></span></span>
-                    </a>
-                    <ul class="nav nav-second-level">
-                        <li><a href="/admin/about-us-team" class="waves-effect"><i
-                                    class="mdi mdi-human-male-female fa-fw"></i>
-                                <span class="hide-menu">Our Team</span></a>
-                        </li>
-
-                        <li><a href="/admin/about-us-story" class="waves-effect"><i class="mdi mdi-history fa-fw"></i>
-                                <span class="hide-menu">Our Story</span></a>
-                        </li>
-                    </ul>
-                </li>
-                {{--market--}}
-                <li>
-                    <a href="javascript:void(0);" class="waves-effect"><i class="mdi mdi-shopping fa-fw"></i> <span
-                            class="hide-menu">Shop<span class="fa arrow"></span></span>
-                    </a>
-                    <ul class="nav nav-second-level">
-                        <li><a href="/admin/categories" class="waves-effect"><i class="mdi mdi-playlist-plus fa-fw"></i>
-                                <span class="hide-menu">Categories</span></a>
-                        </li>
-
-                        <li><a href="/admin/products" class="waves-effect"><i class="mdi mdi-scale fa-fw"></i>
-                                <span class="hide-menu">Products</span></a>
-                        </li>
-                    </ul>
-                </li>
-
-                <li>
-                    <a href="javascript:void(0);" class="waves-effect"><i class="mdi mdi-format-list-bulleted-type fa-fw"></i>
-                        <span class="hide-menu">Standings<span class="fa arrow"></span></span></a>
-                    <ul class="nav nav-second-level">
-
-                        <li><a href="/admin/clubs" class="waves-effect"><i class="mdi mdi-fire fa-fw"></i>
-                                <span class="hide-menu">Clubs</span></a>
-                        </li>
-
-                        <li><a href="/admin/tournaments" class="waves-effect"><i class="mdi mdi-auto-fix fa-fw"></i>
-                                <span class="hide-menu">Tournaments</span></a>
-                        </li>
-
-                        <li><a href="/admin/tournament-clubs" class="waves-effect"><i class="mdi mdi-apps fa-fw"></i>
-                                <span class="hide-menu">Tournament`s Clubs</span></a>
-                        </li>
-                    </ul>
+                <li><a href="/clients" class="waves-effect"><i class="mdi mdi-account fa-fw"></i>
+                        <span class="hide-menu">Հաճախորդներ</span></a>
                 </li>
             </ul>
         </div>

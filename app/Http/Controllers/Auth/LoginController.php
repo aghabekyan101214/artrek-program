@@ -23,6 +23,11 @@ class LoginController extends Controller
 
     use AuthenticatesUsers;
 
+    public function username()
+    {
+        return 'username';
+    }
+
     /**
      * Where to redirect users after login.
      *
@@ -37,60 +42,6 @@ class LoginController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('guest')->except(['logout', 'adminLogout', 'playerLogout']);
-        $this->middleware('guest:admin')->except(['logout', 'adminLogout', 'playerLogout']);
-        $this->middleware('guest:player')->except(['logout', 'adminLogout', 'playerLogout']);
-    }
-
-//    admin login part
-    public function showAdminLoginForm()
-    {
-        return view('auth.admin_login');
-    }
-
-    public function adminLogin(Request $request)
-    {
-        $this->validate($request, [
-            'email'   => 'required|email',
-            'password' => 'required|min:6'
-        ]);
-
-        if (Auth::guard('admin')->attempt(['email' => $request->email, 'password' => $request->password])) {
-            return redirect()->intended('/admin');
-        }
-        return back()->withInput($request->only('email'));
-    }
-
-    public function adminLogout(Request $request)
-    {
-        Auth::guard('admin')->logout();
-        return redirect('/admin/login');
-    }
-
-//    player login part
-    public function showPlayerLoginForm()
-    {
-        return view('auth.player_login');
-    }
-
-    public function playerLogin(Request $request)
-    {
-        $this->validate($request, [
-            'email'   => 'required|email',
-            'password' => 'required|min:6'
-        ]);
-
-        $remember = $request->remember == 1 ? true : false;
-
-        if (Auth::guard('player')->attempt(array('email' => $request->email, 'password' => $request->password), $remember)) {
-            return redirect()->intended('/player');
-        }
-        return back()->withInput($request->only('email'));
-    }
-
-    public function playerLogout(Request $request)
-    {
-        Auth::guard('player')->logout();
-        return redirect('/sign-in');
+        $this->middleware('guest')->except('logout');
     }
 }

@@ -4,10 +4,10 @@
 
     <div class="new-login-box">
         <div class="white-box">
-            <h3 class="box-title m-b-0">Sign In to user</h3>
+            <h3 class="box-title m-b-0">Sign In to Artrek Program</h3>
 
             <br/>
-            @error('email')
+            @error('username')
             <span class="invalid-feedback text-danger" role="alert"> <strong>{{ $message }}</strong> </span>
             @enderror
             @error('password')
@@ -19,10 +19,10 @@
 
                 <div class="form-group  m-t-20">
                     <div class="col-xs-12">
-                        <label>Email Address</label>
-                        <input class="form-control @error('email') is-invalid @enderror" type="email" required
-                               placeholder="Email"
-                               autocomplete="email" autofocus name="email" value="{{ old('email') }}">
+                        <label>Username</label>
+                        <input class="form-control @error('username') is-invalid @enderror" type="username" required
+                               placeholder="Username"
+                               autocomplete="username" autofocus name="username" value="{{ old('username') }}">
                     </div>
                 </div>
 

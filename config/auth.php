@@ -40,15 +40,6 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
-        'admin' => [
-            'driver' => 'session',
-            'provider' => 'admins',
-        ],
-        'player' => [
-            'driver' => 'session',
-            'provider' => 'players',
-        ],
-
 
         'api' => [
             'driver' => 'token',
@@ -78,14 +69,6 @@ return [
         'users' => [
             'driver' => 'eloquent',
             'model' => App\User::class,
-        ],
-        'admins' => [
-            'driver' => 'eloquent',
-            'model' => App\Admin::class,
-        ],
-        'players' => [
-            'driver' => 'eloquent',
-            'model' => App\Player::class,
         ],
 
         // 'users' => [
@@ -117,17 +100,6 @@ return [
             'throttle' => 60,
         ],
 
-        'admins' => [
-            'provider' => 'admins',
-            'table' => 'password_resets',
-            'expire' => 60,
-        ],
-
-        'players' => [
-            'provider' => 'players',
-            'table' => 'password_resets',
-            'expire' => 60,
-        ],
     ],
 
     /*
