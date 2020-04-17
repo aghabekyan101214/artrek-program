@@ -17,15 +17,9 @@
     <link href="{{asset('assets/css/style.css')}}" rel="stylesheet">
     <!-- This is a colors CSS -->
     <link href="{{asset('assets/css/colors/default.css')}}" id="theme" rel="stylesheet">
-    <!--This is a datatable style -->
-    <link href="{{asset('assets/plugins/datatables/media/css/dataTables.bootstrap.css')}}" rel="stylesheet"
-          type="text/css"/>
 
-    @stack('datepicker')
-    @stack('dropify')
-    @stack('magnific')
-    @stack('custom-style')
-
+    {{--custom style--}}
+    @stack('head')
 </head>
 
 <body class="fix-sidebar">
@@ -91,6 +85,10 @@
                 <li><a href="/clients" class="waves-effect"><i class="mdi mdi-account fa-fw"></i>
                         <span class="hide-menu">Հաճախորդներ</span></a>
                 </li>
+
+                <li><a href="/staffs" class="waves-effect"><i class="mdi mdi-account-settings-variant fa-fw"></i>
+                        <span class="hide-menu">Անձնակազմ</span></a>
+                </li>
             </ul>
         </div>
     </div>
@@ -126,22 +124,8 @@
 <script src="{{asset('assets/js/waves.js')}}"></script>
 <!-- Custom Theme JavaScript min -->
 <script src="{{asset('assets/js/custom.min.js')}}"></script>
-<!--Datatable js-->
-<script src="{{asset('assets/plugins/datatables/datatables.min.js')}}"></script>
-<!--Datatable script for all page-->
-@stack('custom-datatable')
-
-{{--jquery multiselect--}}
-@stack('jquery-multiselect')
-{{--datepiker--}}
-@stack('datepicker-script')
-{{--dropify--}}
-@stack('dropify-script')
-{{--magnific--}}
-@stack('magnific-script')
-
 
 {{--custom script--}}
-@stack('custom-script')
+@stack('foot')
 
 </html>

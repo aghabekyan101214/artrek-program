@@ -5,7 +5,7 @@
         <div class="col-md-12">
             <div class="white-box">
                 <h3 class="box-title">{{$title}}</h3>
-                <a href="{{$route."/create"}}" class="btn btn-success m-b-30"><i class="fas fa-plus"></i> Ավելացնել Հաճախորդ</a>
+                <a href="{{$route."/create"}}" class="btn btn-success m-b-30"><i class="fas fa-plus"></i> Ավելացնել Աշխատող</a>
 
                 {{--table--}}
                 <div class="table-responsive">
@@ -15,7 +15,7 @@
                             <tr>
                                 <th>#</th>
                                 <th>Անուն</th>
-                                <th>Հեռախոսահամար</th>
+                                <th>Օգտանուն</th>
                                 <th>Կարգավորումներ</th>
                             </tr>
                         </thead>
@@ -25,7 +25,7 @@
                             <tr>
                                 <td>{{$key + 1}}</td>
                                 <td>{{$val->name}}</td>
-                                <td>{{$val->phone}}</td>
+                                <td>{{$val->username}}</td>
                                 <td>
                                     <a href="{{$route."/".$val->id."/edit"}}" data-toggle="tooltip"
                                        data-placement="top" title="Փոփոխել" class="btn btn-info btn-circle tooltip-info">
@@ -78,7 +78,7 @@
             var text = $('.text_'+id).html();
 
             swal({
-                title: "Դուք ցանկանում ե՞ք հեռացնել տվյալ հաճախորդին։",
+                title: "Դուք ցանկանում ե՞ք հեռացնել տվյալ աշխատողին։",
                 text: text,
                 icon: "warning",
                 buttons: true,
@@ -96,6 +96,7 @@
         $('#datatable').DataTable();
     </script>
 @endpush
+
 
 
 

@@ -1,12 +1,5 @@
 @extends('layouts.app')
 
-@push('dropify')
-    <!-- Dropify plugins css -->
-    <link rel="stylesheet" href="{{asset('assets/plugins/dropify/dist/css/dropify.min.css')}}">
-    <!-- jQuery file upload -->
-    <script src="{{asset('assets/plugins/dropify/dist/js/dropify.min.js')}}"></script>
-@endpush
-
 @section('content')
     <div class="row">
         <div class="col-md-12">
@@ -42,9 +35,3 @@
         </div>
     </div>
 @endsection
-
-@push('dropify-script')
-    <script>
-        $('.dropify').dropify();
-    </script>
-@endpush

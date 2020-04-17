@@ -24,4 +24,5 @@ Auth::routes([
 Route::group(['middleware' => 'auth'], function () {
     Route::resource('/', 'UserController');
     Route::resource('/clients', 'ClientController');
+    Route::resource('/staffs', 'StaffController');
 });

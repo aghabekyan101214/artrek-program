@@ -9,6 +9,11 @@ class User extends Authenticatable
 {
     use Notifiable;
 
+    const ROLES = [
+        "superadmin" => 1,
+        "admin" => 2
+    ];
+
     protected $guard = 'user';
 
     /**
@@ -17,7 +22,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'email', 'password'
+        'username', 'password'
     ];
 
     /**
