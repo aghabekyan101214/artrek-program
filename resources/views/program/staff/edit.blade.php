@@ -38,8 +38,7 @@
                                 <button type="button" class="pass btn btn-primary m-t-5">Գեներացնել Գախտնաբառ</button>
                             </div>
 
-                            <button type="submit" class="btn btn-success waves-effect waves-light m-r-10">Պահպանել Հաճախորդին
-                            </button>
+                            <button type="submit" class="btn btn-success waves-effect waves-light m-r-10">Պահպանել</button>
                         </form>
                     </div>
                 </div>

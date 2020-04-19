@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 class UserController extends Controller
 {
     const FOLDER = "program";
-    const TITLE = "Տուն";
+    const TITLE = "Հիմնական";
     const ROUTE = "/";
 
     /**

@@ -46,8 +46,8 @@ class ClientController extends Controller
             "phone" => "required",
         ];
         $messages = [
-            'name.required' => 'Խնդրում եմ նշել հաճախոռդի անունը',
-            'phone.required' => 'Խնդրում եմ նշել հաճախոռդի հեռախոսահամարը',
+            'name.required' => 'Խնդրում եմ նշել հաճախորդի անունը',
+            'phone.required' => 'Խնդրում եմ նշել հաճախորդի հեռախոսահամարը',
         ];
         $this->validate($request, $rules, $messages);
 

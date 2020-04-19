@@ -51,7 +51,7 @@
                         <li>
                             <a href="#"
                                onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                                <i class="fa fa-power-off"></i>Logout
+                                <i class="fa fa-power-off"></i>Դուրս Գալ
                             </a>
                         </li>
                         <form id="logout-form" action="/logout" method="POST" style="display: none;">
@@ -71,14 +71,11 @@
                         <i class="fas fa-align-justify hidden-xs"></i>
                         <i class="fas fa-times visible-xs"></i>
                     </span>
-                    <span class="hide-menu">Նավարկություն</span>
+                    <span class="hide-menu">Մենյու</span>
                 </h3>
             </div>
 
             <ul class="nav" id="side-menu">
-                <li><a href="/" class="waves-effect"><i class="mdi mdi-home fa-fw"></i>
-                        <span class="hide-menu">Տուն</span></a>
-                </li>
 
                 <li class="devider"></li>
 
@@ -88,6 +85,10 @@
 
                 <li><a href="/staffs" class="waves-effect"><i class="mdi mdi-account-settings-variant fa-fw"></i>
                         <span class="hide-menu">Անձնակազմ</span></a>
+                </li>
+
+                <li><a href="/materials" class="waves-effect"><i class="mdi mdi-material-ui fa-fw"></i>
+                        <span class="hide-menu">Նյութեր</span></a>
                 </li>
             </ul>
         </div>
@@ -109,7 +110,7 @@
             <!-- .row -->
 
         </div>
-        <footer class="footer text-center"> 2020 &copy; Created By Aimtech LLC</footer>
+        <footer class="footer text-center"> 2020 &copy; Իրագործումը ՝ Պարգև Աղաբեկյան</footer>
     </div>
 </div>
 
