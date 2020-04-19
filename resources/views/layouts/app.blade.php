@@ -120,7 +120,7 @@
 <!-- Sidebar menu plugin JavaScript -->
 <script src="{{asset('assets/js/sidebar-nav/dist/sidebar-nav.min.js')}}"></script>
 <!--Slimscroll JavaScript For custom scroll-->
-<script src="{{asset('assets/js/jquery.slimscroll.js')}}"></script>
+{{--<script src="{{asset('assets/js/jquery.slimscroll.js')}}"></script>--}}
 <!--Wave Effects -->
 <script src="{{asset('assets/js/waves.js')}}"></script>
 <!-- Custom Theme JavaScript min -->
