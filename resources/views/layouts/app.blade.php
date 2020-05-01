@@ -88,7 +88,19 @@
                 </li>
 
                 <li><a href="/materials" class="waves-effect"><i class="mdi mdi-material-ui fa-fw"></i>
-                        <span class="hide-menu">Նյութեր</span></a>
+                        <span class="hide-menu">Ապրանքներ</span></a>
+                </li>
+
+                <li><a href="/material-list" class="waves-effect"><i class="mdi mdi-numeric fa-fw"></i>
+                        <span class="hide-menu">Ապրանքների Մուտք</span></a>
+                </li>
+
+                <li><a href="/orders" class="waves-effect"><i class="mdi mdi-coin fa-fw"></i>
+                        <span class="hide-menu">Պատվերներ</span></a>
+                </li>
+
+                <li><a href="/services" class="waves-effect"><i class="mdi mdi-server fa-fw"></i>
+                        <span class="hide-menu">Ծառայություններ</span></a>
                 </li>
             </ul>
         </div>

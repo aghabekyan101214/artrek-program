@@ -11,4 +11,9 @@ class Material extends Model
         "Մետր",
         "Հատ"
     ];
+
+    public function quantity()
+    {
+        return $this->hasMany("App\Model\MaterialList", "material_id", "id");
+    }
 }

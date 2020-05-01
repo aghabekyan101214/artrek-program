@@ -36,7 +36,7 @@
                                           method="post" id="work-for-form">
                                         @csrf
                                         @method("DELETE")
-                                        <a href="javascript:void(0);" class="delForm" data-id ="{{$val->id}}">
+                                        <a href="javascript:void(0);" data-text="նյութը" class="delForm" data-id ="{{$val->id}}">
                                             <button data-toggle="tooltip"
                                                     data-placement="top" title="Հեռացնել"
                                                     class="btn btn-danger btn-circle tooltip-danger"><i
@@ -72,27 +72,6 @@
 
     <script src="{{asset('assets/plugins/swal/sweetalert.min.js')}}"></script>
     <script>
-        $('.delForm').on('click', function (event) {
-            event.preventDefault();
-            var id = $(this).data('id');
-            var text = $('.text_'+id).html();
-
-            swal({
-                title: "Դուք ցանկանում ե՞ք հեռացնել տվյալ հաճախորդին։",
-                text: text,
-                icon: "warning",
-                buttons: true,
-                dangerMode: true,
-                buttons: ['Համոզված չեմ', 'Այո'],
-            }).then((willDelete) => {
-                if (willDelete) {
-                    $("#work-for-form").submit();
-                } else {
-                    swal.close();
-                }
-            });
-        })
-
         $('#datatable').DataTable();
     </script>
 @endpush

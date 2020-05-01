@@ -8,8 +8,8 @@ use Illuminate\Http\Request;
 class MaterialController extends Controller
 {
     const FOLDER = "program.materials";
-    const TITLE = "Նյութեր";
-    const ROUTE = "/materials";
+    const TITLE = "Ապրանքներ";
+    const ROUTE = "/orders";
 
     /**
      * Display a listing of the resource.

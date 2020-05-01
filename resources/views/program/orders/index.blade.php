@@ -5,7 +5,7 @@
         <div class="col-md-12">
             <div class="white-box">
                 <h3 class="box-title">{{$title}}</h3>
-                <a href="{{$route."/create"}}" class="btn btn-success m-b-30"><i class="fas fa-plus"></i> Ավելացնել Աշխատող</a>
+                <a href="{{$route."/create"}}" class="btn btn-success m-b-30"><i class="fas fa-plus"></i> Ավելացնել {{ $title }}</a>
 
                 {{--table--}}
                 <div class="table-responsive">
@@ -14,8 +14,10 @@
                         <thead>
                             <tr>
                                 <th>#</th>
-                                <th>Անուն</th>
-                                <th>Օգտանուն</th>
+                                <th>Հաճախորդ</th>
+                                <th>Ընդհանուր Գումար</th>
+                                <th>Վճարվել է</th>
+                                <th>Ավարտ</th>
                                 <th>Կարգավորումներ</th>
                             </tr>
                         </thead>
@@ -24,8 +26,10 @@
                         @foreach($data as $key=>$val)
                             <tr>
                                 <td>{{$key + 1}}</td>
-                                <td>{{$val->name}}</td>
-                                <td>{{$val->username}}</td>
+                                <td>{{$val->client->name}}</td>
+                                <td>{{$val->price}}</td>
+                                <td>{{$val->paid}}</td>
+                                <td>{{$val->due_date}}</td>
                                 <td>
                                     <a href="{{$route."/".$val->id."/edit"}}" data-toggle="tooltip"
                                        data-placement="top" title="Փոփոխել" class="btn btn-info btn-circle tooltip-info">
@@ -36,7 +40,7 @@
                                           method="post" id="work-for-form">
                                         @csrf
                                         @method("DELETE")
-                                        <a href="javascript:void(0);" data-text="աշխատողին" class="delForm" data-id ="{{$val->id}}">
+                                        <a href="javascript:void(0);" data-text="հաճախորդին" class="delForm" data-id ="{{$val->id}}">
                                             <button data-toggle="tooltip"
                                                     data-placement="top" title="Հեռացնել"
                                                     class="btn btn-danger btn-circle tooltip-danger"><i
@@ -75,7 +79,6 @@
         $('#datatable').DataTable();
     </script>
 @endpush
-
 
 
 
