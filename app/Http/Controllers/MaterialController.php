@@ -9,7 +9,7 @@ class MaterialController extends Controller
 {
     const FOLDER = "program.materials";
     const TITLE = "Ապրանքներ";
-    const ROUTE = "/orders";
+    const ROUTE = "/materials";
 
     /**
      * Display a listing of the resource.

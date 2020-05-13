@@ -6,6 +6,7 @@ use App\Model\Client;
 use App\Model\MaterialList;
 use App\Model\Order;
 use App\Model\Material;
+use App\Model\PaidOrder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -17,7 +18,7 @@ class OrderController extends Controller
 
     public function index()
     {
-        $data = Order::with(["client"])->get();
+        $data = Order::with(["client", "paidList"])->get();
         $title = self::TITLE;
         $route = self::ROUTE;
         $units = Material::UNITS;
@@ -38,11 +39,14 @@ class OrderController extends Controller
         $rules = [
             "client_id" => "required|integer",
             "price" => "required|numeric",
+            "paid" => "required|numeric",
         ];
         $messages = [
             'client_id.required' => 'Խնդրում եմ լրացնել հաճախորդի անունը',
             'price.required' => 'Խնդրում եմ լրացնել պատվերի գինը',
             'price.numeric' => 'Խնդրում եմ լրացնել ճիշտ թվանշաններ',
+            'paid.required' => 'Խնդրում եմ լրացնել վճարված գումարը',
+            'paid.numeric' => 'Խնդրում եմ լրացնել ճիշտ թվանշաններ',
         ];
         $this->validate($request, $rules, $messages);
 
@@ -58,6 +62,8 @@ class OrderController extends Controller
         $order->due_date = $request->due_date;
         $order->save();
         $order->orderList()->createMany($insertData);
+        $paid = new PaidOrder(["price" => $request->paid]);
+        $order->paidList()->save($paid);
 
         DB::commit();
         return redirect(self::ROUTE);

@@ -27,8 +27,16 @@
                             <tr>
                                 <td>{{$key + 1}}</td>
                                 <td>{{$val->client->name}}</td>
-                                <td>{{$val->price}}</td>
-                                <td>{{$val->paid}}</td>
+                                <td>{{ intval($val->price) }}</td>
+                                <td>
+                                    <p>Ընդ․ ՝ {{ $val->paidList->sum("price") }}</p>
+                                    <ul>
+                                        @foreach($val->paidList as $list)
+                                            <li><small>{{ intval($list->price) . " - " . $list->created_at->format('Y-m-d') }}</small></li>
+                                        @endforeach
+                                    </ul>
+
+                                </td>
                                 <td>{{$val->due_date}}</td>
                                 <td>
                                     <a href="{{$route."/".$val->id."/edit"}}" data-toggle="tooltip"

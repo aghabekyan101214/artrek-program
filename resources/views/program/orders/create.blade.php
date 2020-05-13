@@ -32,6 +32,14 @@
                             </div>
 
                             <div class="form-group">
+                                <label for="price">Վճարվել է</label>
+                                @error('paid')
+                                <p class="invalid-feedback text-danger" role="alert"><strong>{{ $message }}</strong></p>
+                                @enderror
+                                <input type="number" step="any" class="form-control" id="paid" name="paid" required value="{{old('paid') ?? 0}}">
+                            </div>
+
+                            <div class="form-group">
                                 <label for="due_date">Հանձնման Ժամկետ</label>
                                 @error('due_date')
                                 <p class="invalid-feedback text-danger" role="alert"><strong>{{ $message }}</strong></p>
