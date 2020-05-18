@@ -2,11 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use App\LaserList;
+use App\Model\Client;
+use App\Model\LaserList;
+use App\Model\Order;
 use Illuminate\Http\Request;
+use App\Model\Material;
 
 class LaserListController extends Controller
 {
+
+    const FOLDER = "program.lasers";
+    const TITLE = "Լազեր";
+    const ROUTE = "/laser";
+
     /**
      * Display a listing of the resource.
      *
@@ -14,7 +22,11 @@ class LaserListController extends Controller
      */
     public function index()
     {
-        //
+        $data = Order::whereHas("laserList")->with("laserList")->orderBy("id", "DESC")->get();
+        $title = self::TITLE;
+        $route = self::ROUTE;
+        $types = LaserList::TYPES;
+        return view(self::FOLDER . '.index', compact('title', 'route', 'data', "types"));
     }
 
     /**
@@ -24,7 +36,13 @@ class LaserListController extends Controller
      */
     public function create()
     {
-        //
+        $title = 'Ստեղծել ' . self::TITLE;
+        $route = self::ROUTE;
+        $units = Material::UNITS;
+        $types = LaserList::TYPES;
+        $clients = Client::orderBy("id", "DESC")->get();
+        $materials = Material::whereHas("quantity")->selectRaw("id, name")->get()->toArray();
+        return view(self::FOLDER . '.create', compact('title', 'route', "units", "types", "clients", "materials"));
     }
 
     /**

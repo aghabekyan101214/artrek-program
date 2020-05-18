@@ -102,6 +102,10 @@
                 <li><a href="/services" class="waves-effect"><i class="mdi mdi-server fa-fw"></i>
                         <span class="hide-menu">Ծառայություններ</span></a>
                 </li>
+
+                <li><a href="/laser" class="waves-effect"><i class="mdi mdi-stop-circle fa-fw"></i>
+                        <span class="hide-menu">Լազեր</span></a>
+                </li>
             </ul>
         </div>
     </div>
@@ -122,7 +126,7 @@
             <!-- .row -->
 
         </div>
-        <footer class="footer text-center"> 2020 &copy; Իրագործումը ՝ Պարգև Աղաբեկյան</footer>
+        <footer class="footer text-center"> 2020 &copy; Իրագործումը ՝ Պարգև Աղաբեկյանի</footer>
     </div>
 </div>
 

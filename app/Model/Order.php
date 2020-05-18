@@ -20,4 +20,9 @@ class Order extends Model
     {
         return $this->hasMany("App\Model\PaidOrder", "order_id", "id");
     }
+
+    public function laserList()
+    {
+        return $this->hasMany("App\Model\LaserList", "order_id", "id");
+    }
 }

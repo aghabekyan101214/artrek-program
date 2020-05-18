@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Model\Client;
+use App\Model\LaserList;
 use App\Model\MaterialList;
 use App\Model\Order;
 use App\Model\Material;
@@ -31,7 +32,8 @@ class OrderController extends Controller
         $route = self::ROUTE;
         $clients = Client::all();
         $materials = Material::whereHas("quantity")->selectRaw("id, name")->get()->toArray();
-        return view(self::FOLDER . '.create', compact('title', 'route', 'clients', 'materials'));
+        $laserTypes = LaserList::TYPES;
+        return view(self::FOLDER . '.create', compact('title', 'route', 'clients', 'materials', 'laserTypes'));
     }
 
     public function store(Request $request)

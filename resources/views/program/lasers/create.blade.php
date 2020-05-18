@@ -1,11 +1,6 @@
 @extends('layouts.app')
 
 @section('content')
-    <style>
-        hr{
-            border-color: #0e6185;
-        }
-    </style>
     <div class="row">
         <div class="col-md-12">
             <div class="panel panel-info">
@@ -52,8 +47,6 @@
                                 <input type="date" placeholder="YYYY-MM-DD" step="any" class="form-control" id="due_date" name="due_date" required value="{{old('due_date')}}">
                             </div>
 
-                            <hr>
-
                             <span class="here">
 
                             </span>
@@ -79,9 +72,7 @@
         <script src="{{ asset("assets/plugins/datepicker/bootstrap-datepicker.min.js") }}"></script>
         <script>
             let json = '<?php echo json_encode($materials); ?>';
-            let jsonedLaserTypes = '<?php echo json_encode($laserTypes); ?>';
             let materials = JSON.parse(json);
-            let laserTypes = JSON.parse(jsonedLaserTypes);
             let count = 0;
             $(document).ready(function () {
                 $(".select2").select2();
@@ -95,17 +86,7 @@
 
             function add() {
                 let id = `num${count}`;
-
-                let html = "<div>";
-
-                html += "<div class='form-group'>";
-                html += '<label>Ապրանքի Օգտագործում</label>' +
-                    `<select onchange="disableInputs()" name="data[${count}][order_type]" required class='form-control order_type'>`;
-                html += `<option value="0">Սովորական</option>`;
-                html += `<option value="1">Լազեր</option>`;
-                html += "</select></div>";
-                html += "<div class='form-group'>";
-                html +=
+                let html = "<div class='form-group'>" +
                     '<label>Ապրանք</label>' +
                     `<select name="data[${count}][material_id]" required class='form-control ${id}'>` +
                     '<option value="">Ընտրել Ապրանք</option>'
@@ -116,35 +97,13 @@
 
                 html += "</select></div>";
 
-                html += "<div class='form-group laser'>";
-                html += '<label>Տեսակ</label>' +
-                    `<select name="data[${count}][laser_type]" required class='form-control'>`;
-                laserTypes.forEach((e, i) => {
-                    html += `<option value="${i}">${e}</option>`
-                });
-                html += "</select></div>";
-
-                html += "<div class='form-group laser'>" +
-                    '<label>Հաստություն</label>';
-                html += `<input type="number" step="any" class="form-control" id="thickness" name="data[${count}][thickness]" required>`;
-                html += "</div>";
                 html += "<div class='form-group'>" +
                     '<label>Քանակ</label>';
                 html += `<input type="number" step="any" class="form-control" id="price" name="data[${count}][quantity]" required>`
-                html += "</div><hr>";
                 html += "</div>";
-
                 $(".here").append(html);
                 $(`.${id}`).select2();
                 count ++;
-            }
-
-            let disableInputs = () => {
-                $(document).find(".order_type").each(function(e){
-                    if($(this).val() == 1) {
-                        $(this).parentsUntil(".here").remove();
-                    }
-                });
             }
         </script>
     @endpush
