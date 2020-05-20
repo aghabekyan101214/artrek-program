@@ -51,10 +51,17 @@ class OrderController extends Controller
             'paid.numeric' => 'Խնդրում եմ լրացնել ճիշտ թվանշաններ',
         ];
         $this->validate($request, $rules, $messages);
+        $orderListData = $this->getInsertData($request->data, 0);
+        $laserListData = $this->getInsertData($request->data, 1);
 
-        $insertData = $request->data;
-        foreach ($insertData as $bin => $data) {
-            $insertData[$bin]["self_price"] = MaterialList::where("material_id", $data["material_id"])->orderBy("id", "desc")->first()["self_price"];
+        foreach ($orderListData as $bin => $data) {
+            unset($orderListData[$bin]["order_type"]);
+            $orderListData[$bin]["self_price"] = MaterialList::where("material_id", $data["material_id"])->orderBy("id", "desc")->first()["self_price"];
+        }
+
+        foreach ($laserListData as $bin => $data) {
+            unset($laserListData[$bin]["order_type"]);
+            $laserListData[$bin]["self_price"] = MaterialList::where("material_id", $data["material_id"])->orderBy("id", "desc")->first()["self_price"];
         }
         DB::beginTransaction();
 
@@ -63,12 +70,26 @@ class OrderController extends Controller
         $order->price = $request->price;
         $order->due_date = $request->due_date;
         $order->save();
-        $order->orderList()->createMany($insertData);
-        $paid = new PaidOrder(["price" => $request->paid]);
+        $order->orderList()->createMany($orderListData);
+        if(!empty($laserListData)) {
+            $order->laserList()->createMany($laserListData);
+        }
+        $paid = new PaidOrder(["price" => $request->paid, "type" => ($request->transfer_type ?? 0)]);
         $order->paidList()->save($paid);
 
         DB::commit();
         return redirect(self::ROUTE);
+    }
+
+    private function getInsertData($data, $type)
+    {
+        $returnData = [];
+        foreach ($data as $key => $value) {
+            if($value["order_type"] == $type) {
+                $returnData []= $value;
+            }
+        }
+        return $returnData;
     }
 
 }

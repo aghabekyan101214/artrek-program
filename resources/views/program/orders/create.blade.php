@@ -43,6 +43,12 @@
                                 @enderror
                                 <input type="number" step="any" class="form-control" id="paid" name="paid" required value="{{old('paid') ?? 0}}">
                             </div>
+                            <div class="form-group">
+                                <label for="transfer">
+                                    Փոխանցում
+                                    <input type="checkbox" style="width: 39px;" name="transfer_type" value="1" id="transfer" class="form-control">
+                                </label>
+                            </div>
 
                             <div class="form-group">
                                 <label for="due_date">Հանձնման Ժամկետ</label>
@@ -99,12 +105,6 @@
                 let html = "<div>";
 
                 html += "<div class='form-group'>";
-                html += '<label>Ապրանքի Օգտագործում</label>' +
-                    `<select onchange="disableInputs()" name="data[${count}][order_type]" required class='form-control order_type'>`;
-                html += `<option value="0">Սովորական</option>`;
-                html += `<option value="1">Լազեր</option>`;
-                html += "</select></div>";
-                html += "<div class='form-group'>";
                 html +=
                     '<label>Ապրանք</label>' +
                     `<select name="data[${count}][material_id]" required class='form-control ${id}'>` +
@@ -116,9 +116,16 @@
 
                 html += "</select></div>";
 
+                html += "<div class='form-group'>";
+                html += '<label>Ապրանքի Օգտագործում</label>' +
+                    `<select onchange="disableInputs()" name="data[${count}][order_type]" required class='form-control order_type'>`;
+                html += `<option value="0">Սովորական</option>`;
+                html += `<option value="1">Լազեր</option>`;
+                html += "</select></div>";
+
                 html += "<div class='form-group laser'>";
                 html += '<label>Տեսակ</label>' +
-                    `<select name="data[${count}][laser_type]" required class='form-control'>`;
+                    `<select onchange="changeLaserType()" name="data[${count}][type]" required class='form-control laser-inp laser_type'>`;
                 laserTypes.forEach((e, i) => {
                     html += `<option value="${i}">${e}</option>`
                 });
@@ -126,10 +133,10 @@
 
                 html += "<div class='form-group laser'>" +
                     '<label>Հաստություն</label>';
-                html += `<input type="number" step="any" class="form-control" id="thickness" name="data[${count}][thickness]" required>`;
+                html += `<input type="number" step="any" class="form-control laser-inp" id="thickness" name="data[${count}][thickness]" required>`;
                 html += "</div>";
                 html += "<div class='form-group'>" +
-                    '<label>Քանակ</label>';
+                    '<label><span class="q">Քանակ</span><span class="minute"></span></label>';
                 html += `<input type="number" step="any" class="form-control" id="price" name="data[${count}][quantity]" required>`
                 html += "</div><hr>";
                 html += "</div>";
@@ -137,12 +144,34 @@
                 $(".here").append(html);
                 $(`.${id}`).select2();
                 count ++;
+                disableInputs();
             }
 
             let disableInputs = () => {
                 $(document).find(".order_type").each(function(e){
-                    if($(this).val() == 1) {
-                        $(this).parentsUntil(".here").remove();
+                    if($(this).val() == 0) {
+                        $(this).parentsUntil(".here").find(".laser-inp").attr("disabled", true);
+                        $(this).parentsUntil(".here").find(".q").html("Քանակ");
+                    } else {
+                        $(this).parentsUntil(".here").find(".laser-inp").attr("disabled", false);
+                    }
+                });
+                changeLaserType();
+            }
+
+            let changeLaserType = () => {
+                $(document).find(".laser_type").each(function(e){
+
+                    if($(this).parentsUntil(".here").find(".order_type").val() == 0) {
+                        return;
+                    }
+
+                    if($(this).val() == 0) {
+                        $(this).parentsUntil(".here").find("#thickness").attr("disabled", false);
+                        $(this).parentsUntil(".here").find(".q").html("Քանակ");
+                    } else {
+                        $(this).parentsUntil(".here").find("#thickness").attr("disabled", true);
+                        $(this).parentsUntil(".here").find(".q").html("Րոպե");
                     }
                 });
             }

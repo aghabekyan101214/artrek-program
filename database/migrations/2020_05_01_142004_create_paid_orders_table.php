@@ -16,7 +16,7 @@ class CreatePaidOrdersTable extends Migration
         Schema::create('paid_orders', function (Blueprint $table) {
             $table->bigIncrements('id');
 
-            $table->unsignedBigInteger("order_id");
+            $table->unsignedBigInteger("order_id")->nullable();
             $table->foreign("order_id")->references("id")->on("orders")->onDelete("cascade");
             $table->decimal("price", 8, 1);
             $table->timestamps();
