@@ -12,19 +12,56 @@
                             @method("PUT")
 
                             <div class="form-group">
-                                <label for="name">Անուն</label>
-                                @error('name')
+                                <label for="client_id">Հաճախորդ</label>
+                                @error('client_id')
                                 <p class="invalid-feedback text-danger" role="alert"><strong>{{ $message }}</strong></p>
                                 @enderror
-                                <input type="text" class="form-control" id="name" name="name" value="{{$client->name}}">
+                                <select name="client_id" class="form-control select2" id="" required>
+                                    <option value="">Ընտրել Հաճախորդ</option>
+                                    @foreach($clients as $client)
+                                        <option @if(old("client_id") == $client->id) selected @endif value="{{ $client->id }}">{{ $client->name }}</option>
+                                    @endforeach
+                                </select>
                             </div>
 
                             <div class="form-group">
-                                <label for="phone">Հեռախոսահամար</label>
-                                @error('phone')
+                                <label for="price">Գումար</label>
+                                @error('price')
                                 <p class="invalid-feedback text-danger" role="alert"><strong>{{ $message }}</strong></p>
                                 @enderror
-                                <input type="text" class="form-control" id="phone" name="phone" value="{{$client->phone}}">
+                                <input type="number" step="any" class="form-control" id="price" name="price" required value="{{old('price')}}">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="price">Վճարվել է</label>
+                                @error('paid')
+                                <p class="invalid-feedback text-danger" role="alert"><strong>{{ $message }}</strong></p>
+                                @enderror
+                                <input type="number" step="any" class="form-control" id="paid" name="paid" required value="{{old('paid') ?? 0}}">
+                            </div>
+                            <div class="form-group">
+                                <label for="transfer">
+                                    Փոխանցում
+                                    <input type="checkbox" style="width: 39px;" name="transfer_type" value="1" id="transfer" class="form-control">
+                                </label>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="due_date">Հանձնման Ժամկետ</label>
+                                @error('due_date')
+                                <p class="invalid-feedback text-danger" role="alert"><strong>{{ $message }}</strong></p>
+                                @enderror
+                                <input type="date" placeholder="YYYY-MM-DD" step="any" class="form-control" id="due_date" name="due_date" required value="{{old('due_date')}}">
+                            </div>
+
+                            <hr>
+
+                            <span class="here">
+
+                            </span>
+
+                            <div class="form-group">
+                                <button onclick="add()" type="button" class="btn form-control btn-primary" style="color: white">Ավելացնել Ապրանք <i class="fa fa-plus"></i></button>
                             </div>
 
                             <button type="submit" class="btn btn-success waves-effect waves-light m-r-10">Պահպանել</button>

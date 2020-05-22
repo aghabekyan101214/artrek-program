@@ -12,9 +12,11 @@
                 <div class="panel-heading">{{$title}}</div>
                 <div class="panel-wrapper collapse in" aria-expanded="true">
                     <div class="panel-body">
-                        <form method="post" action="{{ $route }}" enctype="multipart/form-data">
+                        <form method="post" action="{{ $route .(isset($order->id) ? "/$order->id" : "") }}" enctype="multipart/form-data">
                             @csrf
-
+                            @if(isset($order->id))
+                                @method("PUT")
+                            @endif
                             <div class="form-group">
                                 <label for="client_id">Հաճախորդ</label>
                                 @error('client_id')
@@ -23,7 +25,7 @@
                                 <select name="client_id" class="form-control select2" id="" required>
                                     <option value="">Ընտրել Հաճախորդ</option>
                                     @foreach($clients as $client)
-                                        <option @if(old("client_id") == $client->id) selected @endif value="{{ $client->id }}">{{ $client->name }}</option>
+                                        <option @if(old("client_id") == $client->id || (isset($order->id) && $order->client_id == $client->id) ) selected @endif value="{{ $client->id }}">{{ $client->name }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -33,7 +35,7 @@
                                 @error('price')
                                 <p class="invalid-feedback text-danger" role="alert"><strong>{{ $message }}</strong></p>
                                 @enderror
-                                <input type="number" step="any" class="form-control" id="price" name="price" required value="{{old('price')}}">
+                                <input type="number" step="any" class="form-control" id="price" name="price" required value="{{ $order->price ?? old('price') }}">
                             </div>
 
                             <div class="form-group">
@@ -41,12 +43,12 @@
                                 @error('paid')
                                 <p class="invalid-feedback text-danger" role="alert"><strong>{{ $message }}</strong></p>
                                 @enderror
-                                <input type="number" step="any" class="form-control" id="paid" name="paid" required value="{{old('paid') ?? 0}}">
+                                <input type="number" step="any" class="form-control" id="paid" name="paid" required value="{{ $order->paidList[0]->price ?? old('paid') ?? 0 }}">
                             </div>
                             <div class="form-group">
                                 <label for="transfer">
                                     Փոխանցում
-                                    <input type="checkbox" style="width: 39px;" name="transfer_type" value="1" id="transfer" class="form-control">
+                                    <input type="checkbox" style="width: 39px;" name="transfer_type" @if(isset($order->paidList[0]->type) && $order->paidList[0]->type == 1) checked @endif value="1" id="transfer" class="form-control">
                                 </label>
                             </div>
 
@@ -55,7 +57,7 @@
                                 @error('due_date')
                                 <p class="invalid-feedback text-danger" role="alert"><strong>{{ $message }}</strong></p>
                                 @enderror
-                                <input type="date" placeholder="YYYY-MM-DD" step="any" class="form-control" id="due_date" name="due_date" required value="{{old('due_date')}}">
+                                <input type="date" placeholder="YYYY-MM-DD" step="any" class="form-control" id="due_date" name="due_date" required value="{{ $order->due_date ?? old('due_date') }}">
                             </div>
 
                             <hr>
@@ -91,7 +93,9 @@
             let count = 0;
             $(document).ready(function () {
                 $(".select2").select2();
+                @if(!isset($order))
                 add();
+                @endif
                 let a = $('#due_date').datepicker({
                     autoclose: true,
                     todayHighlight: true,
@@ -99,9 +103,10 @@
                 });
             });
 
-            function add() {
+            function add(data = {}) {
                 let id = `num${count}`;
-
+                let order_type = data.type >= 0 ? data.type : null;
+                console.log(order_type)
                 let html = "<div>";
 
                 html += "<div class='form-group'>";
@@ -111,7 +116,8 @@
                     '<option value="">Ընտրել Ապրանք</option>'
 
                 materials.forEach(e => {
-                    html += `<option value="${e.id}">${e.name}</option>`
+                    let selected = (e.id == data.material_id) ? "selected" : "";
+                    html += `<option ${selected} value="${e.id}">${e.name}</option>`
                 });
 
                 html += "</select></div>";
@@ -119,25 +125,25 @@
                 html += "<div class='form-group'>";
                 html += '<label>Ապրանքի Օգտագործում</label>' +
                     `<select onchange="disableInputs()" name="data[${count}][order_type]" required class='form-control order_type'>`;
-                html += `<option value="0">Սովորական</option>`;
-                html += `<option value="1">Լազեր</option>`;
+                html += `<option ${order_type == null ? "selected" : ""} value="0">Սովորական</option>`;
+                html += `<option ${order_type != null ? "selected" : ""} value="1">Լազեր</option>`;
                 html += "</select></div>";
 
                 html += "<div class='form-group laser'>";
                 html += '<label>Տեսակ</label>' +
                     `<select onchange="changeLaserType()" name="data[${count}][type]" required class='form-control laser-inp laser_type'>`;
                 laserTypes.forEach((e, i) => {
-                    html += `<option value="${i}">${e}</option>`
+                    html += `<option ${data.type == i ? "selected" : ""} value="${i}">${e}</option>`
                 });
                 html += "</select></div>";
 
                 html += "<div class='form-group laser'>" +
                     '<label>Հաստություն</label>';
-                html += `<input type="number" step="any" class="form-control laser-inp" id="thickness" name="data[${count}][thickness]" required>`;
+                html += `<input type="number" step="any" class="form-control laser-inp" value="${data.thickness}" id="thickness" name="data[${count}][thickness]" required>`;
                 html += "</div>";
                 html += "<div class='form-group'>" +
                     '<label><span class="q">Քանակ</span><span class="minute"></span></label>';
-                html += `<input type="number" step="any" class="form-control" id="price" name="data[${count}][quantity]" required>`
+                html += `<input type="number" step="any" class="form-control" id="price" value="${data.quantity}" name="data[${count}][quantity]" required>`
                 html += "</div><hr>";
                 html += "</div>";
 
@@ -176,5 +182,20 @@
                 });
             }
         </script>
+        @if(isset($order))
+            <script>
+                $(document).ready(function(){
+                    let laserList = JSON.parse('<?php echo json_encode($order->laserList); ?>');
+                    let orderList = JSON.parse('<?php echo json_encode($order->orderList); ?>');
+                    orderList.forEach(e => {
+                        add(e)
+                    });
+                    laserList.forEach(e => {
+                        add(e)
+                    })
+                })
+
+            </script>
+        @endif
     @endpush
 @endsection

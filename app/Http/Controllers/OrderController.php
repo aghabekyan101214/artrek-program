@@ -81,6 +81,70 @@ class OrderController extends Controller
         return redirect(self::ROUTE);
     }
 
+    public function edit(Order $order)
+    {
+        $title = self::TITLE;
+        $route = self::ROUTE;
+        $clients = Client::all();
+        $materials = Material::whereHas("quantity")->selectRaw("id, name")->get()->toArray();
+        $laserTypes = LaserList::TYPES;
+        return view(self::FOLDER . '.create', compact('title', 'route', 'clients', 'materials', 'laserTypes', 'order'));
+    }
+
+    public function update(Order $order, Request $request)
+    {
+        $rules = [
+            "client_id" => "required|integer",
+            "price" => "required|numeric",
+            "paid" => "required|numeric",
+        ];
+        $messages = [
+            'client_id.required' => 'Խնդրում եմ լրացնել հաճախորդի անունը',
+            'price.required' => 'Խնդրում եմ լրացնել պատվերի գինը',
+            'price.numeric' => 'Խնդրում եմ լրացնել ճիշտ թվանշաններ',
+            'paid.required' => 'Խնդրում եմ լրացնել վճարված գումարը',
+            'paid.numeric' => 'Խնդրում եմ լրացնել ճիշտ թվանշաններ',
+        ];
+        $this->validate($request, $rules, $messages);
+        $orderListData = $this->getInsertData($request->data, 0);
+        $laserListData = $this->getInsertData($request->data, 1);
+
+        foreach ($orderListData as $bin => $data) {
+            unset($orderListData[$bin]["order_type"]);
+            $orderListData[$bin]["self_price"] = MaterialList::where("material_id", $data["material_id"])->orderBy("id", "desc")->first()["self_price"];
+        }
+
+        foreach ($laserListData as $bin => $data) {
+            unset($laserListData[$bin]["order_type"]);
+            $laserListData[$bin]["self_price"] = MaterialList::where("material_id", $data["material_id"])->orderBy("id", "desc")->first()["self_price"];
+        }
+
+        DB::beginTransaction();
+
+        $order->client_id = $request->client_id;
+        $order->price = $request->price;
+        $order->due_date = $request->due_date;
+        $order->save();
+
+        $order->orderList()->delete();
+
+        if(!empty($orderListData)){
+            $order->orderList()->createMany($orderListData);
+        }
+
+        $order->laserList()->delete();
+
+        if(!empty($laserListData)) {
+            $order->laserList()->createMany($laserListData);
+        }
+
+        $paid = new PaidOrder(["price" => $request->paid, "type" => ($request->transfer_type ?? 0)]);
+        $order->paidList()->save($paid);
+
+        DB::commit();
+        return redirect(self::ROUTE);
+    }
+
     private function getInsertData($data, $type)
     {
         $returnData = [];
