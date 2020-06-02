@@ -26,7 +26,7 @@
                                 <td>{{ $key + 1 }}</td>
                                 <td>{{ $val->name }}</td>
                                 <td>{{ $units[$val->unit] }}</td>
-                                <td>{{ $val->quantity->sum("quantity") }}</td>
+                                <td>{{ $val->quantity->sum("quantity") - $val->used->sum("quantity") }}</td>
                             </tr>
                         @endforeach
                         </tbody>

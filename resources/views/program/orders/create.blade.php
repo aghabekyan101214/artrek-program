@@ -131,18 +131,18 @@
 
                 html += "<div class='form-group laser'>";
                 html += '<label>Տեսակ</label>' +
-                    `<select onchange="changeLaserType()" name="data[${count}][type]" required class='form-control laser-inp laser_type'>`;
+                    `<select name="data[${count}][type]" required class='form-control laser-inp laser_type'>`;
                 laserTypes.forEach((e, i) => {
                     html += `<option ${data.type == i ? "selected" : ""} value="${i}">${e}</option>`
                 });
                 html += "</select></div>";
 
                 html += "<div class='form-group laser'>" +
-                    '<label>Հաստություն</label>';
+                    '<label>Հաստություն / Րոպե</label>';
                 html += `<input type="number" step="any" class="form-control laser-inp" value="${data.thickness}" id="thickness" name="data[${count}][thickness]" required>`;
                 html += "</div>";
                 html += "<div class='form-group'>" +
-                    '<label><span class="q">Քանակ</span><span class="minute"></span></label>';
+                    '<label><span class="q">Քանակ</span></label>';
                 html += `<input type="number" step="any" class="form-control" id="price" value="${data.quantity}" name="data[${count}][quantity]" required>`
                 html += "</div><hr>";
                 html += "</div>";
@@ -157,30 +157,12 @@
                 $(document).find(".order_type").each(function(e){
                     if($(this).val() == 0) {
                         $(this).parentsUntil(".here").find(".laser-inp").attr("disabled", true);
-                        $(this).parentsUntil(".here").find(".q").html("Քանակ");
                     } else {
                         $(this).parentsUntil(".here").find(".laser-inp").attr("disabled", false);
                     }
                 });
-                changeLaserType();
             }
 
-            let changeLaserType = () => {
-                $(document).find(".laser_type").each(function(e){
-
-                    if($(this).parentsUntil(".here").find(".order_type").val() == 0) {
-                        return;
-                    }
-
-                    if($(this).val() == 0) {
-                        $(this).parentsUntil(".here").find("#thickness").attr("disabled", false);
-                        $(this).parentsUntil(".here").find(".q").html("Քանակ");
-                    } else {
-                        $(this).parentsUntil(".here").find("#thickness").attr("disabled", true);
-                        $(this).parentsUntil(".here").find(".q").html("Րոպե");
-                    }
-                });
-            }
         </script>
         @if(isset($order))
             <script>

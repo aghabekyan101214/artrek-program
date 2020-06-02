@@ -16,4 +16,9 @@ class Material extends Model
     {
         return $this->hasMany("App\Model\MaterialList", "material_id", "id");
     }
+
+    public function used()
+    {
+        return $this->hasMany("App\Model\OrderList", "material_id", "id");
+    }
 }

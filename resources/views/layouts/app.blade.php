@@ -103,8 +103,8 @@
                         <span class="hide-menu">Ծառայություններ</span></a>
                 </li>
 
-                <li><a href="/laser" class="waves-effect"><i class="mdi mdi-stop-circle fa-fw"></i>
-                        <span class="hide-menu">Լազեր</span></a>
+                <li><a href="/drivers" class="waves-effect"><i class="mdi mdi-car fa-fw"></i>
+                        <span class="hide-menu">Վարորդներ</span></a>
                 </li>
             </ul>
         </div>

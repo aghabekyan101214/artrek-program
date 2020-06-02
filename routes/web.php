@@ -30,4 +30,5 @@ Route::group(['middleware' => 'auth'], function () {
     Route::resource('/services', 'ServiceController');
     Route::resource('/orders', 'OrderController');
     Route::resource('/laser', 'LaserListController');
+    Route::resource('/drivers', 'DriverController');
 });

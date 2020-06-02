@@ -18,9 +18,9 @@
                                 @error('material_id')
                                 <p class="invalid-feedback text-danger" role="alert"><strong>{{ $message }}</strong></p>
                                 @enderror
-                                <select name="material_id" id="" class="form-control select2" required>
+                                <select onchange="getSelfPrice()" name="material_id" id="material" class="form-control select2" required>
                                     @foreach($materials as $material)
-                                        <option @if(old("material_id") == $material->id) @endif value="{{ $material->id }}">{{ $material->name . " ( " .$units[$material->unit] . " ) " }}</option>
+                                        <option @if(old("material_id") == $material->id) @endif price="{{ $material->quantity[0]->self_price ?? 0 }}" value="{{ $material->id }}">{{ $material->name . " ( " .$units[$material->unit] . " ) " }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -38,7 +38,7 @@
                                 @error('self_price')
                                 <p class="invalid-feedback text-danger" role="alert"><strong>{{ $message }}</strong></p>
                                 @enderror
-                                <input type="number" step="any" class="form-control" value="{{ old("self_price") }}" name="self_price" required>
+                                <input type="number" step="any" class="form-control selfPrice" value="{{ old("self_price") }}" name="self_price" required>
                             </div>
 
                             <button type="submit" class="btn btn-success waves-effect waves-light m-r-10">Պահպանել</button>
@@ -57,6 +57,10 @@
     <script>
         $(document).ready(function () {
             $(".select2").select2();
+            getSelfPrice();
         })
+        let getSelfPrice = () => {
+            $(".selfPrice").val($("#material").find(":selected").attr("price"));
+        }
     </script>
 @endpush

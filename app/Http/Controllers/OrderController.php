@@ -19,7 +19,7 @@ class OrderController extends Controller
 
     public function index()
     {
-        $data = Order::with(["client", "paidList"])->get();
+        $data = Order::with(["client", "paidList"])->orderBy("id", "DESC")->get();
         $title = self::TITLE;
         $route = self::ROUTE;
         $units = Material::UNITS;
@@ -138,8 +138,10 @@ class OrderController extends Controller
             $order->laserList()->createMany($laserListData);
         }
 
-        $paid = new PaidOrder(["price" => $request->paid, "type" => ($request->transfer_type ?? 0)]);
-        $order->paidList()->save($paid);
+        $paid = PaidOrder::where(["order_id" => $order->id])->first();
+        $paid->price = $request->paid;
+        $paid->type = ($request->transfer_type ?? 0);
+        $paid->save();
 
         DB::commit();
         return redirect(self::ROUTE);
