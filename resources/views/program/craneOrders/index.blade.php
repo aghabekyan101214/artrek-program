@@ -15,9 +15,10 @@
                             <tr>
                                 <th>#</th>
                                 <th>Հաճախորդ</th>
+                                <th>Վարորդ</th>
                                 <th>Ընդհանուր Գումար</th>
                                 <th>Վճարվել է</th>
-                                <th>Ավարտ</th>
+                                <th>Վարորդի Մոտ</th>
                                 <th>Կարգավորումներ</th>
                             </tr>
                         </thead>
@@ -27,17 +28,31 @@
                             <tr>
                                 <td>{{$key + 1}}</td>
                                 <td>{{$val->client->name}}</td>
+                                <td>{{$val->driver->name}}</td>
                                 <td>{{ intval($val->price) }}</td>
                                 <td>
                                     <p>Ընդ․ ՝ {{ $val->paidList->sum("price") }}</p>
                                     <ul>
                                         @foreach($val->paidList as $list)
-                                            <li><small>{{ intval($list->price) . " - " . $list->created_at->format('Y-m-d'). " " . ($list->type == 1 ? "(Փոխանցում)" : "(Կանխիկ)") }}</small></li>
+                                            <li style="display: flex;justify-content: space-between; padding: 5px 0;"><small>{{ intval($list->price) . " - " . $list->created_at->format('Y-m-d'). " " . ($list->at_driver == 1 ? "(Վարորդի Մոտ)" : "") }}</small>
+                                                @if($list->at_driver)
+                                                    <form action="{{$route."/take-from-driver/$list->id"}}" method="post">
+                                                        @csrf
+                                                        <button style="float: right" data-toggle="tooltip" data-placement="top" title="Գումարն արդեն ինձ մոտ է" class="btn btn-success btn-circle tooltip-success"><i class="fa fa-money-bill-alt"></i></button>
+                                                    </form>
+                                                @endif
+                                            </li>
                                         @endforeach
                                     </ul>
 
                                 </td>
-                                <td>{{$val->due_date}}</td>
+                                <td>
+                                    <?php $sum = 0; ?>
+                                    @foreach($val->paidList as $p)
+                                        <?php if($p->at_driver == 1) $sum += $p->price; ?>
+                                    @endforeach
+                                    {{ $sum }}
+                                </td>
                                 <td>
                                     <a href="{{$route."/".$val->id."/edit"}}" data-toggle="tooltip"
                                        data-placement="top" title="Փոփոխել" class="btn btn-info btn-circle tooltip-info">

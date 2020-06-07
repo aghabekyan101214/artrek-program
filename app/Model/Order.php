@@ -18,7 +18,7 @@ class Order extends Model
 
     public function paidList()
     {
-        return $this->hasMany("App\Model\PaidOrder", "order_id", "id");
+        return $this->hasMany("App\Model\PaidOrder", "order_id", "id")->orderBy("id");
     }
 
     public function laserList()

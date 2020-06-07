@@ -103,8 +103,16 @@
                         <span class="hide-menu">Ծառայություններ</span></a>
                 </li>
 
-                <li><a href="/drivers" class="waves-effect"><i class="mdi mdi-car fa-fw"></i>
+                <li><a href="/drivers" class="waves-effect"><i class="mdi mdi-library fa-fw"></i>
                         <span class="hide-menu">Վարորդներ</span></a>
+                </li>
+
+                <li><a href="/crane-orders" class="waves-effect"><i class="mdi mdi-car fa-fw"></i>
+                        <span class="hide-menu">Ավտոաշտարակի Պատվերներ</span></a>
+                </li>
+
+                <li><a href="/cashdesk" class="waves-effect"><i class="mdi mdi-cash fa-fw"></i>
+                        <span class="hide-menu">Դրամարկղ</span></a>
                 </li>
             </ul>
         </div>

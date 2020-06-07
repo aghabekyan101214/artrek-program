@@ -31,7 +31,7 @@
                             </div>
 
                             <div class="form-group">
-                                <label for="price">Գումար</label>
+                                <label for="price">Պատվերի Գումար</label>
                                 @error('price')
                                 <p class="invalid-feedback text-danger" role="alert"><strong>{{ $message }}</strong></p>
                                 @enderror
