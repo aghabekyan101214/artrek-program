@@ -139,11 +139,11 @@
 
                 html += "<div class='form-group laser'>" +
                     '<label>Հաստություն / Րոպե</label>';
-                html += `<input type="number" step="any" class="form-control laser-inp" value="${data.thickness}" id="thickness" name="data[${count}][thickness]" required>`;
+                html += `<input type="number" step="any" class="form-control laser-inp" value="${data.thickness || ''}" id="thickness" name="data[${count}][thickness]" required>`;
                 html += "</div>";
                 html += "<div class='form-group'>" +
                     '<label><span class="q">Քանակ</span></label>';
-                html += `<input type="number" step="any" class="form-control" id="price" value="${data.quantity}" name="data[${count}][quantity]" required>`
+                html += `<input type="number" step="any" class="form-control quantity-input" oninput="countPrice" id="price" value="${data.quantity || ''}" name="data[${count}][quantity]" required>`
                 html += "</div><hr>";
                 html += "</div>";
 
@@ -175,7 +175,12 @@
                     laserList.forEach(e => {
                         add(e)
                     })
+
                 })
+
+                function countPrice() {
+                    console.log("s")
+                }
 
             </script>
         @endif
