@@ -5,7 +5,7 @@
         <div class="col-md-12">
             <div class="white-box">
                 <h3 class="box-title">{{$title}}</h3>
-                <a href="{{$route."/create"}}" class="btn btn-success m-b-30"><i class="fas fa-plus"></i> Ավելացնել Money Transfer</a>
+                <a href="{{$route."/create"}}" class="btn btn-success m-b-30"><i class="fas fa-plus"></i> Գումարի Կառավարում</a>
 
                 {{--table--}}
                 <div class="table-responsive">
@@ -14,10 +14,10 @@
                         <thead>
                             <tr>
                                 <th>#</th>
-                                <th>Sum</th>
-                                <th>Transfer Type</th>
-                                <th>Date</th>
-                                <th>Comment</th>
+                                <th>Գումար</th>
+                                <th>Վճարման Եղանակ</th>
+                                <th>Ամսաթիվ</th>
+                                <th>Մեկնաբանություն</th>
                                 <th>Կարգավորումներ</th>
                             </tr>
                         </thead>
@@ -26,7 +26,7 @@
                         @foreach($data as $key=>$val)
                             <tr>
                                 <td>{{$key + 1}}</td>
-                                <td>{{$val->price}}</td>
+                                <td><b style="color: @if($val->price > 0) green @else red @endif">{{ $val->price }}</b></td>
                                 <td>{{ $val->type == 0 ? "Cash" : "Transfer" }}</td>
                                 <td>{{$val->created_at}}</td>
                                 <td>{{$val->comment}}</td>

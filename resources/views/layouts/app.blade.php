@@ -99,9 +99,9 @@
                         <span class="hide-menu">Պատվերներ</span></a>
                 </li>
 
-                <li><a href="/services" class="waves-effect"><i class="mdi mdi-server fa-fw"></i>
-                        <span class="hide-menu">Ծառայություններ</span></a>
-                </li>
+{{--                <li><a href="/services" class="waves-effect"><i class="mdi mdi-server fa-fw"></i>--}}
+{{--                        <span class="hide-menu">Ծառայություններ</span></a>--}}
+{{--                </li>--}}
 
                 <li><a href="/drivers" class="waves-effect"><i class="mdi mdi-library fa-fw"></i>
                         <span class="hide-menu">Վարորդներ</span></a>

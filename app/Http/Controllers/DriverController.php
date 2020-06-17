@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Model\Driver;
+use App\Model\PaidOrder;
 use Illuminate\Http\Request;
 
 class DriverController extends Controller
@@ -19,7 +20,7 @@ class DriverController extends Controller
      */
     public function index()
     {
-        $data = Driver::orderBy("id", "DESC")->get();
+        $data = Driver::with(["salary", "paidSalary"])->orderBy("id", "DESC")->get();
         $title = self::TITLE;
         $route = self::ROUTE;
         return view(self::FOLDER . '.index', compact('title', 'route', 'data'));
@@ -122,6 +123,26 @@ class DriverController extends Controller
     public function destroy(Driver $driver)
     {
         $driver->delete();
+        return redirect(self::ROUTE);
+    }
+
+    /**
+     * Insert Salary Sum into the storage.
+     *
+     * @param  $id (driver id)
+     * @return redirect
+     */
+
+    public function paySalary($id, Request $request)
+    {
+        $paidOrder = new PaidOrder();
+        $paidOrder->driver_id = $id;
+        $paidOrder->price = - $request->price;
+        $paidOrder->at_driver = 0;
+        $paidOrder->comment = "Աշխատավարձ" . $request->comment;
+        $paidOrder->type = $request->transfer_type ?? 0;
+        $paidOrder->save();
+
         return redirect(self::ROUTE);
     }
 }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Model\Client;
 use App\Model\CraneOrder;
 use App\Model\Driver;
+use App\Model\DriverSalary;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Model\PaidOrder;
@@ -77,7 +78,8 @@ class CraneOrderController extends Controller
 
         $paid = new PaidOrder(["price" => $request->paid, "type" => ($request->transfer_type ?? 0), "at_driver" => ($request->at_driver ?? 0)]);
         $order->paidList()->save($paid);
-
+        $salary = new DriverSalary(["price" => ( $request->paid * Driver::PERCENTAGE / 100 ), "driver_id" => $order->driver_id]);
+        $paid->salary()->save($salary);
         DB::commit();
         return redirect(self::ROUTE);
     }
@@ -166,6 +168,18 @@ class CraneOrderController extends Controller
         $paid = PaidOrder::find($paid_id);
         $paid->at_driver = 0;
         $paid->save();
+
+        return redirect(self::ROUTE);
+    }
+
+    public function pay($id, Request $request)
+    {
+        $paidOrder = new PaidOrder();
+        $paidOrder->crane_order_id = $id;
+        $paidOrder->at_driver = ($request->at_driver ?? 0);
+        $paidOrder->price = $request->price;
+        $paidOrder->type = $request->transfer_type ?? 0;
+        $paidOrder->save();
 
         return redirect(self::ROUTE);
     }

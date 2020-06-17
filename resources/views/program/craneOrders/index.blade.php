@@ -70,6 +70,12 @@
                                                     class="fas fa-trash"></i></button>
                                         </a>
                                     </form>
+
+                                    <button data-toggle="modal" data-target="#exampleModal"
+                                            data-placement="top" class="btn btn-success btn-circle tooltip-success open-modal" onclick="openModal('{{url($route."/".$val->id."/pay")}}')">
+                                        <i class="fas fa-money-bill-alt"></i>
+                                    </button>
+
                                 </td>
                             </tr>
                         @endforeach
@@ -79,6 +85,45 @@
             </div>
         </div>
     </div>
+
+   <!-- Modal -->
+   <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+       <div class="modal-dialog" role="document">
+           <div class="modal-content">
+               <div class="modal-header">
+                   <h5 class="modal-title" id="exampleModalLabel">Ավտոաշտարակի Մնացորդ Գումարի Վճարում</h5>
+                   <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                       <span aria-hidden="true">&times;</span>
+                   </button>
+               </div>
+               <form action="" class="pay-form" method="post">
+                   <div class="modal-body">
+                       @csrf
+                       <div class="form-group">
+                           <label for="sum">Գումարի Չափ</label>
+                           <input type="number" step="any" id="sum" name="price" class="form-control">
+                       </div>
+                       <div class="form-group">
+                           <label for="at_driver">
+                               Գումարը Վարորդի Մոտ է
+                               <input type="checkbox" style="width: 39px;" name="at_driver" @if(isset($craneOrder->paidList[0]->at_driver) && $craneOrder->paidList[0]->at_driver == 1) checked @endif value="1" id="at_driver" class="form-control">
+                           </label>
+                       </div>
+                       <div class="form-group">
+                           <label for="transfer">
+                               Փոխանցում
+                               <input type="checkbox" style="width: 39px;" name="transfer_type" @if(isset($craneOrder->paidList[0]->type) && $craneOrder->paidList[0]->type == 1) checked @endif value="1" id="transfer" class="form-control">
+                           </label>
+                       </div>
+                   </div>
+                   <div class="modal-footer">
+                       <button class="btn btn-primary">Վճարել</button>
+                   </div>
+               </form>
+           </div>
+       </div>
+   </div>
+
 @endsection
 
 @push('head')
@@ -100,6 +145,7 @@
     <script src="{{asset('assets/plugins/swal/sweetalert.min.js')}}"></script>
     <script>
         $('#datatable').DataTable();
+        openModal = e => $(".pay-form").attr("action", e);
     </script>
 @endpush
 

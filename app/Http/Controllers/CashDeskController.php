@@ -9,7 +9,7 @@ class CashDeskController extends Controller
 {
 
     const FOLDER = "program.cashDesk";
-    const TITLE = "Money Transfers";
+    const TITLE = "Գումարի Կառավարում";
     const ROUTE = "/cashdesk";
 
     public function index()
