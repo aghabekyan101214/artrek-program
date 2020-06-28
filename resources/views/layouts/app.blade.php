@@ -103,6 +103,10 @@
 {{--                        <span class="hide-menu">Ծառայություններ</span></a>--}}
 {{--                </li>--}}
 
+                <li><a href="/cars" class="waves-effect"><i class="mdi mdi-car-wash fa-fw"></i>
+                        <span class="hide-menu">Ավտոաշտարակներ</span></a>
+                </li>
+
                 <li><a href="/drivers" class="waves-effect"><i class="mdi mdi-library fa-fw"></i>
                         <span class="hide-menu">Վարորդներ</span></a>
                 </li>

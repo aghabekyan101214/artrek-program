@@ -7,28 +7,16 @@
                 <div class="panel-heading">{{$title}}</div>
                 <div class="panel-wrapper collapse in" aria-expanded="true">
                     <div class="panel-body">
-                        <form method="post" action="{{ $route }}" enctype="multipart/form-data">
+                        <form method="post" action="{{ $route."/".$driver->id }}" enctype="multipart/form-data">
                             @csrf
-
-                            <div class="form-group">
-                                <label for="name">Ավտոաշտարակ</label>
-                                @error('car_id')
-                                <p class="invalid-feedback text-danger" role="alert"><strong>{{ $message }}</strong></p>
-                                @enderror
-                                <select required name="car_id" class="form-control">
-                                    <option>Ընտրել Ավտոաշտարակ</option>
-                                    @foreach($cars as $key => $value)
-                                        <option value="{{ $value->id }}">{{ $value->name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
+                            @method("PUT")
 
                             <div class="form-group">
                                 <label for="name">Անուն</label>
                                 @error('name')
                                 <p class="invalid-feedback text-danger" role="alert"><strong>{{ $message }}</strong></p>
                                 @enderror
-                                <input type="text" class="form-control" id="name" name="name" value="{{old('name')}}">
+                                <input type="text" class="form-control" id="name" name="name" value="{{$driver->name}}">
                             </div>
 
                             <div class="form-group">
@@ -36,7 +24,7 @@
                                 @error('phone')
                                 <p class="invalid-feedback text-danger" role="alert"><strong>{{ $message }}</strong></p>
                                 @enderror
-                                <input type="text" class="form-control" id="phone" name="phone" value="{{old('phone')}}">
+                                <input type="text" class="form-control" id="phone" name="phone" value="{{$driver->phone}}">
                             </div>
 
                             <button type="submit" class="btn btn-success waves-effect waves-light m-r-10">Պահպանել</button>

@@ -15,6 +15,7 @@
                             <tr>
                                 <th>#</th>
                                 <th>Անուն</th>
+                                <th>Կցված Ավտոաշտարակ</th>
                                 <th>Հեռախոսահամար</th>
                                 <th>Կուտակված Աշխատավարձ</th>
                                 <th>Կարգավորումներ</th>
@@ -26,6 +27,7 @@
                             <tr>
                                 <td>{{$key + 1}}</td>
                                 <td>{{$val->name}}</td>
+                                <td>{{$val->car->name}}</td>
                                 <td>{{$val->phone}}</td>
                                 <td>{{$val->salary->sum("price") + $val->paidSalary->sum("price") }}</td>
                                 <td>

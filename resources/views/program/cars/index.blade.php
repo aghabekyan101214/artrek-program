@@ -5,7 +5,7 @@
         <div class="col-md-12">
             <div class="white-box">
                 <h3 class="box-title">{{$title}}</h3>
-                <a href="{{$route."/create"}}" class="btn btn-success m-b-30"><i class="fas fa-plus"></i> Գումարի Կառավարում</a>
+                <a href="{{$route."/create"}}" class="btn btn-success m-b-30"><i class="fas fa-plus"></i> Ավելացնել {{$title}}</a>
 
                 {{--table--}}
                 <div class="table-responsive">
@@ -14,22 +14,18 @@
                         <thead>
                             <tr>
                                 <th>#</th>
-                                <th>Գումար</th>
-                                <th>Վճարման Եղանակ</th>
-                                <th>Ամսաթիվ</th>
-                                <th>Մեկնաբանություն</th>
+                                <th>Անուն</th>
+                                <th>Վարորդ</th>
                                 <th>Կարգավորումներ</th>
                             </tr>
                         </thead>
 
                         <tbody>
-                        @foreach($data as $key => $val)
+                        @foreach($data as $key=>$val)
                             <tr>
                                 <td>{{$key + 1}}</td>
-                                <td><b style="color: @if($val->price > 0) green @else red @endif">{{ $val->price }}</b></td>
-                                <td>{{ $val->type == 0 ? "Կանխիկ" : "Փոխանցում" }}</td>
-                                <td>{{ $val->created_at }}</td>
-                                <td>{{ $val->comment }}</td>
+                                <td>{{$val->name}}</td>
+                                <td>{!! $val->driver->name ?? "<span style='color: red;'>Մեքենային վարորդ կցված չէ</span>" !!}</td>
                                 <td>
                                     <a href="{{$route."/".$val->id."/edit"}}" data-toggle="tooltip"
                                        data-placement="top" title="Փոփոխել" class="btn btn-info btn-circle tooltip-info">
@@ -54,11 +50,41 @@
                     </table>
                 </div>
             </div>
-            <div class="alert alert-success">Կանխիկ: {{ $cash }}</div>
-            <div class="alert alert-success">Փոխանցում: {{ $transfer }}</div>
-            <div class="alert alert-success">Ընդհանուր Գումար: {{ $transfer + $cash }}</div>
         </div>
     </div>
+
+   <!-- Modal -->
+   <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+       <div class="modal-dialog" role="document">
+           <div class="modal-content">
+               <div class="modal-header">
+                   <h5 class="modal-title" id="exampleModalLabel">Աշխատավարձի Վճարում</h5>
+                   <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                       <span aria-hidden="true">&times;</span>
+                   </button>
+               </div>
+               <form action="" class="pay-form" method="post">
+                   <div class="modal-body">
+                       @csrf
+                       <div class="form-group">
+                           <label for="sum">Գումարի Չափ</label>
+                           <input type="number" step="any" id="sum" name="price" class="form-control">
+                       </div>
+                       <div class="form-group">
+                           <label for="transfer">
+                               Փոխանցում
+                               <input type="checkbox" style="width: 39px;" name="transfer_type" @if(isset($craneOrder->paidList[0]->type) && $craneOrder->paidList[0]->type == 1) checked @endif value="1" id="transfer" class="form-control">
+                           </label>
+                       </div>
+                   </div>
+                   <div class="modal-footer">
+                       <button class="btn btn-primary">Վճարել</button>
+                   </div>
+               </form>
+           </div>
+       </div>
+   </div>
+
 @endsection
 
 @push('head')
@@ -80,6 +106,8 @@
     <script src="{{asset('assets/plugins/swal/sweetalert.min.js')}}"></script>
     <script>
         $('#datatable').DataTable();
+        openModal = e => $(".pay-form").attr("action", e);
+
     </script>
 @endpush
 

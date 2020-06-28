@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Model\Car;
 use App\Model\Driver;
 use App\Model\PaidOrder;
 use Illuminate\Http\Request;
@@ -20,7 +21,7 @@ class DriverController extends Controller
      */
     public function index()
     {
-        $data = Driver::with(["salary", "paidSalary"])->orderBy("id", "DESC")->get();
+        $data = Driver::with(["salary", "paidSalary", "car"])->orderBy("id", "DESC")->get();
         $title = self::TITLE;
         $route = self::ROUTE;
         return view(self::FOLDER . '.index', compact('title', 'route', 'data'));
@@ -34,8 +35,9 @@ class DriverController extends Controller
     public function create()
     {
         $title = 'Ստեղծել ' . self::TITLE;
+        $cars = Car::all();
         $route = self::ROUTE;
-        return view(self::FOLDER . '.create', compact('title', 'route'));
+        return view(self::FOLDER . '.create', compact('title', 'route', 'cars'));
     }
 
     /**
@@ -49,16 +51,19 @@ class DriverController extends Controller
         $rules = [
             "name" => "required",
             "phone" => "required",
+            "car_id" => "required|integer"
         ];
         $messages = [
             'name.required' => 'Խնդրում եմ նշել վարորդի անունը',
             'phone.required' => 'Խնդրում եմ նշել վարորդի հեռախոսահամարը',
+            'car_id' => 'Խնդրում եմ նշել ավտոաշտարակի դաշտը'
         ];
         $this->validate($request, $rules, $messages);
 
         $driver = new Driver();
         $driver->name = $request->name;
         $driver->phone = $request->phone;
+        $driver->car_id = $request->car_id;
         $driver->save();
 
         return redirect(self::ROUTE);
@@ -85,7 +90,8 @@ class DriverController extends Controller
     {
         $title = 'Փոփոխել ' . self::TITLE;
         $route = self::ROUTE;
-        return view(self::FOLDER . '.edit', compact('title', 'route', 'driver'));
+        $cars = Car::all();
+        return view(self::FOLDER . '.edit', compact('title', 'route', 'driver', 'cars'));
     }
 
     /**
@@ -100,15 +106,18 @@ class DriverController extends Controller
         $rules = [
             "name" => "required",
             "phone" => "required",
+            "car_id" => "required|integer"
         ];
         $messages = [
             'name.required' => 'Խնդրում եմ նշել հաճախորդի անունը',
             'phone.required' => 'Խնդրում եմ նշել հաճախորդի հեռախոսահամարը',
+            'car_id' => 'Խնդրում եմ նշել ավտոաշտարակի դաշտը'
         ];
         $this->validate($request, $rules, $messages);
 
         $driver->name = $request->name;
         $driver->phone = $request->phone;
+        $driver->car_id = $request->car_id;
         $driver->save();
 
         return redirect(self::ROUTE);

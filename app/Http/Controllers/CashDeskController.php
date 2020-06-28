@@ -33,16 +33,18 @@ class CashDeskController extends Controller
     {
         $rules = [
             "price" => "required|numeric",
-            "comment" => "max:3000"
+            "comment" => "max:3000",
+            "type" => "required|min:-1|max:1|numeric"
         ];
         $messages = [
             'price.required' => 'Խնդրում եմ լրացնել պատվերի գինը',
             'price.numeric' => 'Խնդրում եմ լրացնել ճիշտ թվանշաններ',
+            'type' => 'Խնդրում եմ լրացնել ելք/մուտ դաշտը',
         ];
         $this->validate($request, $rules, $messages);
 
         $paidOrder = new PaidOrder();
-        $paidOrder->price = $request->price;
+        $paidOrder->price = $request->price * $request->type;
         $paidOrder->at_driver = 0;
         $paidOrder->type = $request->transfer_type ?? 0;
         $paidOrder->comment = $request->comment;
@@ -72,7 +74,7 @@ class CashDeskController extends Controller
         $this->validate($request, $rules, $messages);
 
         $paidOrder = PaidOrder::findOrFail($id);
-        $paidOrder->price = $request->price;
+        $paidOrder->price = $request->price * $request->type;
         $paidOrder->at_driver = 0;
         $paidOrder->type = $request->transfer_type ?? 0;
         $paidOrder->comment = $request->comment;

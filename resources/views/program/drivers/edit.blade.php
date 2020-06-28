@@ -12,6 +12,19 @@
                             @method("PUT")
 
                             <div class="form-group">
+                                <label for="name">Ավտոաշտարակ</label>
+                                @error('car_id')
+                                <p class="invalid-feedback text-danger" role="alert"><strong>{{ $message }}</strong></p>
+                                @enderror
+                                <select required name="car_id" class="form-control">
+                                    <option>Ընտրել Ավտոաշտարակ</option>
+                                    @foreach($cars as $key => $value)
+                                        <option @if($driver->car->id == $value->id) selected @endif value="{{ $value->id }}">{{ $value->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                            <div class="form-group">
                                 <label for="name">Անուն</label>
                                 @error('name')
                                 <p class="invalid-feedback text-danger" role="alert"><strong>{{ $message }}</strong></p>

@@ -19,11 +19,22 @@
                             @endif
 
                             <div class="form-group">
+                                <label for="type">Տեսակ</label>
+                                @error('type')
+                                <p class="invalid-feedback text-danger" role="alert"><strong>{{ $message }}</strong></p>
+                                @enderror
+                                <select name="type" id="type" required class="form-control">
+                                    <option @if($paidOrder->price < 0) selected @endif value="-1">Ելք</option>
+                                    <option @if($paidOrder->price > 0) selected @endif value="1">Մուտք</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
                                 <label for="price">Գումար</label>
                                 @error('price')
                                 <p class="invalid-feedback text-danger" role="alert"><strong>{{ $message }}</strong></p>
                                 @enderror
-                                <input type="number" step="any" class="form-control" id="price" name="price" required value="{{ $paidOrder->price ?? old('price') }}">
+                                <input type="number" step="any" min="1" class="form-control" id="price" name="price" required value="{{ isset($paidOrder->price) ? abs($paidOrder->price) : old('price') }}">
                             </div>
 
                             <div class="form-group">

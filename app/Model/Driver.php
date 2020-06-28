@@ -20,4 +20,8 @@ class Driver extends Model
         return $this->hasMany(PaidOrder::class, "driver_id", "id");
     }
 
+    public function car()
+    {
+        return $this->belongsTo(Car::class, "car_id","id");
+    }
 }
