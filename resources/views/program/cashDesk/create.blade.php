@@ -24,8 +24,8 @@
                                 <p class="invalid-feedback text-danger" role="alert"><strong>{{ $message }}</strong></p>
                                 @enderror
                                 <select name="type" id="type" required class="form-control">
-                                    <option @if($paidOrder->price < 0) selected @endif value="-1">Ելք</option>
-                                    <option @if($paidOrder->price > 0) selected @endif value="1">Մուտք</option>
+                                    <option @if(isset($paidOrder->price) && $paidOrder->price < 0) selected @endif value="-1">Ելք</option>
+                                    <option @if(isset($paidOrder->price) && $paidOrder->price > 0) selected @endif value="1">Մուտք</option>
                                 </select>
                             </div>
 

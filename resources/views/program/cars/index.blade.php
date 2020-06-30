@@ -36,13 +36,19 @@
                                           method="post" id="work-for-form">
                                         @csrf
                                         @method("DELETE")
-                                        <a href="javascript:void(0);" data-text="հաճախորդին" class="delForm" data-id ="{{$val->id}}">
+                                        <a href="javascript:void(0);" data-text="մեքենան" class="delForm" data-id ="{{$val->id}}">
                                             <button data-toggle="tooltip"
                                                     data-placement="top" title="Հեռացնել"
                                                     class="btn btn-danger btn-circle tooltip-danger"><i
                                                     class="fas fa-trash"></i></button>
                                         </a>
                                     </form>
+
+                                    <button data-toggle="modal" data-target="#exampleModal"
+                                            data-placement="top" title="Ավելացնել Ծախս" class="btn btn-success btn-circle tooltip-success open-modal" onclick="openModal('{{url($route."/".$val->id."/pay")}}')">
+                                        <i class="fas fa-money-bill-alt"></i>
+                                    </button>
+
                                 </td>
                             </tr>
                         @endforeach
@@ -58,7 +64,7 @@
        <div class="modal-dialog" role="document">
            <div class="modal-content">
                <div class="modal-header">
-                   <h5 class="modal-title" id="exampleModalLabel">Աշխատավարձի Վճարում</h5>
+                   <h5 class="modal-title" id="exampleModalLabel">Ավելացնել Մեքենայի Ծախս</h5>
                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                        <span aria-hidden="true">&times;</span>
                    </button>
@@ -68,13 +74,17 @@
                        @csrf
                        <div class="form-group">
                            <label for="sum">Գումարի Չափ</label>
-                           <input type="number" step="any" id="sum" name="price" class="form-control">
+                           <input type="number" required step="any" id="sum" name="price" class="form-control">
                        </div>
                        <div class="form-group">
                            <label for="transfer">
                                Փոխանցում
                                <input type="checkbox" style="width: 39px;" name="transfer_type" @if(isset($craneOrder->paidList[0]->type) && $craneOrder->paidList[0]->type == 1) checked @endif value="1" id="transfer" class="form-control">
                            </label>
+                       </div>
+                       <div class="form-group">
+                           <label for="comment">Մեկնաբանություն</label>
+                           <textarea name="comment" id="comment" class="form-control" cols="30" rows="5"></textarea>
                        </div>
                    </div>
                    <div class="modal-footer">

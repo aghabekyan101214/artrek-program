@@ -25,6 +25,12 @@ class CreatePaidOrdersTable extends Migration
             $table->unsignedBigInteger("driver_id")->nullable();
             $table->foreign("driver_id")->references("id")->on("drivers")->onDelete("set null");
 
+            $table->unsignedBigInteger("car_id")->nullable();
+            $table->foreign("car_id")->references("id")->on("cars")->onDelete("set null");
+
+            $table->unsignedBigInteger("spending_id")->nullable();
+            $table->foreign("spending_id")->references("id")->on("spendings")->onDelete("set null");
+
             $table->decimal("price", 8, 1);
             $table->unsignedTinyInteger("at_driver")->nullable()->default(0);
             $table->timestamps();

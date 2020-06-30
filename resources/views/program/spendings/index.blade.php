@@ -15,9 +15,6 @@
                             <tr>
                                 <th>#</th>
                                 <th>Անուն</th>
-                                <th>Կցված Ավտոաշտարակ</th>
-                                <th>Հեռախոսահամար</th>
-                                <th>Կուտակված Աշխատավարձ</th>
                                 <th>Կարգավորումներ</th>
                             </tr>
                         </thead>
@@ -27,9 +24,6 @@
                             <tr>
                                 <td>{{$key + 1}}</td>
                                 <td>{{$val->name}}</td>
-                                <td>{{$val->car->name}}</td>
-                                <td>{{$val->phone}}</td>
-                                <td>{{$val->salary->sum("price") + $val->paidSalary->sum("price") }}</td>
                                 <td>
                                     <a href="{{$route."/".$val->id."/edit"}}" data-toggle="tooltip"
                                        data-placement="top" title="Փոփոխել" class="btn btn-info btn-circle tooltip-info">
@@ -40,7 +34,7 @@
                                           method="post" id="work-for-form">
                                         @csrf
                                         @method("DELETE")
-                                        <a href="javascript:void(0);" data-text="հաճախորդին" class="delForm" data-id ="{{$val->id}}">
+                                        <a href="javascript:void(0);" data-text="կատեգորիան" class="delForm" data-id ="{{$val->id}}">
                                             <button data-toggle="tooltip"
                                                     data-placement="top" title="Հեռացնել"
                                                     class="btn btn-danger btn-circle tooltip-danger"><i
@@ -49,7 +43,7 @@
                                     </form>
 
                                     <button data-toggle="modal" data-target="#exampleModal"
-                                       data-placement="top" title="Վճարել Աշխատավարձ" class="btn btn-success btn-circle tooltip-success open-modal" onclick="openModal('{{url($route."/".$val->id."/pay")}}')">
+                                       data-placement="top" title="Ավելացնել Ծախս" class="btn btn-success btn-circle tooltip-success open-modal" onclick="openModal('{{url($route."/".$val->id."/pay")}}')">
                                         <i class="fas fa-money-bill-alt"></i>
                                     </button>
 
@@ -68,7 +62,7 @@
        <div class="modal-dialog" role="document">
            <div class="modal-content">
                <div class="modal-header">
-                   <h5 class="modal-title" id="exampleModalLabel">Աշխատավարձի Վճարում</h5>
+                   <h5 class="modal-title" id="exampleModalLabel">Ավելացնել Ծախս</h5>
                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                        <span aria-hidden="true">&times;</span>
                    </button>
@@ -78,13 +72,17 @@
                        @csrf
                        <div class="form-group">
                            <label for="sum">Գումարի Չափ</label>
-                           <input type="number" step="any" required id="sum" name="price" class="form-control">
+                           <input type="number" required step="any" id="sum" name="price" class="form-control">
                        </div>
                        <div class="form-group">
                            <label for="transfer">
                                Փոխանցում
                                <input type="checkbox" style="width: 39px;" name="transfer_type" @if(isset($craneOrder->paidList[0]->type) && $craneOrder->paidList[0]->type == 1) checked @endif value="1" id="transfer" class="form-control">
                            </label>
+                       </div>
+                       <div class="form-group">
+                           <label for="comment">Մեկնաբանություն</label>
+                           <textarea name="comment" id="comment" class="form-control" cols="30" rows="5"></textarea>
                        </div>
                    </div>
                    <div class="modal-footer">

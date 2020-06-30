@@ -2,11 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Model\PaidOrder;
 use App\Model\Spending;
 use Illuminate\Http\Request;
 
 class SpendingController extends Controller
 {
+
+    const FOLDER = "program.spendings";
+    const TITLE = "Այլ Ծախսեր";
+    const ROUTE = "/spendings";
+
     /**
      * Display a listing of the resource.
      *
@@ -14,7 +20,10 @@ class SpendingController extends Controller
      */
     public function index()
     {
-        //
+        $data = Spending::orderBy("id", "DESC")->get();
+        $title = self::TITLE;
+        $route = self::ROUTE;
+        return view(self::FOLDER . '.index', compact('title', 'route', 'data'));
     }
 
     /**
@@ -24,7 +33,9 @@ class SpendingController extends Controller
      */
     public function create()
     {
-        //
+        $title = 'Ստեղծել ' . self::TITLE;
+        $route = self::ROUTE;
+        return view(self::FOLDER . '.create', compact('title', 'route'));
     }
 
     /**
@@ -35,7 +46,19 @@ class SpendingController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $rules = [
+            "name" => "required|max:190",
+        ];
+        $messages = [
+            'name.required' => 'Խնդրում եմ նշել Այլ Ծախսի Կատեգորիա',
+        ];
+        $this->validate($request, $rules, $messages);
+
+        $spending = new Spending();
+        $spending->name = $request->name;
+        $spending->save();
+
+        return redirect(self::ROUTE);
     }
 
     /**
@@ -57,7 +80,9 @@ class SpendingController extends Controller
      */
     public function edit(Spending $spending)
     {
-        //
+        $title = 'Փոփոխել ' . self::TITLE;
+        $route = self::ROUTE;
+        return view(self::FOLDER . '.create', compact('title', 'route', 'spending'));
     }
 
     /**
@@ -69,7 +94,18 @@ class SpendingController extends Controller
      */
     public function update(Request $request, Spending $spending)
     {
-        //
+        $rules = [
+            "name" => "required|max:190",
+        ];
+        $messages = [
+            'name.required' => 'Խնդրում եմ նշել Այլ Ծախսի Կատեգորիա',
+        ];
+        $this->validate($request, $rules, $messages);
+
+        $spending->name = $request->name;
+        $spending->save();
+
+        return redirect(self::ROUTE);
     }
 
     /**
@@ -80,6 +116,20 @@ class SpendingController extends Controller
      */
     public function destroy(Spending $spending)
     {
-        //
+        $spending->delete();
+        return redirect(self::ROUTE);
+    }
+
+    public function paySalary($id, Request $request)
+    {
+        $paidOrder = new PaidOrder();
+        $paidOrder->spending_id = $id;
+        $paidOrder->price = - $request->price;
+        $paidOrder->at_driver = 0;
+        $paidOrder->comment = "Ծախս \n" . $request->comment;
+        $paidOrder->type = $request->transfer_type ?? 0;
+        $paidOrder->save();
+
+        return redirect(self::ROUTE);
     }
 }

@@ -118,6 +118,11 @@
                 <li><a href="/cashdesk" class="waves-effect"><i class="mdi mdi-cash fa-fw"></i>
                         <span class="hide-menu">Դրամարկղ</span></a>
                 </li>
+
+                <li><a href="/spendings" class="waves-effect"><i class="mdi mdi-coins fa-fw"></i>
+                        <span class="hide-menu">Այլ Ծախսեր</span></a>
+                </li>
+
             </ul>
         </div>
     </div>

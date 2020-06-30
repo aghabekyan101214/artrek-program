@@ -34,8 +34,8 @@ class DriverController extends Controller
      */
     public function create()
     {
-        $title = 'Ստեղծել ' . self::TITLE;
         $cars = Car::all();
+        $title = 'Ստեղծել ' . self::TITLE;
         $route = self::ROUTE;
         return view(self::FOLDER . '.create', compact('title', 'route', 'cars'));
     }
@@ -148,7 +148,7 @@ class DriverController extends Controller
         $paidOrder->driver_id = $id;
         $paidOrder->price = - $request->price;
         $paidOrder->at_driver = 0;
-        $paidOrder->comment = "Աշխատավարձ" . $request->comment;
+        $paidOrder->comment = "Աշխատավարձ " . $request->comment;
         $paidOrder->type = $request->transfer_type ?? 0;
         $paidOrder->save();
 

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Model\Car;
+use App\Model\PaidOrder;
 use Illuminate\Http\Request;
 
 class CarController extends Controller
@@ -117,6 +118,26 @@ class CarController extends Controller
     public function destroy(Car $car)
     {
         $car->delete();
+        return redirect(self::ROUTE);
+    }
+
+    /**
+     * Insert Salary Sum into the storage.
+     *
+     * @param  $id (driver id)
+     * @return redirect
+     */
+
+    public function paySalary($id, Request $request)
+    {
+        $paidOrder = new PaidOrder();
+        $paidOrder->car_id = $id;
+        $paidOrder->price = - $request->price;
+        $paidOrder->at_driver = 0;
+        $paidOrder->comment = "Մեքենայի ծախս " . $request->comment;
+        $paidOrder->type = $request->transfer_type ?? 0;
+        $paidOrder->save();
+
         return redirect(self::ROUTE);
     }
 }
