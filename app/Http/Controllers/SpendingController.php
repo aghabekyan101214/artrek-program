@@ -20,7 +20,7 @@ class SpendingController extends Controller
      */
     public function index()
     {
-        $data = Spending::orderBy("id", "DESC")->get();
+        $data = Spending::with("spendings")->orderBy("id", "DESC")->get();
         $title = self::TITLE;
         $route = self::ROUTE;
         return view(self::FOLDER . '.index', compact('title', 'route', 'data'));

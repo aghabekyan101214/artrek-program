@@ -15,6 +15,7 @@
                             <tr>
                                 <th>#</th>
                                 <th>Անուն</th>
+                                <th>Ծախսեր</th>
                                 <th>Կարգավորումներ</th>
                             </tr>
                         </thead>
@@ -24,6 +25,13 @@
                             <tr>
                                 <td>{{$key + 1}}</td>
                                 <td>{{$val->name}}</td>
+                                <td>
+                                    <ul>
+                                        @foreach($val->spendings as $spending)
+                                            <li>{{ $spending->price . " || " . $spending->created_at }}</li>
+                                        @endforeach
+                                    </ul>
+                                </td>
                                 <td>
                                     <a href="{{$route."/".$val->id."/edit"}}" data-toggle="tooltip"
                                        data-placement="top" title="Փոփոխել" class="btn btn-info btn-circle tooltip-info">

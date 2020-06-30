@@ -82,4 +82,10 @@ class CashDeskController extends Controller
 
         return redirect(self::ROUTE);
     }
+
+    public function destroy($id)
+    {
+        PaidOrder::find($id)->delete();
+        return redirect(self::ROUTE);
+    }
 }
