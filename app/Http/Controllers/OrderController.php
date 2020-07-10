@@ -31,7 +31,7 @@ class OrderController extends Controller
         $title = self::TITLE;
         $route = self::ROUTE;
         $clients = Client::all();
-        $materials = Material::whereHas("quantity")->selectRaw("id, name")->get()->toArray();
+        $materials = Material::with("selfPrice")->whereHas("quantity")->selectRaw("id, name")->get()->toArray();
         $laserTypes = LaserList::TYPES;
         return view(self::FOLDER . '.create', compact('title', 'route', 'clients', 'materials', 'laserTypes'));
     }

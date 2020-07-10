@@ -33,7 +33,7 @@ class MaterialListController extends Controller
      */
     public function create()
     {
-        $materials = Material::with(["quantity"])->get();
+        $materials = Material::with(["quantity", "selfPrice"])->get();
         $title = self::TITLE;
         $route = self::ROUTE;
         $units = Material::UNITS;

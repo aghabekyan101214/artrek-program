@@ -21,4 +21,9 @@ class Material extends Model
     {
         return $this->hasMany("App\Model\OrderList", "material_id", "id");
     }
+
+    public function selfPrice()
+    {
+        return $this->hasOne(MaterialList::class, "material_id", "id")->latest();
+    }
 }

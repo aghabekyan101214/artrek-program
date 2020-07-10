@@ -69,7 +69,7 @@
                             <div class="form-group">
                                 <button onclick="add()" type="button" class="btn form-control btn-primary" style="color: white">Ավելացնել Ապրանք <i class="fa fa-plus"></i></button>
                             </div>
-
+                            <p class="calculated-price">Մոտավոր ինքնարժեք ՝ <span>0</span> դրամ</p>
                             <button type="submit" class="btn btn-success waves-effect waves-light m-r-10">Պահպանել</button>
                         </form>
                     </div>
@@ -106,20 +106,18 @@
             function add(data = {}) {
                 let id = `num${count}`;
                 let order_type = data.type >= 0 ? data.type : null;
-                console.log(order_type)
-                let html = "<div>";
+                let html = "<div class='groups'>";
 
                 html += "<div class='form-group'>";
                 html +=
                     '<label>Ապրանք</label>' +
-                    `<select name="data[${count}][material_id]" required class='form-control ${id}'>` +
+                    `<select onchange="countPrice()" name="data[${count}][material_id]" required class='mat form-control ${id}'>` +
                     '<option value="">Ընտրել Ապրանք</option>'
 
                 materials.forEach(e => {
                     let selected = (e.id == data.material_id) ? "selected" : "";
-                    html += `<option ${selected} value="${e.id}">${e.name}</option>`
+                    html += `<option ${selected} price="${e.self_price.self_price}" value="${e.id}">${e.name}</option>`
                 });
-
                 html += "</select></div>";
 
                 html += "<div class='form-group'>";
@@ -143,7 +141,7 @@
                 html += "</div>";
                 html += "<div class='form-group'>" +
                     '<label><span class="q">Քանակ</span></label>';
-                html += `<input type="number" step="any" class="form-control quantity-input" oninput="countPrice" id="price" value="${data.quantity || ''}" name="data[${count}][quantity]" required>`
+                html += `<input type="number" step="any" class="form-control quantity-input" oninput="countPrice()" id="price" value="${data.quantity || ''}" name="data[${count}][quantity]" required>`
                 html += "</div><hr>";
                 html += "</div>";
 
@@ -163,6 +161,19 @@
                 });
             }
 
+            function countPrice() {
+                let emptyMaterial = false;
+                let calculatedPrice = 0;
+                $(document).find(".here .groups").each(function () {
+                    if(!$(this).find(".mat").val()) emptyMaterial = true;
+                    let price = $(this).find(".mat option:selected").attr("price");
+                    let quantity = $(this).find(".quantity-input").val();
+                    calculatedPrice += (price * quantity);
+                });
+                if(emptyMaterial) calculatedPrice = 0;
+                $(".calculated-price span").html(calculatedPrice);
+            }
+
         </script>
         @if(isset($order))
             <script>
@@ -177,10 +188,6 @@
                     })
 
                 })
-
-                function countPrice() {
-                    console.log("s")
-                }
 
             </script>
         @endif

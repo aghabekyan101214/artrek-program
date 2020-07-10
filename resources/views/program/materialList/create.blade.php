@@ -20,7 +20,7 @@
                                 @enderror
                                 <select onchange="getSelfPrice()" name="material_id" id="material" class="form-control select2" required>
                                     @foreach($materials as $material)
-                                        <option @if(old("material_id") == $material->id) @endif price="{{ $material->quantity[0]->self_price ?? 0 }}" value="{{ $material->id }}">{{ $material->name . " ( " .$units[$material->unit] . " ) " }}</option>
+                                        <option @if(old("material_id") == $material->id) @endif price="{{ $material->selfPrice->self_price ?? 0 }}" value="{{ $material->id }}">{{ $material->name . " ( " .$units[$material->unit] . " ) " }}</option>
                                     @endforeach
                                 </select>
                             </div>

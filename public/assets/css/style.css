@@ -7251,10 +7251,6 @@ ul.select-row-icon li a:hover i.whn-hov {
     font-size: 20px
 }
 
-.sidebar:hover .sidebar-head {
-    width: 240px
-}
-
 .sidebar .label {
     font-size: 10px;
     border-radius: 60px;
@@ -7269,9 +7265,41 @@ ul.select-row-icon li a:hover i.whn-hov {
     display: none
 }
 
-.sidebar:hover .hide-menu {
-    display: inline
+.show-sidebar .sidebar-head, .show-sidebar .sidebar {
+    width: 240px;
 }
+.show-sidebar .hide-menu{
+    display: inline;
+}
+.nav li:hover .hide-menu {
+    display: inline;
+}
+/*.sidebar:hover .sidebar-head {*/
+/*    width: 240px*/
+/*}*/
+/*.sidebar:hover .hide-menu {*/
+/*    display: inline*/
+/*}*/
+/*.sidebar:hover {*/
+/*    width: 240px*/
+/*}*/
+#side-menu > li.selected {
+    background: #f44336;
+}
+#side-menu > li > a.active {
+    background: transparent!important;
+}
+#side-menu > li > a:hover{
+    background: white!important;
+    color: #54667a!important;
+}
+.sidebar:hover{
+    overflow: visible;
+}
+.sidebar:hover .nav#side-menu{
+    overflow: visible;
+}
+
 
 .sidebar:hover .nav-small-cap {
     display: block
@@ -10077,9 +10105,6 @@ ul.pro-amenities li span i {
         -webkit-transition: 0.05s ease-in;
         -o-transition: 0.05s ease-in;
         transition: 0.05s ease-in
-    }
-    .sidebar:hover {
-        width: 240px
     }
     .navbar-static-top {
         padding-left: 60px
