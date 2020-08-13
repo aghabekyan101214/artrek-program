@@ -17,10 +17,10 @@ class CreatePaidOrdersTable extends Migration
             $table->bigIncrements('id');
 
             $table->unsignedBigInteger("order_id")->nullable();
-            $table->foreign("order_id")->references("id")->on("orders")->onDelete("set null");
+            $table->foreign("order_id")->references("id")->on("orders")->onDelete("cascade");
 
             $table->unsignedBigInteger("crane_order_id")->nullable();
-            $table->foreign("crane_order_id")->references("id")->on("crane_orders")->onDelete("set null");
+            $table->foreign("crane_order_id")->references("id")->on("crane_orders")->onDelete("cascade");
 
             $table->unsignedBigInteger("driver_id")->nullable();
             $table->foreign("driver_id")->references("id")->on("drivers")->onDelete("set null");

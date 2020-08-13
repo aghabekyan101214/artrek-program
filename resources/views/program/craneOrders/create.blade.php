@@ -38,7 +38,7 @@
                                 <select name="driver_id" class="form-control select2" id="" required>
                                     <option value="">Ընտրել Վարորդ</option>
                                     @foreach($drivers as $driver)
-                                        <option @if(old("driver_id") == $driver->id || (isset($craneOrder->id) && $craneOrder->client_id == $driver->id) ) selected @endif value="{{ $driver->id }}">{{ $driver->name }}</option>
+                                        <option @if(old("driver_id") == $driver->id || (isset($craneOrder->id) && $craneOrder->driver_id == $driver->id) ) selected @endif value="{{ $driver->id }}">{{ $driver->name }}</option>
                                     @endforeach
                                 </select>
                             </div>

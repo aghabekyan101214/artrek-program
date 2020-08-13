@@ -76,10 +76,13 @@ class CraneOrderController extends Controller
         $order->price = $request->price;
         $order->save();
 
-        $paid = new PaidOrder(["price" => $request->paid, "type" => ($request->transfer_type ?? 0), "at_driver" => ($request->at_driver ?? 0)]);
-        $order->paidList()->save($paid);
-        $salary = new DriverSalary(["price" => ( $request->paid * Driver::PERCENTAGE / 100 ), "driver_id" => $order->driver_id]);
-        $paid->salary()->save($salary);
+        if($request->paid != 0) {
+            $paid = new PaidOrder(["price" => $request->paid, "type" => ($request->transfer_type ?? 0), "at_driver" => ($request->at_driver ?? 0)]);
+            $order->paidList()->save($paid);
+            $salary = new DriverSalary(["price" => ( $request->paid * Driver::PERCENTAGE / 100 ), "driver_id" => $order->driver_id]);
+            $paid->salary()->save($salary);
+        }
+
         DB::commit();
         return redirect(self::ROUTE);
     }
@@ -141,13 +144,19 @@ class CraneOrderController extends Controller
         $craneOrder->price = $request->price;
         $craneOrder->save();
 
-        $paid = PaidOrder::where(["crane_order_id" => $craneOrder->id])->orderBy("id", "ASC")->first();
+        $paid = PaidOrder::where(["crane_order_id" => $craneOrder->id])->orderBy("id", "DESC")->first() ?? new PaidOrder(["crane_order_id" => $craneOrder->id, "price" => $request->paid, "type" => ($request->transfer_type ?? 0), "at_driver" => ($request->at_driver ?? 0)]);
         $paid->price = $request->paid;
         $paid->type = ($request->transfer_type ?? 0);
         $paid->at_driver = ($request->at_driver ?? 0);
         $paid->save();
+
+        $driverSalary = DriverSalary::where("paid_order_id", $paid->id)->orderBy("id", "DESC")->first() ?? new DriverSalary();
+        $driverSalary->paid_order_id = $paid->id;
+        $driverSalary->price = ( $request->paid * Driver::PERCENTAGE / 100 );
+        $driverSalary->driver_id = $craneOrder->driver_id;
+        $driverSalary->save();
+
         DB::commit();
-//        dd($paid);
         return redirect(self::ROUTE);
     }
 

@@ -96,7 +96,7 @@
                 </li>
 
                 <li><a href="/orders" class="waves-effect"><i class="mdi mdi-coin fa-fw"></i>
-                        <span class="hide-menu">Պատվերներ</span></a>
+                        <span class="hide-menu">Գովազդի Պատվերներ</span></a>
                 </li>
 
 {{--                <li><a href="/services" class="waves-effect"><i class="mdi mdi-server fa-fw"></i>--}}
