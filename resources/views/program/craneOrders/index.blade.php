@@ -1,6 +1,11 @@
 @extends('layouts.app')
 
 @section('content')
+    <style>
+        .badge-danger{
+            font-size: 16px;
+        }
+    </style>
    <div class="row">
         <div class="col-md-12">
             <div class="white-box">
@@ -18,13 +23,22 @@
                                 <th>Վարորդ</th>
                                 <th>Ընդհանուր Գումար</th>
                                 <th>Վճարվել է</th>
+                                <th>Պարտք</th>
                                 <th>Վարորդի Մոտ</th>
                                 <th>Կարգավորումներ</th>
                             </tr>
                         </thead>
 
                         <tbody>
+                        @php
+                            $wholeDoubt = 0;
+                            $wholeSum = 0;
+                        @endphp
                         @foreach($data as $key=>$val)
+                            @php
+                                $wholeDoubt += ($val->paidList->sum("price") - intval($val->price)) * -1;
+                                $wholeSum += intval($val->price);
+                            @endphp
                             <tr>
                                 <td>{{$key + 1}}</td>
                                 <td>{{$val->client->name}}</td>
@@ -45,6 +59,16 @@
                                         @endforeach
                                     </ul>
 
+                                </td>
+                                @php
+                                  $doubt = ($val->paidList->sum("price") - intval($val->price)) * -1;
+                                @endphp
+                                <td>
+                                    @if($doubt > 0)
+                                        <span class="badge badge-danger">{{ $doubt }}</span>
+                                    @else
+                                        <span class="badge badge-success">{{ 0 }}</span>
+                                    @endif
                                 </td>
                                 <td>
                                     <?php $sum = 0; ?>
@@ -83,6 +107,8 @@
                     </table>
                 </div>
             </div>
+            <div class="alert alert-success">Պատվերների Համագումար: {{ $wholeSum }} Որից Վճարված է։ {{ $wholeSum - $wholeDoubt }}</div>
+            <div class="alert alert-danger">Պարտք: {{ $wholeDoubt }}</div>
         </div>
     </div>
 
