@@ -26,6 +26,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::resource('/material-list', 'MaterialListController');
     Route::resource('/services', 'ServiceController');
     Route::resource('/orders', 'OrderController');
+    Route::post('/orders/{id}/pay', 'OrderController@pay');
     Route::resource('/crane-orders', 'CraneOrderController');
     Route::post('/crane-orders/{id}/pay', 'CraneOrderController@pay');
     Route::post('/crane-orders/take-from-driver/{paid_id}', 'CraneOrderController@takeFromDriver');

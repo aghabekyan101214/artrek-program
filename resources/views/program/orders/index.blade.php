@@ -1,6 +1,11 @@
 @extends('layouts.app')
 
 @section('content')
+    <style>
+        .badge-danger{
+            font-size: 16px;
+        }
+    </style>
    <div class="row">
         <div class="col-md-12">
             <div class="white-box">
@@ -17,13 +22,22 @@
                                 <th>Հաճախորդ</th>
                                 <th>Ընդհանուր Գումար</th>
                                 <th>Վճարվել է</th>
+                                <th>Պարտք</th>
                                 <th>Ավարտ</th>
                                 <th>Կարգավորումներ</th>
                             </tr>
                         </thead>
 
                         <tbody>
+                        @php
+                            $wholeDoubt = 0;
+                            $wholeSum = 0;
+                        @endphp
                         @foreach($data as $key=>$val)
+                            @php
+                                $wholeDoubt += ($val->paidList->sum("price") - intval($val->price)) * -1;
+                                $wholeSum += intval($val->price);
+                            @endphp
                             <tr>
                                 <td>{{$key + 1}}</td>
                                 <td>{{$val->client->name}}</td>
@@ -36,6 +50,16 @@
                                         @endforeach
                                     </ul>
 
+                                </td>
+                                @php
+                                    $doubt = ($val->paidList->sum("price") - intval($val->price)) * -1;
+                                @endphp
+                                <td>
+                                    @if($doubt > 0)
+                                        <span class="badge badge-danger">{{ $doubt }}</span>
+                                    @else
+                                        <span class="badge badge-success">{{ 0 }}</span>
+                                    @endif
                                 </td>
                                 <td>{{$val->due_date}}</td>
                                 <td>
@@ -55,6 +79,10 @@
                                                     class="fas fa-trash"></i></button>
                                         </a>
                                     </form>
+                                    <button data-toggle="modal" data-target="#exampleModal"
+                                            data-placement="top" class="btn btn-success btn-circle tooltip-success open-modal" onclick="openModal('{{url($route."/".$val->id."/pay")}}')">
+                                        <i class="fas fa-money-bill-alt"></i>
+                                    </button>
                                 </td>
                             </tr>
                         @endforeach
@@ -62,8 +90,43 @@
                     </table>
                 </div>
             </div>
+            <div class="alert alert-success">Պատվերների Համագումար: {{ $wholeSum }} Որից Վճարված է։ {{ $wholeSum - $wholeDoubt }}</div>
+            <div class="alert alert-danger">Պարտք: {{ $wholeDoubt }}</div>
         </div>
     </div>
+
+   <!-- Modal -->
+   <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+       <div class="modal-dialog" role="document">
+           <div class="modal-content">
+               <div class="modal-header">
+                   <h5 class="modal-title" id="exampleModalLabel">Գովազդի Պատվերի Մնացորդ Գումարի Վճարում</h5>
+                   <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                       <span aria-hidden="true">&times;</span>
+                   </button>
+               </div>
+               <form action="" class="pay-form" method="post">
+                   <div class="modal-body">
+                       @csrf
+                       <div class="form-group">
+                           <label for="sum">Գումարի Չափ</label>
+                           <input type="number" step="any" id="sum" name="price" class="form-control">
+                       </div>
+                       <div class="form-group">
+                           <label for="transfer">
+                               Փոխանցում
+                               <input type="checkbox" style="width: 39px;" name="transfer_type" id="transfer" class="form-control">
+                           </label>
+                       </div>
+                   </div>
+                   <div class="modal-footer">
+                       <button class="btn btn-primary">Վճարել</button>
+                   </div>
+               </form>
+           </div>
+       </div>
+   </div>
+
 @endsection
 
 @push('head')
@@ -85,6 +148,7 @@
     <script src="{{asset('assets/plugins/swal/sweetalert.min.js')}}"></script>
     <script>
         $('#datatable').DataTable();
+        openModal = e => $(".pay-form").attr("action", e);
     </script>
 @endpush
 

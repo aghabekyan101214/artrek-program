@@ -43,12 +43,12 @@
                                 @error('paid')
                                 <p class="invalid-feedback text-danger" role="alert"><strong>{{ $message }}</strong></p>
                                 @enderror
-                                <input type="number" step="any" class="form-control" id="paid" name="paid" required value="{{ $order->paidList[0]->price ?? old('paid') ?? 0 }}">
+                                <input type="number" step="any" class="form-control" id="paid" name="paid" required value="{{ isset($order) ? $order->paidList->last()->price : old('paid') ?? 0 }}">
                             </div>
                             <div class="form-group">
                                 <label for="transfer">
                                     Փոխանցում
-                                    <input type="checkbox" style="width: 39px;" name="transfer_type" @if(isset($order->paidList[0]->type) && $order->paidList[0]->type == 1) checked @endif value="1" id="transfer" class="form-control">
+                                    <input type="checkbox" style="width: 39px;" name="transfer_type" @if(isset($order) && $order->paidList->last()->type == 1) checked @endif value="1" id="transfer" class="form-control">
                                 </label>
                             </div>
 
@@ -69,7 +69,8 @@
                             <div class="form-group">
                                 <button onclick="add()" type="button" class="btn form-control btn-primary" style="color: white">Ավելացնել Ապրանք <i class="fa fa-plus"></i></button>
                             </div>
-                            <p class="calculated-price">Մոտավոր ինքնարժեք ՝ <span>0</span> դրամ</p>
+                            <p class="calculated-price">Մոտավոր ընդհանուր ինքնարժեք ՝ <span>0</span> դրամ</p>
+                            <p class="calculated-laser-price">Մոտավոր լազերի ինքնարժեք ՝ <span>0</span> դրամ</p>
                             <button type="submit" class="btn btn-success waves-effect waves-light m-r-10">Պահպանել</button>
                         </form>
                     </div>
@@ -91,6 +92,9 @@
             let materials = JSON.parse(json);
             let laserTypes = JSON.parse(jsonedLaserTypes);
             let count = 0;
+
+            const cuttingPrice = 200;
+
             $(document).ready(function () {
                 $(".select2").select2();
                 @if(!isset($order))
@@ -111,25 +115,25 @@
                 html += "<div class='form-group'>";
                 html +=
                     '<label>Ապրանք</label>' +
-                    `<select onchange="countPrice()" name="data[${count}][material_id]" required class='mat form-control ${id}'>` +
+                    `<select onchange="countPrice()" name="data[${count}][material_id]" class='mat form-control ${id}'>` +
                     '<option value="">Ընտրել Ապրանք</option>'
 
                 materials.forEach(e => {
                     let selected = (e.id == data.material_id) ? "selected" : "";
-                    html += `<option ${selected} price="${e.self_price.self_price}" value="${e.id}">${e.name}</option>`
+                    html += `<option ${selected} price="${e.self_price.self_price || 0}" value="${e.id}">${e.name}</option>`
                 });
                 html += "</select></div>";
 
                 html += "<div class='form-group'>";
                 html += '<label>Ապրանքի Օգտագործում</label>' +
-                    `<select onchange="disableInputs()" name="data[${count}][order_type]" required class='form-control order_type'>`;
+                    `<select onchange="disableInputs(), countPrice()" name="data[${count}][order_type]" required class='form-control order_type'>`;
                 html += `<option ${order_type == null ? "selected" : ""} value="0">Սովորական</option>`;
                 html += `<option ${order_type != null ? "selected" : ""} value="1">Լազեր</option>`;
                 html += "</select></div>";
 
                 html += "<div class='form-group laser'>";
                 html += '<label>Տեսակ</label>' +
-                    `<select name="data[${count}][type]" required class='form-control laser-inp laser_type'>`;
+                    `<select name="data[${count}][type]" onchange="countPrice()" required class='form-control laser-inp laser_type'>`;
                 laserTypes.forEach((e, i) => {
                     html += `<option ${data.type == i ? "selected" : ""} value="${i}">${e}</option>`
                 });
@@ -137,11 +141,11 @@
 
                 html += "<div class='form-group laser'>" +
                     '<label>Հաստություն / Րոպե</label>';
-                html += `<input type="number" step="any" class="form-control laser-inp" value="${data.thickness || ''}" id="thickness" name="data[${count}][thickness]" required>`;
+                html += `<input type="number" step="any" class="form-control laser-inp thickness" oninput="countPrice()" value="${data.thickness || ''}" id="thickness" name="data[${count}][thickness]" required>`;
                 html += "</div>";
                 html += "<div class='form-group'>" +
                     '<label><span class="q">Քանակ</span></label>';
-                html += `<input type="number" step="any" class="form-control quantity-input" oninput="countPrice()" id="price" value="${data.quantity || ''}" name="data[${count}][quantity]" required>`
+                html += `<input type="number" step="any" class="form-control quantity-input" oninput="countPrice()" id="price" value="${data.quantity || 0}" name="data[${count}][quantity]" required>`
                 html += "</div><hr>";
                 html += "</div>";
 
@@ -164,14 +168,48 @@
             function countPrice() {
                 let emptyMaterial = false;
                 let calculatedPrice = 0;
+                let calculatedLaserPrice = 0;
+
                 $(document).find(".here .groups").each(function () {
-                    if(!$(this).find(".mat").val()) emptyMaterial = true;
-                    let price = $(this).find(".mat option:selected").attr("price");
-                    let quantity = $(this).find(".quantity-input").val();
-                    calculatedPrice += (price * quantity);
+                    if($(this).find(".order_type").val() == 0) {
+                        // if the order is ordinary
+                        if(!$(this).find(".mat").val()) emptyMaterial = true;
+                        let price = $(this).find(".mat option:selected").attr("price");
+                        let quantity = $(this).find(".quantity-input").val();
+                        calculatedPrice += (price * quantity);
+                    } else {
+                        if($(this).find(".laser_type").val() == 0) {
+                            // Cutting
+                            let thickness = $(this).find(".thickness").val();
+                            let quantity = $(this).find(".quantity-input").val();
+                            let price = calculateCuttingPrice(thickness);
+                            calculatedLaserPrice += quantity * price;
+
+                        } else if($(this).find(".laser_type").val() == 1) {
+                            // Gravirovka
+                            let minutes = $(this).find(".thickness").val();
+                            calculatedLaserPrice += (minutes * cuttingPrice);
+                        }
+                    }
                 });
                 if(emptyMaterial) calculatedPrice = 0;
-                $(".calculated-price span").html(calculatedPrice);
+                let wholePrice = calculatedPrice + calculatedLaserPrice;
+                $(".calculated-price span").html(wholePrice);
+                $(".calculated-laser-price span").html(calculatedLaserPrice);
+            }
+
+            function calculateCuttingPrice(thickness) {
+                let price = 0;
+                if(thickness == 0) price = 70;
+                else if(thickness > 0 && thickness <= 3) price = 200;
+                else if(thickness > 3 && thickness <= 4 ) price = 280;
+                else if(thickness > 4 && thickness <= 5 ) price = 350;
+                else if(thickness > 5 && thickness <= 6 ) price = 400;
+                else if(thickness > 6 && thickness <= 8 ) price = 500;
+                else if(thickness > 8 && thickness <= 10 ) price = 700;
+                else if(thickness > 10 && thickness <= 15 ) price = 1200;
+                else if(thickness > 15) price = 2000;
+                return price;
             }
 
         </script>
@@ -185,9 +223,9 @@
                     });
                     laserList.forEach(e => {
                         add(e)
-                    })
-
-                })
+                    });
+                    countPrice();
+                });
 
             </script>
         @endif

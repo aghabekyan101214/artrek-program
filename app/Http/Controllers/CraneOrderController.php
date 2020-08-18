@@ -187,7 +187,7 @@ class CraneOrderController extends Controller
         $paidOrder->crane_order_id = $id;
         $paidOrder->at_driver = ($request->at_driver ?? 0);
         $paidOrder->price = $request->price;
-        $paidOrder->type = $request->transfer_type ?? 0;
+        $paidOrder->type = $request->transfer_type ? 1 : 0;
         $paidOrder->save();
 
         return redirect(self::ROUTE);

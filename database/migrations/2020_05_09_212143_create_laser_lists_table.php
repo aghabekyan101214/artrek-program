@@ -15,7 +15,7 @@ class CreateLaserListsTable extends Migration
     {
         Schema::create('laser_lists', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->unsignedBigInteger("material_id");
+            $table->unsignedBigInteger("material_id")->nullable();
             $table->foreign("material_id")->references("id")->on("materials")->onDelete("cascade");
 
             $table->unsignedBigInteger("order_id");
@@ -23,7 +23,7 @@ class CreateLaserListsTable extends Migration
 
             $table->decimal("self_price", 8, 1);
 
-            $table->decimal("quantity", 8, 1);
+            $table->decimal("quantity", 8, 1)->default(0);
             $table->unsignedTinyInteger("type");
             $table->unsignedInteger("thickness")->nullable();
             $table->timestamps();

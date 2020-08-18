@@ -53,18 +53,18 @@ class OrderController extends Controller
         $this->validate($request, $rules, $messages);
         $orderListData = $this->getInsertData($request->data, 0);
         $laserListData = $this->getInsertData($request->data, 1);
+        $laserListDataWithoutMaterial = [];
 
         foreach ($orderListData as $bin => $data) {
             unset($orderListData[$bin]["order_type"]);
-            $orderListData[$bin]["self_price"] = MaterialList::where("material_id", $data["material_id"])->orderBy("id", "desc")->first()["self_price"];
+            $orderListData[$bin]["self_price"] = MaterialList::where("material_id", $data["material_id"])->orderBy("id", "desc")->first()["self_price"] ?? 0;
         }
 
         foreach ($laserListData as $bin => $data) {
             unset($laserListData[$bin]["order_type"]);
-            $laserListData[$bin]["self_price"] = MaterialList::where("material_id", $data["material_id"])->orderBy("id", "desc")->first()["self_price"];
+            $laserListData[$bin]["self_price"] = MaterialList::where("material_id", $data["material_id"])->orderBy("id", "desc")->first()["self_price"] ?? 0;
         }
         DB::beginTransaction();
-
         $order = new Order();
         $order->client_id = $request->client_id;
         $order->price = $request->price;
@@ -86,7 +86,7 @@ class OrderController extends Controller
         $title = self::TITLE;
         $route = self::ROUTE;
         $clients = Client::all();
-        $materials = Material::whereHas("quantity")->selectRaw("id, name")->get()->toArray();
+        $materials = Material::with("selfPrice")->whereHas("quantity")->selectRaw("id, name")->get()->toArray();
         $laserTypes = LaserList::TYPES;
         return view(self::FOLDER . '.create', compact('title', 'route', 'clients', 'materials', 'laserTypes', 'order'));
     }
@@ -111,12 +111,12 @@ class OrderController extends Controller
 
         foreach ($orderListData as $bin => $data) {
             unset($orderListData[$bin]["order_type"]);
-            $orderListData[$bin]["self_price"] = MaterialList::where("material_id", $data["material_id"])->orderBy("id", "desc")->first()["self_price"];
+            $orderListData[$bin]["self_price"] = MaterialList::where("material_id", $data["material_id"])->orderBy("id", "desc")->first()["self_price"] ?? 0;
         }
 
         foreach ($laserListData as $bin => $data) {
             unset($laserListData[$bin]["order_type"]);
-            $laserListData[$bin]["self_price"] = MaterialList::where("material_id", $data["material_id"])->orderBy("id", "desc")->first()["self_price"];
+            $laserListData[$bin]["self_price"] = MaterialList::where("material_id", $data["material_id"])->orderBy("id", "desc")->first()["self_price"] ?? 0;
         }
 
         DB::beginTransaction();
@@ -138,7 +138,7 @@ class OrderController extends Controller
             $order->laserList()->createMany($laserListData);
         }
 
-        $paid = PaidOrder::where(["order_id" => $order->id])->first();
+        $paid = PaidOrder::where(["order_id" => $order->id])->orderBy("id", "DESC")->first();
         $paid->price = $request->paid;
         $paid->type = ($request->transfer_type ?? 0);
         $paid->save();
@@ -156,6 +156,17 @@ class OrderController extends Controller
             }
         }
         return $returnData;
+    }
+
+    public function pay($id, Request $request)
+    {
+        $paidOrder = new PaidOrder();
+        $paidOrder->order_id = $id;
+        $paidOrder->price = $request->price;
+        $paidOrder->type = $request->transfer_type ? 1 : 0;
+        $paidOrder->save();
+
+        return redirect(self::ROUTE);
     }
 
 }
