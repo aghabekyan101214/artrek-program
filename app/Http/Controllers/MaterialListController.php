@@ -19,7 +19,7 @@ class MaterialListController extends Controller
      */
     public function index()
     {
-        $data = Material::with(["quantity", "used"])->get();
+        $data = MaterialList::orderBy("id", "DESC")->with("material")->get();
         $title = self::TITLE;
         $route = self::ROUTE;
         $units = Material::UNITS;
@@ -97,7 +97,9 @@ class MaterialListController extends Controller
      */
     public function edit(MaterialList $materialList)
     {
-        //
+        $title = self::TITLE;
+        $route = self::ROUTE;
+        return view(self::FOLDER . '.edit', compact('title', 'route', "materialList"));
     }
 
     /**
@@ -109,7 +111,28 @@ class MaterialListController extends Controller
      */
     public function update(Request $request, MaterialList $materialList)
     {
-        //
+        $rules = [
+            "quantity" => "required|numeric|min:0",
+            "self_price" => "required|numeric|min:0",
+        ];
+        $messages = [
+            'quantity.required' => 'Խնդրում եմ նշել ապրանքի քանակը',
+            'quantity.numeric' => 'Խնդրում եմ մուտքագրել ճիշտ քանակ',
+            'quantity.min' => 'Քանակը չի կարող փոքր լինել 1 -ից',
+
+            'self_price.required' => 'Խնդրում եմ նշել ապրանքի գումարը',
+            'self_price.numeric' => 'Խնդրում եմ մուտքագրել ճիշտ գումար',
+            'self_price.min' => 'Ինքնարժեք չի կարող փոքր լինել 1 -ից',
+
+        ];
+
+        $this->validate($request, $rules, $messages);
+
+        $materialList->quantity = $request->quantity;
+        $materialList->self_price = $request->self_price;
+        $materialList->save();
+
+        return redirect(self::ROUTE);
     }
 
     /**
@@ -120,6 +143,7 @@ class MaterialListController extends Controller
      */
     public function destroy(MaterialList $materialList)
     {
-        //
+        $materialList->delete();
+        return redirect(self::ROUTE);
     }
 }

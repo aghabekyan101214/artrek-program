@@ -17,6 +17,8 @@
                             <th>Նյութի Անուն</th>
                             <th>Չափման Միավոր</th>
                             <th>Մնացորդ</th>
+                            <th>Ինքնարժեք</th>
+                            <th>Կարգավորումներ</th>
                         </tr>
                         </thead>
 
@@ -24,9 +26,29 @@
                         @foreach($data as $key => $val)
                             <tr>
                                 <td>{{ $key + 1 }}</td>
-                                <td>{{ $val->name }}</td>
-                                <td>{{ $units[$val->unit] }}</td>
-                                <td>{{ $val->quantity->sum("quantity") - $val->used->sum("quantity") }}</td>
+                                <td>{{ $val->material->name }}</td>
+                                <td>{{ $units[$val->material->unit] }}</td>
+{{--                                <td>{{ $val->quantity->sum("quantity") - $val->used->sum("quantity") }}</td>--}}
+                                <td>{{ $val->quantity }}</td>
+                                <td>{{ $val->self_price }}</td>
+                                <td>
+                                    <a href="{{$route."/".$val->id."/edit"}}" data-toggle="tooltip"
+                                       data-placement="top" title="Փոփոխել" class="btn btn-info btn-circle tooltip-info">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+
+                                    <form style="display: inline-block" action="{{ $route."/".$val->id }}"
+                                          method="post" id="work-for-form">
+                                        @csrf
+                                        @method("DELETE")
+                                        <a href="javascript:void(0);" data-text="մուտքը" class="delForm" data-id ="{{$val->id}}">
+                                            <button data-toggle="tooltip"
+                                                    data-placement="top" title="Հեռացնել"
+                                                    class="btn btn-danger btn-circle tooltip-danger"><i
+                                                    class="fas fa-trash"></i></button>
+                                        </a>
+                                    </form>
+                                </td>
                             </tr>
                         @endforeach
                         </tbody>

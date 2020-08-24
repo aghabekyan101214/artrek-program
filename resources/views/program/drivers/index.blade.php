@@ -40,7 +40,7 @@
                                           method="post" id="work-for-form">
                                         @csrf
                                         @method("DELETE")
-                                        <a href="javascript:void(0);" data-text="հաճախորդին" class="delForm" data-id ="{{$val->id}}">
+                                        <a href="javascript:void(0);" data-text="վարորդին" class="delForm" data-id ="{{$val->id}}">
                                             <button data-toggle="tooltip"
                                                     data-placement="top" title="Հեռացնել"
                                                     class="btn btn-danger btn-circle tooltip-danger"><i

@@ -18,7 +18,7 @@ class MaterialController extends Controller
      */
     public function index()
     {
-        $data = Material::all();
+        $data = Material::with("quantity")->get();
         $title = self::TITLE;
         $route = self::ROUTE;
         $units = Material::UNITS;

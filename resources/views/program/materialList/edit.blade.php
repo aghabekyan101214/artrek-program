@@ -7,30 +7,18 @@
                 <div class="panel-heading">{{$title}}</div>
                 <div class="panel-wrapper collapse in" aria-expanded="true">
                     <div class="panel-body">
-                        <form method="post" action="{{ $route}}" enctype="multipart/form-data">
+                        <form method="post" action="{{ $route}}@if(isset($materialList)){{"/".$materialList->id }}@endif" enctype="multipart/form-data">
                             @csrf
-                            @if(isset($service))
+                            @if(isset($materialList))
                                 @method("PUT")
                             @endif
-
-                            <div class="form-group">
-                                <label for="name">Ապրանքի Անվանում</label>
-                                @error('material_id')
-                                <p class="invalid-feedback text-danger" role="alert"><strong>{{ $message }}</strong></p>
-                                @enderror
-                                <select onchange="getSelfPrice()" name="material_id" id="material" class="form-control select2" required>
-                                    @foreach($materials as $material)
-                                        <option @if(old("material_id") == $material->id) @endif price="{{ $material->selfPrice->self_price ?? 0 }}" value="{{ $material->id }}">{{ $material->name . " ( " .$units[$material->unit] . " ) " }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
 
                             <div class="form-group">
                                 <label for="name">Ապրանքի Քանակ</label>
                                 @error('quantity')
                                 <p class="invalid-feedback text-danger" role="alert"><strong>{{ $message }}</strong></p>
                                 @enderror
-                                <input type="number" step="any" class="form-control" name="quantity" value="{{ old("quantity") }}" required>
+                                <input type="number" step="any" class="form-control" name="quantity" value="{{ $materialList->quantity }}" required>
                             </div>
 
                             <div class="form-group">
@@ -38,7 +26,7 @@
                                 @error('self_price')
                                 <p class="invalid-feedback text-danger" role="alert"><strong>{{ $message }}</strong></p>
                                 @enderror
-                                <input type="number" step="any" class="form-control selfPrice" value="{{ old("self_price") }}" name="self_price" required>
+                                <input type="number" step="any" class="form-control selfPrice" value="{{ $materialList->self_price }}" name="self_price" required>
                             </div>
 
                             <button type="submit" class="btn btn-success waves-effect waves-light m-r-10">Պահպանել</button>
@@ -57,10 +45,6 @@
     <script>
         $(document).ready(function () {
             $(".select2").select2();
-            getSelfPrice();
         })
-        let getSelfPrice = () => {
-            $(".selfPrice").val($("#material").find(":selected").attr("price"));
-        }
     </script>
 @endpush
