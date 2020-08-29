@@ -33,7 +33,8 @@ class OrderController extends Controller
         $clients = Client::all();
         $materials = Material::with("selfPrice")->whereHas("quantity")->selectRaw("id, name")->get()->toArray();
         $laserTypes = LaserList::TYPES;
-        return view(self::FOLDER . '.create', compact('title', 'route', 'clients', 'materials', 'laserTypes'));
+        $engravingPrice = LaserList::ENGRAVING;
+        return view(self::FOLDER . '.create', compact('title', 'route', 'clients', 'materials', 'laserTypes', 'engravingPrice'));
     }
 
     public function store(Request $request)
@@ -88,7 +89,8 @@ class OrderController extends Controller
         $clients = Client::all();
         $materials = Material::with("selfPrice")->whereHas("quantity")->selectRaw("id, name")->get()->toArray();
         $laserTypes = LaserList::TYPES;
-        return view(self::FOLDER . '.create', compact('title', 'route', 'clients', 'materials', 'laserTypes', 'order'));
+        $engravingPrice = LaserList::ENGRAVING;
+        return view(self::FOLDER . '.create', compact('title', 'route', 'clients', 'materials', 'laserTypes', 'order', 'engravingPrice'));
     }
 
     public function update(Order $order, Request $request)

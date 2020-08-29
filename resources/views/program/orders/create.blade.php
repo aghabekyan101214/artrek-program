@@ -93,8 +93,9 @@
             let laserTypes = JSON.parse(jsonedLaserTypes);
             let count = 0;
 
-            const cuttingPrice = 200;
-
+            const engravingPrice = Number('{{ $engravingPrice }}');
+            console.log(typeof engravingPrice)
+            console.log(engravingPrice)
             $(document).ready(function () {
                 $(".select2").select2();
                 @if(!isset($order))
@@ -188,7 +189,7 @@
                         } else if($(this).find(".laser_type").val() == 1) {
                             // Gravirovka
                             let minutes = $(this).find(".thickness").val();
-                            calculatedLaserPrice += (minutes * cuttingPrice);
+                            calculatedLaserPrice += (minutes * engravingPrice);
                         }
                     }
                 });
