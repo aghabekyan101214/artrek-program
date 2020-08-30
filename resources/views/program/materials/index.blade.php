@@ -27,7 +27,7 @@
                                 <td>{{ $key + 1 }}</td>
                                 <td>{{ $val->name }}</td>
                                 <td>{{ $units[$val->unit] }}</td>
-                                <td>{{ $val->quantity->sum("quantity") - $val->used->sum("quantity") }}</td>
+                                <td>{{ $val->quantity->sum("quantity") - $val->used->sum("quantity") - $val->usedLaser->sum("quantity") }}</td>
                                 <td>
                                     <a href="{{$route."/".$val->id."/edit"}}" data-toggle="tooltip"
                                        data-placement="top" title="Փոփոխել" class="btn btn-info btn-circle tooltip-info">

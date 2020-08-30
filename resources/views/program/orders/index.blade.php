@@ -46,7 +46,19 @@
                                     <p>Ընդ․ ՝ {{ $val->paidList->sum("price") }}</p>
                                     <ul>
                                         @foreach($val->paidList as $list)
-                                            <li><small>{{ intval($list->price) . " - " . $list->created_at->format('Y-m-d'). " " . ($list->type == 1 ? "(Փոխանցում)" : "(Կանխիկ)") }}</small></li>
+                                            <li><small>{{ intval($list->price) . " - " . $list->created_at->format('Y-m-d'). " " . ($list->type == 1 ? "(Փոխանցում)" : "(Կանխիկ)") }}</small>
+                                                <form style="display: inline-block" action="{{ $route."/destroyPayment/".$list->id }}"
+                                                      method="post" id="work-for-form">
+                                                    @csrf
+                                                    @method("DELETE")
+                                                    <a href="javascript:void(0);" data-text="պատվերը" class="delForm" data-id ="{{$list->id}}">
+                                                        <button data-toggle="tooltip"
+                                                                data-placement="top" title="Հեռացնել"
+                                                                class="btn btn-danger btn-circle tooltip-danger"><i
+                                                                class="fas fa-trash"></i></button>
+                                                    </a>
+                                                </form>
+                                            </li>
                                         @endforeach
                                     </ul>
 
@@ -79,10 +91,7 @@
                                                     class="fas fa-trash"></i></button>
                                         </a>
                                     </form>
-                                    <button data-toggle="modal" data-target="#exampleModal"
-                                            data-placement="top" class="btn btn-success btn-circle tooltip-success open-modal" onclick="openModal('{{url($route."/".$val->id."/pay")}}')">
-                                        <i class="fas fa-money-bill-alt"></i>
-                                    </button>
+                                    <button data-toggle="modal" data-target="#exampleModal" data-placement="top" class="btn btn-success btn-circle tooltip-success open-modal" onclick="openModal('{{url($route."/".$val->id."/pay")}}')"><i class="fas fa-money-bill-alt"></i></button>
                                 </td>
                             </tr>
                         @endforeach

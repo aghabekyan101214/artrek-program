@@ -171,4 +171,16 @@ class OrderController extends Controller
         return redirect(self::ROUTE);
     }
 
+    public function destroy(Order $order)
+    {
+        $order->delete();
+        return redirect(self::ROUTE);
+    }
+
+    public function destroyPayment($id)
+    {
+        PaidOrder::find($id)->delete();
+        return redirect(self::ROUTE);
+    }
+
 }
