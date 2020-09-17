@@ -183,12 +183,17 @@ class CraneOrderController extends Controller
 
     public function pay($id, Request $request)
     {
+        $craneOrder = CraneOrder::find($id);
         $paidOrder = new PaidOrder();
         $paidOrder->crane_order_id = $id;
         $paidOrder->at_driver = ($request->at_driver ?? 0);
         $paidOrder->price = $request->price;
         $paidOrder->type = $request->transfer_type ? 1 : 0;
         $paidOrder->save();
+        if($request->price != 0) {
+            $salary = new DriverSalary(["price" => ( $request->price * Driver::PERCENTAGE / 100 ), "driver_id" => $craneOrder->driver_id]);
+            $paidOrder->salary()->save($salary);
+        }
 
         return redirect(self::ROUTE);
     }
