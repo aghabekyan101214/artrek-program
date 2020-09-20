@@ -11,4 +11,5 @@ class PaidOrder extends Model
     const CASH = 0;
     const TRANSFER = 1;
 
+
 }

@@ -25,4 +25,5 @@ class CraneOrder extends Model
     {
         return $this->hasOne(DriverSalary::class, "crane_order_id", "id");
     }
+
 }

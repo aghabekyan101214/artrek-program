@@ -199,4 +199,5 @@ class CraneOrderController extends Controller
 
         return redirect(self::ROUTE);
     }
+
 }

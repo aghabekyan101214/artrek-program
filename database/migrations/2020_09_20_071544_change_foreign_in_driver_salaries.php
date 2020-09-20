@@ -15,7 +15,6 @@ class ChangeForeignInDriverSalaries extends Migration
     {
         Schema::table('driver_salaries', function (Blueprint $table) {
             $table->renameColumn("paid_order_id", "crane_order_id");
-
             $table->foreign("crane_order_id")->references("id")->on("crane_orders")->onDelete("cascade")->change();
         });
     }
