@@ -134,7 +134,7 @@
 
                 html += "<div class='form-group laser'>";
                 html += '<label>Տեսակ</label>' +
-                    `<select name="data[${count}][type]" onchange="countPrice()" required class='form-control laser-inp laser_type'>`;
+                    `<select name="data[${count}][type]" onchange="countPrice(), disableInputs()" required class='form-control laser-inp laser_type'>`;
                 laserTypes.forEach((e, i) => {
                     html += `<option ${data.type == i ? "selected" : ""} value="${i}">${e}</option>`
                 });
@@ -144,8 +144,14 @@
                     '<label>Հաստություն / Րոպե</label>';
                 html += `<input type="number" step="any" class="form-control laser-inp thickness" oninput="countPrice()" value="${data.thickness || ''}" id="thickness" name="data[${count}][thickness]" required>`;
                 html += "</div>";
+
+                html += "<div class='form-group laser'>" +
+                    '<label>Գծամետր</label>';
+                html += `<input type="number" step="any" class="form-control laser-inp line_meter" oninput="countPrice()" value="${data.line_meter || 0}" id="line_meter" name="data[${count}][line_meter]" required>`;
+                html += "</div>";
+
                 html += "<div class='form-group'>" +
-                    '<label><span class="q">Քանակ</span></label>';
+                    '<label><span class="q">Օգտագործված Ապրանքի Քանակ</span></label>';
                 html += `<input type="number" step="any" class="form-control quantity-input" oninput="countPrice()" id="price" value="${data.quantity || 0}" name="data[${count}][quantity]" required>`
                 html += "</div><hr>";
                 html += "</div>";
@@ -162,6 +168,11 @@
                         $(this).parentsUntil(".here").find(".laser-inp").attr("disabled", true);
                     } else {
                         $(this).parentsUntil(".here").find(".laser-inp").attr("disabled", false);
+                        if($(this).parentsUntil(".here").find(".laser_type").val() != 0) {
+                            $(".line_meter").attr("disabled", true);
+                        } else {
+                            $(".line_meter").attr("disabled", false);
+                        }
                     }
                 });
             }
@@ -182,7 +193,7 @@
                         if($(this).find(".laser_type").val() == 0) {
                             // Cutting
                             let thickness = $(this).find(".thickness").val();
-                            let quantity = $(this).find(".quantity-input").val();
+                            let quantity = $(this).find(".line_meter").val();
                             let price = calculateCuttingPrice(thickness);
                             calculatedLaserPrice += quantity * price;
 

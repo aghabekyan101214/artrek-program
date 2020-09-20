@@ -79,8 +79,8 @@ class CraneOrderController extends Controller
         if($request->paid != 0) {
             $paid = new PaidOrder(["price" => $request->paid, "type" => ($request->transfer_type ?? 0), "at_driver" => ($request->at_driver ?? 0)]);
             $order->paidList()->save($paid);
-            $salary = new DriverSalary(["price" => ( $request->paid * Driver::PERCENTAGE / 100 ), "driver_id" => $order->driver_id]);
-            $paid->salary()->save($salary);
+            $salary = new DriverSalary(["price" => ( $request->price * Driver::PERCENTAGE / 100 ), "driver_id" => $order->driver_id]);
+            $order->salary()->save($salary);
         }
 
         DB::commit();
@@ -150,9 +150,9 @@ class CraneOrderController extends Controller
         $paid->at_driver = ($request->at_driver ?? 0);
         $paid->save();
 
-        $driverSalary = DriverSalary::where("paid_order_id", $paid->id)->orderBy("id", "DESC")->first() ?? new DriverSalary();
-        $driverSalary->paid_order_id = $paid->id;
-        $driverSalary->price = ( $request->paid * Driver::PERCENTAGE / 100 );
+        $driverSalary = DriverSalary::where("crane_order_id", $craneOrder->id)->orderBy("id", "DESC")->first() ?? new DriverSalary();
+        $driverSalary->crane_order_id = $craneOrder->id;
+        $driverSalary->price = ( $request->price * Driver::PERCENTAGE / 100 );
         $driverSalary->driver_id = $craneOrder->driver_id;
         $driverSalary->save();
 
@@ -190,10 +190,12 @@ class CraneOrderController extends Controller
         $paidOrder->price = $request->price;
         $paidOrder->type = $request->transfer_type ? 1 : 0;
         $paidOrder->save();
-        if($request->price != 0) {
-            $salary = new DriverSalary(["price" => ( $request->price * Driver::PERCENTAGE / 100 ), "driver_id" => $craneOrder->driver_id]);
-            $paidOrder->salary()->save($salary);
-        }
+
+        // Collect the driver salary
+//        if($request->price != 0) {
+//            $salary = new DriverSalary(["price" => ( $request->price * Driver::PERCENTAGE / 100 ), "driver_id" => $craneOrder->driver_id]);
+//            $paidOrder->salary()->save($salary);
+//        }
 
         return redirect(self::ROUTE);
     }

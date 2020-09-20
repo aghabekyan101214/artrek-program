@@ -20,4 +20,9 @@ class CraneOrder extends Model
     {
         return $this->belongsTo("App\Model\Driver", "driver_id", "id");
     }
+
+    public function salary()
+    {
+        return $this->hasOne(DriverSalary::class, "crane_order_id", "id");
+    }
 }

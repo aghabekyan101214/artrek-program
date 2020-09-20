@@ -11,8 +11,4 @@ class PaidOrder extends Model
     const CASH = 0;
     const TRANSFER = 1;
 
-    public function salary()
-    {
-        return $this->hasOne(DriverSalary::class, "paid_order_id", "id");
-    }
 }
