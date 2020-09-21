@@ -7,8 +7,7 @@
                 <h3 class="box-title">{{$title}}</h3>
                 {{--table--}}
                 <div class="table-responsive">
-                    <table id="datatable" class="display table table-hover table-striped nowrap" cellspacing="0"
-                           width="100%">
+                    <table id="datatable" class="display table table-hover table-striped nowrap" cellspacing="0" width="100%">
                         <thead>
                             <tr>
                                 <th>Գումար</th>
@@ -23,7 +22,7 @@
                             <tr>
                                 <td>{{ $val->price * -1 }}</td>
                                 <td>{{ $val->created_at }}</td>
-                                <td>{{ $val->comment }}</td>
+                                <td>{{ $val->paidSalaries->comment }}</td>
                                 <td>
                                     <form style="display: inline-block" action="{{ $route . '/' . $val->id . '/deleteSalary' }}"
                                           method="post" id="work-for-form">
