@@ -83,9 +83,13 @@
                         <span class="hide-menu">Հաճախորդներ</span></a>
                 </li>
 
-                <li><a href="/staffs" class="waves-effect"><i class="mdi mdi-account-settings-variant fa-fw"></i>
-                        <span class="hide-menu">Անձնակազմ</span></a>
+                <li><a href="/employees" class="waves-effect"><i class="mdi mdi-worker fa-fw"></i>
+                        <span class="hide-menu">Աշխատակիցներ</span></a>
                 </li>
+
+{{--                <li><a href="/staffs" class="waves-effect"><i class="mdi mdi-account-settings-variant fa-fw"></i>--}}
+{{--                        <span class="hide-menu">Անձնակազմ</span></a>--}}
+{{--                </li>--}}
 
                 <li><a href="/materials" class="waves-effect"><i class="mdi mdi-material-ui fa-fw"></i>
                         <span class="hide-menu">Ապրանքներ</span></a>

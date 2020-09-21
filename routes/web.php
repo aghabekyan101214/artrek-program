@@ -21,6 +21,9 @@ Auth::routes([
 Route::group(['middleware' => 'auth'], function () {
     Route::resource('/', 'UserController');
     Route::resource('/clients', 'ClientController');
+    Route::resource('/employees', 'EmployeeController');
+    Route::post('/employees/{id}/pay', 'EmployeeController@giveSalary');
+    Route::delete('/employees/{id}/deleteSalary', 'EmployeeController@deleteSalary');
     Route::resource('/staffs', 'StaffController');
     Route::resource('/materials', 'MaterialController');
     Route::resource('/material-list', 'MaterialListController');

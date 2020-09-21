@@ -83,9 +83,10 @@ class CashDeskController extends Controller
         return redirect(self::ROUTE);
     }
 
-    public function destroy($id)
+    public function destroy($id, Request $request)
     {
         PaidOrder::find($id)->delete();
-        return redirect(self::ROUTE);
+        $redirect = $request->back_route ?? self::ROUTE;
+        return redirect($redirect);
     }
 }

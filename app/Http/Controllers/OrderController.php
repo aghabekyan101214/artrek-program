@@ -58,6 +58,7 @@ class OrderController extends Controller
 
         foreach ($orderListData as $bin => $data) {
             unset($orderListData[$bin]["order_type"]);
+            unset($orderListData[$bin]["line_meter"]);
             $orderListData[$bin]["self_price"] = MaterialList::where("material_id", $data["material_id"])->orderBy("id", "desc")->first()["self_price"] ?? 0;
         }
 
@@ -65,6 +66,7 @@ class OrderController extends Controller
             unset($laserListData[$bin]["order_type"]);
             $laserListData[$bin]["self_price"] = MaterialList::where("material_id", $data["material_id"])->orderBy("id", "desc")->first()["self_price"] ?? 0;
         }
+
         DB::beginTransaction();
         $order = new Order();
         $order->client_id = $request->client_id;
@@ -75,8 +77,10 @@ class OrderController extends Controller
         if(!empty($laserListData)) {
             $order->laserList()->createMany($laserListData);
         }
-        $paid = new PaidOrder(["price" => $request->paid, "type" => ($request->transfer_type ?? 0)]);
-        $order->paidList()->save($paid);
+        if($request->paid != 0) {
+            $paid = new PaidOrder(["price" => $request->paid, "type" => ($request->transfer_type ?? 0)]);
+            $order->paidList()->save($paid);
+        }
 
         DB::commit();
         return redirect(self::ROUTE);
@@ -113,6 +117,7 @@ class OrderController extends Controller
 
         foreach ($orderListData as $bin => $data) {
             unset($orderListData[$bin]["order_type"]);
+            unset($orderListData[$bin]["line_meter"]);
             $orderListData[$bin]["self_price"] = MaterialList::where("material_id", $data["material_id"])->orderBy("id", "desc")->first()["self_price"] ?? 0;
         }
 
@@ -140,10 +145,13 @@ class OrderController extends Controller
             $order->laserList()->createMany($laserListData);
         }
 
-        $paid = PaidOrder::where(["order_id" => $order->id])->orderBy("id", "DESC")->first();
-        $paid->price = $request->paid;
-        $paid->type = ($request->transfer_type ?? 0);
-        $paid->save();
+        if($request->paid != 0) {
+            $paid = PaidOrder::where(["order_id" => $order->id])->orderBy("id", "DESC")->first() ?? new PaidOrder();
+            $paid->order_id = $order->id;
+            $paid->price = $request->paid;
+            $paid->type = ($request->transfer_type ?? 0);
+            $paid->save();
+        }
 
         DB::commit();
         return redirect(self::ROUTE);

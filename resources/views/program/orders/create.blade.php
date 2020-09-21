@@ -43,12 +43,12 @@
                                 @error('paid')
                                 <p class="invalid-feedback text-danger" role="alert"><strong>{{ $message }}</strong></p>
                                 @enderror
-                                <input type="number" step="any" class="form-control" id="paid" name="paid" required value="{{ isset($order) ? $order->paidList->last()->price : old('paid') ?? 0 }}">
+                                <input type="number" step="any" class="form-control" id="paid" name="paid" required value="{{ isset($order) ? ($order->paidList->last()->price ?? 0) : old('paid') ?? 0 }}">
                             </div>
                             <div class="form-group">
                                 <label for="transfer">
                                     Փոխանցում
-                                    <input type="checkbox" style="width: 39px;" name="transfer_type" @if(isset($order) && $order->paidList->last()->type == 1) checked @endif value="1" id="transfer" class="form-control">
+                                    <input type="checkbox" style="width: 39px;" name="transfer_type" @if(isset($order) && isset($order->paidList->last()->type) && $order->paidList->last()->type == 1) checked @endif value="1" id="transfer" class="form-control">
                                 </label>
                             </div>
 

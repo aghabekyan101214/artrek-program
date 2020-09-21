@@ -17,7 +17,7 @@ class Driver extends Model
 
     public function paidSalary()
     {
-        return $this->hasMany(PaidOrder::class, "driver_id", "id");
+        return $this->hasMany(PaidOrder::class, "driver_id", "id")->orderBy("id", "DESC");
     }
 
     public function car()

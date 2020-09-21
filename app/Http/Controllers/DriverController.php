@@ -77,7 +77,9 @@ class DriverController extends Controller
      */
     public function show(Driver $driver)
     {
-
+        $title = $driver->name . 'ի աշխատավարձերի ցուցակ';
+        $route = self::ROUTE;
+        return view(self::FOLDER . '.show', compact('title', 'driver', 'route'));
     }
 
     /**
@@ -144,11 +146,12 @@ class DriverController extends Controller
 
     public function paySalary($id, Request $request)
     {
+        $driver = Driver::find($id);
         $paidOrder = new PaidOrder();
         $paidOrder->driver_id = $id;
         $paidOrder->price = - $request->price;
         $paidOrder->at_driver = 0;
-        $paidOrder->comment = "Աշխատավարձ " . $request->comment;
+        $paidOrder->comment = "Աշխատավարձ ".$driver->name."ին" . $request->comment;
         $paidOrder->type = $request->transfer_type ?? 0;
         $paidOrder->save();
 
