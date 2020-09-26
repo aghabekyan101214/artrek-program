@@ -1,6 +1,17 @@
 @extends('layouts.app')
 
 @section('content')
+
+    @push('head')
+        <!-- DateRangePicker css -->
+        <link href="{{ asset("assets/plugins/daterangepicker/daterangepicker.css") }}" rel="stylesheet">
+        <style>
+            input[name="datefilter1"]{
+                right: auto!important;
+            }
+        </style>
+    @endpush
+
     <style>
         .badge-danger{
             font-size: 16px;
@@ -18,7 +29,7 @@
                            width="100%">
                         <thead>
                             <tr>
-                                <th>#</th>
+                                <th>Գրանցման Ամսաթիվ</th>
                                 <th>Հաճախորդ</th>
                                 <th>Ընդհանուր Գումար</th>
                                 <th>Վճարվել է</th>
@@ -26,6 +37,24 @@
                                 <th>Ավարտ</th>
                                 <th>Կարգավորումներ</th>
                             </tr>
+                        <tr>
+                            <td>
+                                <input type="text" autocomplete="off" name="datefilter1" class="form-control date datefilter1" value="{{ !is_null($request->registered_from) ? ($request->registered_from . " - " . $request->registered_to) : '' }}"/>
+                            </td>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <td>
+                                <input type="text" autocomplete="off" name="datefilter2" class="form-control date datefilter2" value="{{ !is_null($request->will_be_finished_from) ? ($request->will_be_finished_from . " - " . $request->will_be_finished_to) : '' }}"/>
+                            </td>
+                            <td>
+                                <button class="btn btn-deafult" onclick="search()" style="margin-left: 10px;"><i class="fa fa-search"></i></button>
+                                <a href="{{ $route }}">
+                                    <button class="btn btn-success"><i class="fa fa-recycle"></i></button>
+                                </a>
+                            </td>
+                        </tr>
                         </thead>
 
                         <tbody>
@@ -39,7 +68,7 @@
                                 $wholeSum += intval($val->price);
                             @endphp
                             <tr>
-                                <td>{{$key + 1}}</td>
+                                <td>{{ $val->created_at }}</td>
                                 <td>{{$val->client->name}}</td>
                                 <td>{{ intval($val->price) }}</td>
                                 <td>
@@ -155,10 +184,84 @@
     <script src="{{asset('assets/plugins/datatables/datatables.min.js')}}"></script>
 
     <script src="{{asset('assets/plugins/swal/sweetalert.min.js')}}"></script>
+    <!-- Plugin JavaScript -->
+    <script src="{{ asset("assets/plugins/moment/moment.min.js") }}"></script>
+    <!--DateRAngePicker Js-->
+    <script src="{{ asset("assets/plugins/daterangepicker/daterangepicker.js") }}"></script>
     <script>
-        $('#datatable').DataTable();
+        $('#datatable').DataTable({
+            "ordering": false
+        });
         openModal = e => $(".pay-form").attr("action", e);
+        $(document).ready(function () {
+            $(function() {
+                $('input[name="datefilter1"]').daterangepicker({
+                    opens: 'right',
+                    timePicker: true,
+                    autoUpdateInput: false,
+
+                    locale: {
+                        format: 'Y-MM-D H:m:s'
+                    }
+                });
+
+                $('input[name="datefilter2"]').daterangepicker({
+                    opens: 'left',
+                    timePicker: true,
+                    autoUpdateInput: false,
+
+                    locale: {
+                        format: 'Y-MM-D'
+                    }
+                });
+
+                $('input[name="datefilter1"]').on('apply.daterangepicker', function(ev, picker) {
+                    $(this).val(picker.startDate.format('Y-MM-D H:m:s') + ' - ' + picker.endDate.format('Y-MM-D H:m:s'));
+                });
+
+                $('input[name="datefilter1"]').on('cancel.daterangepicker', function(ev, picker) {
+                    $(this).val('');
+                });
+
+                $('input[name="datefilter2"]').on('apply.daterangepicker', function(ev, picker) {
+                    $(this).val(picker.startDate.format('Y-MM-D') + ' - ' + picker.endDate.format('Y-MM-D'));
+                });
+
+                $('input[name="datefilter2"]').on('cancel.daterangepicker', function(ev, picker) {
+                    $(this).val('');
+                });
+
+            });
+        });
+
+        function search() {
+            let query = "";
+            let reg_search = $(".datefilter1").val().split(" - ");
+            let finish_search = $(".datefilter2").val().split(" - ");
+            let url = location.href.split("?")[0];
+            var urlParams = new URLSearchParams(window.location.search);
+
+            if(!urlParams.has("registered_from")) {
+                urlParams.append('registered_from', reg_search[0] || '');
+                urlParams.append('registered_to', reg_search[1] || '');
+            } else {
+                urlParams.set('registered_from', reg_search[0] || '');
+                urlParams.set('registered_to', reg_search[1] || '');
+            }
+
+            if(!urlParams.has("will_be_finished_from")) {
+                urlParams.append('will_be_finished_from', finish_search[0] || '');
+                urlParams.append('will_be_finished_to', finish_search[1] || '');
+            } else {
+                urlParams.set('will_be_finished_from', finish_search[0] || '');
+                urlParams.set('will_be_finished_to', finish_search[1] || '');
+            }
+            let params = urlParams.toString();
+            location.href = url + "?" + params;
+        }
+
     </script>
+
 @endpush
 
 

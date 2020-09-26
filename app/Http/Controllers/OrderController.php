@@ -17,13 +17,15 @@ class OrderController extends Controller
     const TITLE = "Պատվերներ";
     const ROUTE = "/orders";
 
-    public function index()
+    public function index(Request $request)
     {
-        $data = Order::with(["client", "paidList"])->orderBy("id", "DESC")->get();
+        $query = Order::with(["client", "paidList"])->orderBy("id", "DESC");
+        $this->manageSearch($query, $request);
         $title = self::TITLE;
         $route = self::ROUTE;
         $units = Material::UNITS;
-        return view(self::FOLDER . '.index', compact('title', 'route', 'data', "units"));
+        $data = $query->get();
+        return view(self::FOLDER . '.index', compact('title', 'route', 'data', "units", "request"));
     }
 
     public function create()
@@ -189,6 +191,16 @@ class OrderController extends Controller
     {
         PaidOrder::find($id)->delete();
         return redirect(self::ROUTE);
+    }
+
+    private function manageSearch(&$query, $request)
+    {
+        if(!is_null($request->registered_from)) {
+            $query->whereDate("created_at", ">=", $request->registered_from)->whereDate("created_at", "<=", $request->registered_to);
+        }
+        if(!is_null($request->will_be_finished_from)) {
+            $query->whereDate("due_date", ">=", $request->will_be_finished_from)->whereDate("due_date", "<=", $request->will_be_finished_to);
+        }
     }
 
 }
