@@ -20,6 +20,21 @@
                                 <th>Մեկնաբանություն</th>
                                 <th>Կարգավորումներ</th>
                             </tr>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td>
+                                    <input type="text" autocomplete="off" name="datefilter1" class="form-control date datefilter1" value="{{ !is_null($request->registered_from) ? ($request->registered_from . " - " . $request->registered_to) : '' }}"/>
+                                </td>
+                                <td></td>
+                                <th>
+                                    <button class="btn btn-deafult" onclick="search()" style="margin-left: 10px;"><i class="fa fa-search"></i></button>
+                                    <a href="{{ $route }}">
+                                        <button class="btn btn-success"><i class="fa fa-recycle"></i></button>
+                                    </a>
+                                </th>
+                            </tr>
                         </thead>
 
                         <tbody>
@@ -63,9 +78,9 @@
 
 @push('head')
     <!--This is a datatable style -->
-    <link href="{{asset('assets/plugins/datatables/media/css/dataTables.bootstrap.css')}}" rel="stylesheet"
-          type="text/css"/>
-
+    <link href="{{asset('assets/plugins/datatables/media/css/dataTables.bootstrap.css')}}" rel="stylesheet" type="text/css"/>
+    <!-- DateRangePicker css -->
+    <link href="{{ asset("assets/plugins/daterangepicker/daterangepicker.css") }}" rel="stylesheet">
     <style>
         .swal-modal {
             width: 660px !important;
@@ -78,8 +93,56 @@
     <script src="{{asset('assets/plugins/datatables/datatables.min.js')}}"></script>
 
     <script src="{{asset('assets/plugins/swal/sweetalert.min.js')}}"></script>
+    <!-- Plugin JavaScript -->
+    <script src="{{ asset("assets/plugins/moment/moment.min.js") }}"></script>
+    <!--DateRAngePicker Js-->
+    <script src="{{ asset("assets/plugins/daterangepicker/daterangepicker.js") }}"></script>
     <script>
-        $('#datatable').DataTable();
+        $('#datatable').DataTable({
+            'ordering': false
+        });
+        $(document).ready(function () {
+            $(function() {
+                $('input[name="datefilter1"]').daterangepicker({
+                    opens: 'right',
+                    timePicker: true,
+                    autoUpdateInput: false,
+
+                    locale: {
+                        format: 'Y-MM-D H:m:s'
+                    }
+                });
+
+
+                $('input[name="datefilter1"]').on('apply.daterangepicker', function(ev, picker) {
+                    $(this).val(picker.startDate.format('Y-MM-D H:m:s') + ' - ' + picker.endDate.format('Y-MM-D H:m:s'));
+                });
+
+                $('input[name="datefilter1"]').on('cancel.daterangepicker', function(ev, picker) {
+                    $(this).val('');
+                });
+
+
+            });
+        });
+
+        function search() {
+            let query = "";
+            let reg_search = $(".datefilter1").val().split(" - ");
+            let url = location.href.split("?")[0];
+            var urlParams = new URLSearchParams(window.location.search);
+
+            if(!urlParams.has("registered_from")) {
+                urlParams.append('registered_from', reg_search[0] || '');
+                urlParams.append('registered_to', reg_search[1] || '');
+            } else {
+                urlParams.set('registered_from', reg_search[0] || '');
+                urlParams.set('registered_to', reg_search[1] || '');
+            }
+
+            let params = urlParams.toString();
+            location.href = url + "?" + params;
+        }
     </script>
 @endpush
 

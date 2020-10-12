@@ -12,14 +12,23 @@ class CashDeskController extends Controller
     const TITLE = "Գումարի Կառավարում";
     const ROUTE = "/cashdesk";
 
-    public function index()
+    public function index(Request $request)
     {
-        $data = PaidOrder::orderBy("id", "DESC")->where("at_driver", "!=", 1)->get();
-        $cash = PaidOrder::where("at_driver", "!=", 1)->where(["type" => PaidOrder::CASH])->sum("price"); // Sum Of Cashes
-        $transfer = PaidOrder::where("at_driver", "!=", 1)->where(["type" => PaidOrder::TRANSFER])->sum("price"); // Sum Of Transfers
+        $q_data = PaidOrder::orderBy("id", "DESC")->where("at_driver", "!=", 1);
+        $this->manageSearch($q_data, $request);
+        $data = $q_data->get();
+
+        $q_cash = PaidOrder::where("at_driver", "!=", 1)->where(["type" => PaidOrder::CASH]);
+        $this->manageSearch($q_cash, $request);
+        $cash = $q_cash->sum("price"); // Sum Of Cashes
+
+        $q_transfer = PaidOrder::where("at_driver", "!=", 1)->where(["type" => PaidOrder::TRANSFER]);
+        $this->manageSearch($q_transfer, $request);
+        $transfer = $q_transfer->sum("price"); // Sum Of Transfers
+
         $title = self::TITLE;
         $route = self::ROUTE;
-        return view(self::FOLDER . '.index', compact('title', 'route', 'data', 'cash', 'transfer'));
+        return view(self::FOLDER . '.index', compact('title', 'route', 'data', 'cash', 'transfer', 'request'));
     }
 
     public function create()
@@ -88,5 +97,12 @@ class CashDeskController extends Controller
         PaidOrder::find($id)->delete();
         $redirect = $request->back_route ?? self::ROUTE;
         return redirect($redirect);
+    }
+
+    private function manageSearch(&$query, $request)
+    {
+        if(!is_null($request->registered_from)) {
+            $query->whereDate("created_at", ">=", $request->registered_from)->whereDate("created_at", "<=", $request->registered_to);
+        }
     }
 }

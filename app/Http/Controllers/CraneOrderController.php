@@ -22,12 +22,14 @@ class CraneOrderController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $data = CraneOrder::with(["client", "paidList", "driver"])->orderBy("id", "DESC")->get();
+        $query = CraneOrder::with(["client", "paidList", "driver"])->orderBy("id", "DESC");
+        $this->manageSearch($query, $request);
+        $data = $query->get();
         $title = self::TITLE;
         $route = self::ROUTE;
-        return view(self::FOLDER . '.index', compact('title', 'route', 'data'));
+        return view(self::FOLDER . '.index', compact('title', 'route', 'data', 'request'));
     }
 
     /**
@@ -200,6 +202,19 @@ class CraneOrderController extends Controller
 //        }
 
         return redirect(self::ROUTE);
+    }
+
+    public function destroyPayment($id)
+    {
+        PaidOrder::find($id)->delete();
+        return redirect(self::ROUTE);
+    }
+
+    private function manageSearch(&$query, $request)
+    {
+        if(!is_null($request->registered_from)) {
+            $query->whereDate("created_at", ">=", $request->registered_from)->whereDate("created_at", "<=", $request->registered_to);
+        }
     }
 
 }

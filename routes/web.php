@@ -34,6 +34,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::resource('/crane-orders', 'CraneOrderController');
     Route::post('/crane-orders/{id}/pay', 'CraneOrderController@pay');
     Route::post('/crane-orders/take-from-driver/{paid_id}', 'CraneOrderController@takeFromDriver');
+    Route::delete('/crane-orders/destroyPayment/{id}', 'CraneOrderController@destroyPayment');
     Route::resource('/laser', 'LaserListController');
     Route::resource('/drivers', 'DriverController');
     Route::resource('/cars', 'CarController');

@@ -18,7 +18,7 @@
                            width="100%">
                         <thead>
                             <tr>
-                                <th>#</th>
+                                <th>Գրանցման Ամսաթիվ</th>
                                 <th>Հաճախորդ</th>
                                 <th>Վարորդ</th>
                                 <th>Ընդհանուր Գումար</th>
@@ -26,6 +26,23 @@
                                 <th>Պարտք</th>
                                 <th>Վարորդի Մոտ</th>
                                 <th>Կարգավորումներ</th>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <input type="text" autocomplete="off" name="datefilter1" class="form-control date datefilter1" value="{{ !is_null($request->registered_from) ? ($request->registered_from . " - " . $request->registered_to) : '' }}"/>
+                                </td>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th>
+                                    <button class="btn btn-deafult" onclick="search()" style="margin-left: 10px;"><i class="fa fa-search"></i></button>
+                                    <a href="{{ $route }}">
+                                        <button class="btn btn-success"><i class="fa fa-recycle"></i></button>
+                                    </a>
+                                </th>
                             </tr>
                         </thead>
 
@@ -40,21 +57,31 @@
                                 $wholeSum += intval($val->price);
                             @endphp
                             <tr>
-                                <td>{{$key + 1}}</td>
-                                <td>{{$val->client->name}}</td>
-                                <td>{{$val->driver->name}}</td>
-                                <td>{{ intval($val->price) }}</td>
+                                <td>{{ $val->created_at }}</td>
+                                <td>{{ $val->client->name }}</td>
+                                <td>{{ $val->driver->name }}</td>
+                                <td>{{  intval($val->price) }}</td>
                                 <td>
                                     <p>Ընդ․ ՝ {{ $val->paidList->sum("price") }}</p>
                                     <ul>
                                         @foreach($val->paidList as $list)
-                                            <li style="display: flex;justify-content: space-between; padding: 5px 0;"><small>{{ intval($list->price) . " - " . $list->created_at->format('Y-m-d'). " " . ($list->at_driver == 1 ? "(Վարորդի Մոտ)" : "") }}</small>
+                                            <li><small>{{ intval($list->price) . " - " . $list->created_at->format('Y-m-d'). " " . ($list->at_driver == 1 ? "(Վարորդի Մոտ)" : "") }}</small>
                                                 @if($list->at_driver)
-                                                    <form action="{{$route."/take-from-driver/$list->id"}}" method="post">
+                                                    <form style="display: inline-block; margin-left: 5px;" action="{{$route."/take-from-driver/$list->id"}}" method="post">
                                                         @csrf
-                                                        <button style="float: right" data-toggle="tooltip" data-placement="top" title="Գումարն արդեն ինձ մոտ է" class="btn btn-success btn-circle tooltip-success"><i class="fa fa-money-bill-alt"></i></button>
+                                                        <button data-toggle="tooltip" data-placement="top" title="Գումարն արդեն ինձ մոտ է" class="btn btn-success btn-circle tooltip-success"><i class="fa fa-money-bill-alt"></i></button>
                                                     </form>
                                                 @endif
+                                                <form style="display: inline-block; margin-left: 5px;" action="{{ $route."/destroyPayment/".$list->id }}" method="post" id="work-for-form">
+                                                    @csrf
+                                                    @method("DELETE")
+                                                    <a href="javascript:void(0);" data-text="տողը" class="delForm" data-id="{{$list->id}}">
+                                                        <button data-toggle="tooltip"
+                                                                data-placement="top" title="Հեռացնել"
+                                                                class="btn btn-danger btn-circle tooltip-danger"><i
+                                                                class="fas fa-trash"></i></button>
+                                                    </a>
+                                                </form>
                                             </li>
                                         @endforeach
                                     </ul>
@@ -154,9 +181,9 @@
 
 @push('head')
     <!--This is a datatable style -->
-    <link href="{{asset('assets/plugins/datatables/media/css/dataTables.bootstrap.css')}}" rel="stylesheet"
-          type="text/css"/>
-
+    <link href="{{asset('assets/plugins/datatables/media/css/dataTables.bootstrap.css')}}" rel="stylesheet" type="text/css"/>
+    <!-- DateRangePicker css -->
+    <link href="{{ asset("assets/plugins/daterangepicker/daterangepicker.css") }}" rel="stylesheet">
     <style>
         .swal-modal {
             width: 660px !important;
@@ -169,9 +196,57 @@
     <script src="{{asset('assets/plugins/datatables/datatables.min.js')}}"></script>
 
     <script src="{{asset('assets/plugins/swal/sweetalert.min.js')}}"></script>
+    <!-- Plugin JavaScript -->
+    <script src="{{ asset("assets/plugins/moment/moment.min.js") }}"></script>
+    <!--DateRAngePicker Js-->
+    <script src="{{ asset("assets/plugins/daterangepicker/daterangepicker.js") }}"></script>
     <script>
-        $('#datatable').DataTable();
+        $('#datatable').DataTable({
+            "ordering": false
+        });
         openModal = e => $(".pay-form").attr("action", e);
+        $(document).ready(function () {
+            $(function() {
+                $('input[name="datefilter1"]').daterangepicker({
+                    opens: 'right',
+                    timePicker: true,
+                    autoUpdateInput: false,
+
+                    locale: {
+                        format: 'Y-MM-D H:m:s'
+                    }
+                });
+
+
+                $('input[name="datefilter1"]').on('apply.daterangepicker', function(ev, picker) {
+                    $(this).val(picker.startDate.format('Y-MM-D H:m:s') + ' - ' + picker.endDate.format('Y-MM-D H:m:s'));
+                });
+
+                $('input[name="datefilter1"]').on('cancel.daterangepicker', function(ev, picker) {
+                    $(this).val('');
+                });
+
+
+            });
+        });
+
+        function search() {
+            let query = "";
+            let reg_search = $(".datefilter1").val().split(" - ");
+            let url = location.href.split("?")[0];
+            var urlParams = new URLSearchParams(window.location.search);
+
+            if(!urlParams.has("registered_from")) {
+                urlParams.append('registered_from', reg_search[0] || '');
+                urlParams.append('registered_to', reg_search[1] || '');
+            } else {
+                urlParams.set('registered_from', reg_search[0] || '');
+                urlParams.set('registered_to', reg_search[1] || '');
+            }
+
+            let params = urlParams.toString();
+            location.href = url + "?" + params;
+        }
     </script>
 @endpush
 

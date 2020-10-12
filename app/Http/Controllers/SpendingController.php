@@ -18,12 +18,24 @@ class SpendingController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $data = Spending::with("spendings")->orderBy("id", "DESC")->get();
+        $categoriesAll = Spending::select('id', 'name')->get();
+        $query = Spending::with(["spendings" => function($q) use($request) {
+            if(!is_null($request->registered_from)) {
+                $q->whereDate("created_at", ">=", $request->registered_from)->whereDate("created_at", "<=", $request->registered_to);
+            }
+        }]);
+        $this->manageSearch($query, $request);
+        if(!is_null($request->registered_from)) {
+            $query->whereHas('spendings', function ($q) use ($request) {
+                $q->whereDate("created_at", ">=", $request->registered_from)->whereDate("created_at", "<=", $request->registered_to);
+            });
+        }
+        $data = $query->orderBy("id", "DESC")->get();
         $title = self::TITLE;
         $route = self::ROUTE;
-        return view(self::FOLDER . '.index', compact('title', 'route', 'data'));
+        return view(self::FOLDER . '.index', compact('title', 'route', 'data', 'categoriesAll', 'request'));
     }
 
     /**
@@ -124,12 +136,20 @@ class SpendingController extends Controller
     {
         $paidOrder = new PaidOrder();
         $paidOrder->spending_id = $id;
+        $spendingCategory = Spending::find($id);
         $paidOrder->price = - $request->price;
         $paidOrder->at_driver = 0;
-        $paidOrder->comment = "Ծախս \n" . $request->comment;
+        $paidOrder->comment = "$spendingCategory->name-ի Ծախս \n" . $request->comment;
         $paidOrder->type = $request->transfer_type ?? 0;
         $paidOrder->save();
 
         return redirect(self::ROUTE);
+    }
+
+    private function manageSearch(&$query, $request)
+    {
+        if(!is_null($request->category)){
+            $query->where('id', $request->category);
+        }
     }
 }
