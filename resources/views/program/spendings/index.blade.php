@@ -9,8 +9,7 @@
 
                 {{--table--}}
                 <div class="table-responsive">
-                    <table id="datatable" class="display table table-hover table-striped nowrap" cellspacing="0"
-                           width="100%">
+                    <table id="datatable" class="display table table-hover table-striped nowrap" cellspacing="0" width="100%">
                         <thead>
                             <tr>
                                 <th>#</th>

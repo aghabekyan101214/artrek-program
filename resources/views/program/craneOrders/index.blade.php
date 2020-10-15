@@ -60,7 +60,7 @@
                                 <td>{{ $val->created_at }}</td>
                                 <td>{{ $val->client->name }}</td>
                                 <td>{{ $val->driver->name }}</td>
-                                <td>{{  intval($val->price) }}</td>
+                                <td>{{ intval($val->price) }}</td>
                                 <td>
                                     <p>Ընդ․ ՝ {{ $val->paidList->sum("price") }}</p>
                                     <ul>
@@ -96,6 +96,7 @@
                                     @else
                                         <span class="badge badge-success">{{ 0 }}</span>
                                     @endif
+                                    - {{ $val->updated_at }}
                                 </td>
                                 <td>
                                     <?php $sum = 0; ?>

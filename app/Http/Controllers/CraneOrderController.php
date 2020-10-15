@@ -143,6 +143,12 @@ class CraneOrderController extends Controller
         $this->validate($request, $rules, $messages);
         DB::beginTransaction();
 
+        $updateTime = $craneOrder->updated_at;
+        // if the old and new prices are the same, no need to change update time
+        if($craneOrder->price == $request->price) {
+            $craneOrder->updated_at = $updateTime;
+        }
+
         $craneOrder->client_id = $request->client_id;
         $craneOrder->driver_id = $request->driver_id;
         $craneOrder->price = $request->price;
