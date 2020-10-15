@@ -154,11 +154,15 @@ class CraneOrderController extends Controller
         $craneOrder->price = $request->price;
         $craneOrder->save();
 
-        $paid = PaidOrder::where(["crane_order_id" => $craneOrder->id])->orderBy("id", "DESC")->first() ?? new PaidOrder(["crane_order_id" => $craneOrder->id, "price" => $request->paid, "type" => ($request->transfer_type ?? 0), "at_driver" => ($request->at_driver ?? 0)]);
-        $paid->price = $request->paid;
-        $paid->type = ($request->transfer_type ?? 0);
-        $paid->at_driver = ($request->at_driver ?? 0);
-        $paid->save();
+        // Save paid price if it is more than 0
+        if($request->paid != 0) {
+            $paid = PaidOrder::where(["crane_order_id" => $craneOrder->id])->orderBy("id", "DESC")->first() ?? new PaidOrder(["crane_order_id" => $craneOrder->id, "price" => $request->paid, "type" => ($request->transfer_type ?? 0), "at_driver" => ($request->at_driver ?? 0)]);
+            $paid->price = $request->paid;
+            $paid->type = ($request->transfer_type ?? 0);
+            $paid->at_driver = ($request->at_driver ?? 0);
+            $paid->save();
+        }
+
 
         $driverSalary = DriverSalary::where("crane_order_id", $craneOrder->id)->orderBy("id", "DESC")->first() ?? new DriverSalary();
         $driverSalary->crane_order_id = $craneOrder->id;
