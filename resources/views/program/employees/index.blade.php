@@ -77,7 +77,15 @@
                        @csrf
                        <div class="form-group">
                            <label for="sum">Գումարի Չափ</label>
-                           <input type="number" min="1" step="any" id="sum" name="price" class="form-control">
+                           <input type="number" min="1" step="any" id="sum" name="price" required class="form-control">
+                       </div>
+                       <div class="form-group">
+                           <label for="sum">Ամսաթիվ</label>
+                           <select name="month" class="form-control" id="">
+                               @foreach($months as $month)
+                                   <option @if(Carbon\Carbon::now()->subMonth()->month == $month['index']) selected @endif value="{{ $month['index'] }}">{{ $month['name'] }}</option>
+                               @endforeach
+                           </select>
                        </div>
                    </div>
                    <div class="modal-footer">

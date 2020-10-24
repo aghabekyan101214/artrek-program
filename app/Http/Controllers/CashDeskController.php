@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\EmployeeSalary;
 use App\Model\PaidOrder;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class CashDeskController extends Controller
 {
@@ -46,7 +48,7 @@ class CashDeskController extends Controller
             "type" => "required|min:-1|max:1|numeric"
         ];
         $messages = [
-            'price.required' => 'Խնդրում եմ լրացնել պատվերի գինը',
+            'price.required' => 'Խնդրում եմ լրացնել գումարը',
             'price.numeric' => 'Խնդրում եմ լրացնել ճիշտ թվանշաններ',
             'type' => 'Խնդրում եմ լրացնել ելք/մուտ դաշտը',
         ];
@@ -77,10 +79,12 @@ class CashDeskController extends Controller
             "comment" => "max:3000"
         ];
         $messages = [
-            'price.required' => 'Խնդրում եմ լրացնել պատվերի գինը',
+            'price.required' => 'Խնդրում եմ լրացնել գումարը',
             'price.numeric' => 'Խնդրում եմ լրացնել ճիշտ թվանշաններ',
         ];
         $this->validate($request, $rules, $messages);
+
+        DB::beginTransaction();
 
         $paidOrder = PaidOrder::findOrFail($id);
         $paidOrder->price = $request->price * $request->type;
@@ -89,6 +93,13 @@ class CashDeskController extends Controller
         $paidOrder->comment = $request->comment;
         $paidOrder->save();
 
+        if(!is_null($paidOrder->employee_salary_id)) {
+            $employeeSalary = EmployeeSalary::find($paidOrder->employee_salary_id);
+            $employeeSalary->price = -$request->price;
+            $employeeSalary->save();
+        }
+
+        DB::commit();
         return redirect(self::ROUTE);
     }
 

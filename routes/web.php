@@ -23,6 +23,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::resource('/clients', 'ClientController');
     Route::resource('/employees', 'EmployeeController');
     Route::post('/employees/{id}/pay', 'EmployeeController@giveSalary');
+    Route::post('/employees/{id}/updateGivenSalary', 'EmployeeController@updateGivenSalary');
     Route::delete('/employees/{id}/deleteSalary', 'EmployeeController@deleteSalary');
     Route::resource('/staffs', 'StaffController');
     Route::resource('/materials', 'MaterialController');
