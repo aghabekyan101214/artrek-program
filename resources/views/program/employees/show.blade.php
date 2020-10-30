@@ -7,53 +7,96 @@
                 <h3 class="box-title">{{$title}}</h3>
                 {{--table--}}
                 <div class="table-responsive">
-                    <table id="datatable" class="display table table-hover table-striped nowrap" cellspacing="0" width="100%">
-                        <thead>
-                            <tr>
-                                <th>Գումար</th>
-                                <th>Վճարման Ամսաթիվ</th>
-                                <th>Ամսվա աշխատավարձ</th>
-                                <th>Մեկնաբանություն</th>
-                                <th>Կարգավորումներ</th>
-                            </tr>
-                        </thead>
+{{--                    <table id="datatable" class="display table table-hover table-striped nowrap" cellspacing="0" width="100%">--}}
+{{--                        <thead>--}}
+{{--                            <tr>--}}
+{{--                                <th>Գումար</th>--}}
+{{--                                <th>Վճարման Ամսաթիվ</th>--}}
+{{--                                <th>Ամսվա աշխատավարձ</th>--}}
+{{--                                <th>Մեկնաբանություն</th>--}}
+{{--                                <th>Կարգավորումներ</th>--}}
+{{--                            </tr>--}}
+{{--                        </thead>--}}
 
-                        <tbody>
-                        @foreach($employee->salaries as $key => $val)
-                            <tr>
-                                <td>{{ $val->price * -1 }}</td>
-                                <td>{{ $val->created_at }}</td>
-                                <td>
-                                    @foreach($months as $month)
-                                        @if($month['index'] == $val->month)
-                                            {{ $month['name'] }}
-                                            @break
-                                        @endif
-                                    @endforeach
-                                </td>
-                                <td>{{ $val->paidSalaries->comment }}</td>
-                                <td>
-                                    <form style="display: inline-block" action="{{ $route . '/' . $val->id . '/deleteSalary' }}"
-                                          method="post" id="work-for-form">
-                                        @csrf
-                                        @method("DELETE")
-                                        <input type="hidden" name="back_route" value="{{ $route . "/" . $employee->id }}">
-                                        <a href="javascript:void(0);" data-text="գումարը" class="delForm" data-id ="{{ $val->id }}">
-                                            <button data-toggle="tooltip"
-                                                    data-placement="top" title="Հեռացնել"
-                                                    class="btn btn-danger btn-circle tooltip-danger"><i
-                                                    class="fas fa-trash"></i></button>
-                                        </a>
-                                    </form>
-                                    <button data-toggle="modal" data-target="#exampleModal"
-                                            data-placement="top" class="btn btn-primary btn-circle tooltip-primary open-modal" price="{{ $val->price }}" month="{{ $val->month }}" onclick="openModal('{{ url($route."/".$val->id."/updateGivenSalary") }}', '{{ $val->price * -1 }}', '{{ $val->month }}')">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                </td>
+{{--                        <tbody>--}}
+{{--                        @foreach($employee->salaries as $key => $val)--}}
+{{--                            <tr>--}}
+{{--                                <td>{{ $val->price * -1 }}</td>--}}
+{{--                                <td>{{ $val->created_at }}</td>--}}
+{{--                                <td>--}}
+{{--                                    @foreach($months as $month)--}}
+{{--                                        @if($month['index'] == $val->month)--}}
+{{--                                            {{ $month['name'] }}--}}
+{{--                                            @break--}}
+{{--                                        @endif--}}
+{{--                                    @endforeach--}}
+{{--                                </td>--}}
+{{--                                <td>{{ $val->paidSalaries->comment }}</td>--}}
+{{--                                <td>--}}
+{{--                                    <form style="display: inline-block" action="{{ $route . '/' . $val->id . '/deleteSalary' }}"--}}
+{{--                                          method="post" id="work-for-form">--}}
+{{--                                        @csrf--}}
+{{--                                        @method("DELETE")--}}
+{{--                                        <input type="hidden" name="back_route" value="{{ $route . "/" . $employee->id }}">--}}
+{{--                                        <a href="javascript:void(0);" data-text="գումարը" class="delForm" data-id ="{{ $val->id }}">--}}
+{{--                                            <button data-toggle="tooltip"--}}
+{{--                                                    data-placement="top" title="Հեռացնել"--}}
+{{--                                                    class="btn btn-danger btn-circle tooltip-danger"><i--}}
+{{--                                                    class="fas fa-trash"></i></button>--}}
+{{--                                        </a>--}}
+{{--                                    </form>--}}
+{{--                                    <button data-toggle="modal" data-target="#exampleModal"--}}
+{{--                                            data-placement="top" class="btn btn-primary btn-circle tooltip-primary open-modal" price="{{ $val->price }}" month="{{ $val->month }}" onclick="openModal('{{ url($route."/".$val->id."/updateGivenSalary") }}', '{{ $val->price * -1 }}', '{{ $val->month }}')">--}}
+{{--                                        <i class="fas fa-edit"></i>--}}
+{{--                                    </button>--}}
+{{--                                </td>--}}
+{{--                            </tr>--}}
+{{--                        @endforeach--}}
+{{--                        </tbody>--}}
+{{--                    </table>--}}
+
+                    <table class="table table-bordered table-striped">
+                        <tr>
+                            <td>Ամիս</td>
+                            <td>Վճարված Աշխատավարձ</td>
+                        </tr>
+                        @foreach($months as $bin => $month)
+                            <tr onclick="openMonth('month-{{ $bin }}')" style="cursor: pointer">
+                                <td>{{ $month['name'] }}</td>
+                                <td><span style="font-size: 16px;" class="badge badge-success ">{{ $employee->salaries->where('month', $month['index'])->sum('price') * - 1 }}</span></td>
                             </tr>
+                            @foreach($employee->salaries->where('month', $month['index']) as $s)
+                                <tr class="month-{{ $bin }}" style="display: none">
+                                    <td colspan="2" style="background: white; padding: 0 0 0 20px">
+                                        <table style="width: 50%; background: white">
+                                            <tr style="background: white">
+                                                <td style="background: white; width: 50%"><b>{{ $s->price * -1 }}</b>{{ " - " . $s->created_at }}</td>
+                                                <td>
+                                                    <form style="display: inline-block" action="{{ $route . '/' . $s->id . '/deleteSalary' }}"
+                                                          method="post" id="work-for-form">
+                                                        @csrf
+                                                        @method("DELETE")
+                                                        <input type="hidden" name="back_route" value="{{ $route . "/" . $employee->id }}">
+                                                        <a href="javascript:void(0);" data-text="գումարը" class="delForm" data-id ="{{ $s->id }}">
+                                                            <button data-toggle="tooltip"
+                                                                    data-placement="top" title="Հեռացնել"
+                                                                    class="btn btn-danger btn-circle tooltip-danger btn-sm"><i
+                                                                    class="fas fa-trash"></i></button>
+                                                        </a>
+                                                    </form>
+                                                    <button data-toggle="modal" data-target="#exampleModal"
+                                                            data-placement="top" class="btn btn-primary btn-circle btn-sm tooltip-primary open-modal" price="{{ $s->price }}" month="{{ $s->month }}" onclick="openModal('{{ url($route."/".$s->id."/updateGivenSalary") }}', '{{ $s->price * -1 }}', '{{ $s->month }}')">
+                                                        <i class="fas fa-edit"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            @endforeach
                         @endforeach
-                        </tbody>
                     </table>
+
                 </div>
             </div>
         </div>
@@ -121,6 +164,7 @@
             console.log(price)
         }
 
+        openMonth = e => $("." + e).toggle();
     </script>
 @endpush
 

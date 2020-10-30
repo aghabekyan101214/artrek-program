@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\EmployeeSalary;
 use App\Model\Car;
 use App\Model\Driver;
 use App\Model\PaidOrder;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class DriverController extends Controller
 {
@@ -24,7 +27,8 @@ class DriverController extends Controller
         $data = Driver::with(["salary", "paidSalary", "car"])->orderBy("id", "DESC")->get();
         $title = self::TITLE;
         $route = self::ROUTE;
-        return view(self::FOLDER . '.index', compact('title', 'route', 'data'));
+        $months = PaidOrder::MONTHS;
+        return view(self::FOLDER . '.index', compact('title', 'route', 'data', 'months'));
     }
 
     /**
@@ -75,11 +79,16 @@ class DriverController extends Controller
      * @param  \App\Model\Driver  $driver
      * @return \Illuminate\Http\Response
      */
-    public function show(Driver $driver)
+    public function show($id)
     {
+        $driver = Driver::with(["paidSalary" => function($q) {
+            $q->whereYear('created_at', Carbon::now()->year);
+        }])->find($id);
         $title = $driver->name . 'ի աշխատավարձերի ցուցակ';
         $route = self::ROUTE;
-        return view(self::FOLDER . '.show', compact('title', 'driver', 'route'));
+        $months = PaidOrder::MONTHS;
+
+        return view(self::FOLDER . '.show', compact('title', 'driver', 'route', 'months'));
     }
 
     /**
@@ -153,8 +162,25 @@ class DriverController extends Controller
         $paidOrder->at_driver = 0;
         $paidOrder->comment = "Աշխատավարձ ".$driver->name."ին" . $request->comment;
         $paidOrder->type = $request->transfer_type ?? 0;
+        $paidOrder->month = $request->month;
         $paidOrder->save();
 
         return redirect(self::ROUTE);
+    }
+
+    /**
+     * Update salary
+     *
+     * @param  \App\Employee  $employee
+     * @return
+     */
+    public function updateGivenSalary($id, Request $request)
+    {
+        $paidOrder = PaidOrder::find($id);
+        $paidOrder->price = - $request->price;
+        $paidOrder->month = $request->month;
+        $paidOrder->save();
+
+        return redirect()->back();
     }
 }

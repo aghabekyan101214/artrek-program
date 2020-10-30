@@ -86,6 +86,7 @@
     @push('foot')
         <script src="{{ asset("assets/plugins/select2/dist/js/select2.js") }}"></script>
         <script src="{{ asset("assets/plugins/datepicker/bootstrap-datepicker.min.js") }}"></script>
+        <script src="{{asset('assets/plugins/swal/sweetalert.min.js')}}"></script>
         <script>
             let json = '<?php echo json_encode($materials); ?>';
             let jsonedLaserTypes = '<?php echo json_encode($laserTypes); ?>';
@@ -94,8 +95,6 @@
             let count = 0;
 
             const engravingPrice = Number('{{ $engravingPrice }}');
-            console.log(typeof engravingPrice)
-            console.log(engravingPrice)
             $(document).ready(function () {
                 $(".select2").select2();
                 @if(!isset($order))
@@ -111,7 +110,8 @@
             function add(data = {}) {
                 let id = `num${count}`;
                 let order_type = data.type >= 0 ? data.type : null;
-                let html = "<div class='groups'>";
+                let className = "group-" + count;
+                let html = "<div class='groups "+className+"'>";
 
                 html += "<div class='form-group'>";
                 html +=
@@ -153,6 +153,11 @@
                 html += "<div class='form-group'>" +
                     '<label><span class="q">Օգտագործված Ապրանքի Քանակ</span></label>';
                 html += `<input type="number" step="any" class="form-control quantity-input" oninput="countPrice()" id="price" value="${data.quantity || 0}" name="data[${count}][quantity]" required>`
+                if(count) {
+                    html += "<div class='form-group text-right' style='margin-top: 20px;'>";
+                    html += "<button type='button' class='btn btn-danger' onclick=deleteRow('"+className+"')>-</button>";
+                    html += "</div>";
+                }
                 html += "</div><hr>";
                 html += "</div>";
 
@@ -185,10 +190,7 @@
                 $(document).find(".here .groups").each(function () {
                     if($(this).find(".order_type").val() == 0) {
                         // if the order is ordinary
-                        if(!$(this).find(".mat").val()) emptyMaterial = true;
-                        let price = $(this).find(".mat option:selected").attr("price");
-                        let quantity = $(this).find(".quantity-input").val();
-                        calculatedPrice += (price * quantity);
+
                     } else {
                         if($(this).find(".laser_type").val() == 0) {
                             // Cutting
@@ -203,8 +205,14 @@
                             calculatedLaserPrice += (minutes * engravingPrice);
                         }
                     }
+                    if(!$(this).find(".mat").val()) emptyMaterial = true;
+                    let price = $(this).find(".mat option:selected").attr("price");
+                    let quantity = $(this).find(".quantity-input").val();
+                    if(price !== undefined) {
+                        calculatedPrice += (price * quantity);
+                    }
                 });
-                if(emptyMaterial) calculatedPrice = 0;
+                // if(emptyMaterial) calculatedPrice = 0;
                 let wholePrice = calculatedPrice + calculatedLaserPrice;
                 $(".calculated-price span").html(wholePrice);
                 $(".calculated-laser-price span").html(calculatedLaserPrice);
@@ -222,6 +230,21 @@
                 else if(thickness > 10 && thickness <= 15 ) price = 1200;
                 else if(thickness > 15) price = 2000;
                 return price;
+            }
+
+            deleteRow = className => {
+                swal({
+                    title: "Դուք ցանկանու՞մ եք հեռացնել տվյալ դաշտը։",
+                    icon: "warning",
+                    dangerMode: true,
+                    buttons: ['Համոզված չեմ', 'Այո'],
+                }).then((willDelete) => {
+                    if (willDelete) {
+                        $("." + className).remove();
+                    } else {
+                        swal.close();
+                    }
+                });
             }
 
         </script>

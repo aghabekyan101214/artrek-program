@@ -41,6 +41,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::resource('/cars', 'CarController');
     Route::post('/cars/{id}/pay', 'CarController@paySalary');
     Route::post('/drivers/{id}/pay', 'DriverController@paySalary');
+    Route::post('/drivers/{id}/updateGivenSalary', 'DriverController@updateGivenSalary');
     Route::resource('/cashdesk', 'CashDeskController');
     Route::resource('/spendings', 'SpendingController');
     Route::post('/spendings/{id}/pay', 'SpendingController@paySalary');

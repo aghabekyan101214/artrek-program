@@ -16,20 +16,7 @@ class EmployeeController extends Controller
     const FOLDER = "program.employees";
     const TITLE = "Աշխատակիցներ";
     const ROUTE = "/employees";
-    const MONTHS = [
-        ['index' => 1, 'name' => 'Հունվար'],
-        ['index' => 2, 'name' => 'Փետրվար'],
-        ['index' => 3, 'name' => 'Մարտ'],
-        ['index' => 4, 'name' => 'Ապրիլ'],
-        ['index' => 5, 'name' => 'Մայիս'],
-        ['index' => 6, 'name' => 'Հունիս'],
-        ['index' => 7, 'name' => 'Հուլիս'],
-        ['index' => 8, 'name' => 'Օգոստոս'],
-        ['index' => 9, 'name' => 'Սեպտեմբեր'],
-        ['index' => 10, 'name' => 'Հոկտեմբեր'],
-        ['index' => 11, 'name' => 'Նոյեմբեր'],
-        ['index' => 12, 'name' => 'Դեկտեմբեր'],
-    ];
+
 
     /**
      * Display a listing of the resource.
@@ -41,7 +28,7 @@ class EmployeeController extends Controller
         $data = Employee::orderBy("id", "DESC")->get();
         $title = self::TITLE;
         $route = self::ROUTE;
-        $months = self::MONTHS;
+        $months = PaidOrder::MONTHS;
         return view(self::FOLDER . '.index', compact('title', 'route', 'data', 'months'));
     }
 
@@ -93,7 +80,7 @@ class EmployeeController extends Controller
     {
         $title = $employee->name . 'ի աշխատավարձերի ցուցակ';
         $route = self::ROUTE;
-        $months = self::MONTHS;
+        $months = PaidOrder::MONTHS;
         return view(self::FOLDER . '.show', compact('title', 'employee', 'route', 'months'));
     }
 

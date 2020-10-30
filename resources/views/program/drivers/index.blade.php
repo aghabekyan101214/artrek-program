@@ -85,6 +85,14 @@
                            <input type="number" step="any" required id="sum" name="price" class="form-control">
                        </div>
                        <div class="form-group">
+                           <label for="sum">Ամսաթիվ</label>
+                           <select name="month" class="form-control" id="">
+                               @foreach($months as $month)
+                                   <option @if(Carbon\Carbon::now()->subMonth()->month == $month['index']) selected @endif value="{{ $month['index'] }}">{{ $month['name'] }}</option>
+                               @endforeach
+                           </select>
+                       </div>
+                       <div class="form-group">
                            <label for="transfer">
                                Փոխանցում
                                <input type="checkbox" style="width: 39px;" name="transfer_type" @if(isset($craneOrder->paidList[0]->type) && $craneOrder->paidList[0]->type == 1) checked @endif value="1" id="transfer" class="form-control">
