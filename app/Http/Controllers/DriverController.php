@@ -183,4 +183,10 @@ class DriverController extends Controller
 
         return redirect()->back();
     }
+
+    public function deleteSalary($id)
+    {
+        PaidOrder::find($id)->delete();
+        return redirect()->back();
+    }
 }
