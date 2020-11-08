@@ -248,6 +248,17 @@ class OrderController extends Controller
         return redirect()->back();
     }
 
+    public function deleteSpending($id)
+    {
+        $spending = OrderSpending::find($id);
+        $paidOrderIds = $spending->paidList->pluck('paid_order_id');
+        DB::beginTransaction();
+        PaidOrder::whereIn("id", $paidOrderIds)->delete();
+        $spending->delete();
+        DB::commit();
+        return redirect()->back();
+    }
+
     private function manageSearch(&$query, $request)
     {
         if(!is_null($request->registered_from)) {

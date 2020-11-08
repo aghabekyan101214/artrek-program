@@ -33,6 +33,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::delete('/orders/destroyPayment/{id}', 'OrderController@destroyPayment');
     Route::post('/orders/{id}/pay', 'OrderController@pay');
     Route::post('/orders/{id}/paySpending', 'OrderController@paySpending');
+    Route::delete('/orders/{id}/deleteSpending', 'OrderController@deleteSpending');
     Route::post('/orders/{id}/addSpending', 'OrderController@addSpending');
     Route::post('/orders/{spending_id}/editSpending', 'OrderController@editSpending');
     Route::resource('/crane-orders', 'CraneOrderController');
