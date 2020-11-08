@@ -7,7 +7,10 @@ use App\Model\LaserList;
 use App\Model\MaterialList;
 use App\Model\Order;
 use App\Model\Material;
+use App\Model\OrderSpending;
+use App\Model\OrderSpendingList;
 use App\Model\PaidOrder;
+use App\Model\Spending;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -86,6 +89,14 @@ class OrderController extends Controller
 
         DB::commit();
         return redirect(self::ROUTE);
+    }
+
+    public function show(Order $order)
+    {
+        $title = "Պատվերի այլ ծախսեր";
+        $route = self::ROUTE;
+        $spendings = $order->spendings;
+        return view(self::FOLDER . '.show', compact('title', 'route', 'order', 'spendings'));
     }
 
     public function edit(Order $order)
@@ -181,6 +192,50 @@ class OrderController extends Controller
         return redirect(self::ROUTE);
     }
 
+    public function addSpending($order_id, Request $request)
+    {
+        $spending = new OrderSpending();
+        $spending->title = $request->title;
+        $spending->price = $request->price;
+        $spending->order_id = $order_id;
+        $spending->save();
+
+        return redirect()->back();
+    }
+
+    public function editSpending($spending_id, Request $request)
+    {
+        $spending = OrderSpending::find($spending_id);
+        $spending->title = $request->title;
+        $spending->price = $request->price;
+        $spending->save();
+
+        return redirect()->back();
+    }
+
+    public function paySpending($id, Request $request)
+    {
+        if($request->price > 0) {
+            DB::beginTransaction();
+
+            $paidOrder = new PaidOrder();
+            $paidOrder->price = -$request->price;
+            $paidOrder->type = 0;
+            $paidOrder->comment = 'Գովազդի պատվերի այլ ծախս';
+            $paidOrder->save();
+
+            $spending = new OrderSpendingList();
+            $spending->spending_order_id = $id;
+            $spending->paid_order_id = $paidOrder->id;
+            $spending->price = -$request->price;
+            $spending->save();
+
+            DB::commit();
+        }
+
+        return redirect()->back();
+    }
+
     public function destroy(Order $order)
     {
         $order->delete();
@@ -190,7 +245,7 @@ class OrderController extends Controller
     public function destroyPayment($id)
     {
         PaidOrder::find($id)->delete();
-        return redirect(self::ROUTE);
+        return redirect()->back();
     }
 
     private function manageSearch(&$query, $request)

@@ -30,12 +30,14 @@
                                 </select>
                             </div>
 
-                            <div class="form-group">
-                                <label for="price">Պատվերի Գումար</label>
-                                @error('price')
-                                <p class="invalid-feedback text-danger" role="alert"><strong>{{ $message }}</strong></p>
-                                @enderror
-                                <input type="number" step="any" class="form-control" id="price" name="price" required value="{{ $order->price ?? old('price') }}">
+                            <div class="row form-group">
+                                <div class="col-md-12">
+                                    <label for="price">Ընդհանուր գումար</label>
+                                    @error('price')
+                                    <p class="invalid-feedback text-danger" role="alert"><strong>{{ $message }}</strong></p>
+                                    @enderror
+                                    <input type="number" step="any" class="form-control" id="price" name="price" required value="{{ $order->price ?? old('price') }}">
+                                </div>
                             </div>
 
                             <div class="form-group">

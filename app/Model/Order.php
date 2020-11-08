@@ -25,4 +25,9 @@ class Order extends Model
     {
         return $this->hasMany("App\Model\LaserList", "order_id", "id");
     }
+
+    public function spendings()
+    {
+        return $this->hasMany(OrderSpending::class, 'order_id', 'id');
+    }
 }

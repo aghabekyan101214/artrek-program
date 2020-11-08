@@ -28,15 +28,6 @@
                     <table id="datatable" class="display table table-hover table-striped nowrap" cellspacing="0"
                            width="100%">
                         <thead>
-                            <tr>
-                                <th>Գրանցման Ամսաթիվ</th>
-                                <th>Հաճախորդ</th>
-                                <th>Ընդհանուր Գումար</th>
-                                <th>Վճարվել է</th>
-                                <th>Պարտք</th>
-                                <th>Ավարտ</th>
-                                <th>Կարգավորումներ</th>
-                            </tr>
                         <tr>
                             <td>
                                 <input type="text" autocomplete="off" name="datefilter1" class="form-control date datefilter1" value="{{ !is_null($request->registered_from) ? ($request->registered_from . " - " . $request->registered_to) : '' }}"/>
@@ -55,6 +46,15 @@
                                 </a>
                             </td>
                         </tr>
+                            <tr>
+                                <th>Գրանցման Ամսաթիվ</th>
+                                <th>Հաճախորդ</th>
+                                <th>Պատվերի Ընդհանուր Գումար</th>
+                                <th>Վճարվել է</th>
+                                <th>Պարտք</th>
+                                <th>Ավարտ</th>
+                                <th>Կարգավորումներ</th>
+                            </tr>
                         </thead>
 
                         <tbody>
@@ -69,7 +69,7 @@
                             @endphp
                             <tr>
                                 <td>{{ $val->created_at }}</td>
-                                <td>{{$val->client->name}}</td>
+                                <td>{{ $val->client->name . " - " . $val->client->phone }}</td>
                                 <td>{{ intval($val->price) }}</td>
                                 <td>
                                     <p>Ընդ․ ՝ {{ $val->paidList->sum("price") }}</p>
@@ -104,6 +104,7 @@
                                 </td>
                                 <td>{{$val->due_date}}</td>
                                 <td>
+                                    <button data-toggle="modal" data-target="#exampleModal" data-placement="top" class="btn btn-success btn-circle tooltip-success open-modal" onclick="openModal('{{url($route."/".$val->id."/pay")}}')"><i class="fas fa-money-bill-alt"></i></button>
                                     <a href="{{$route."/".$val->id."/edit"}}" data-toggle="tooltip"
                                        data-placement="top" title="Փոփոխել" class="btn btn-info btn-circle tooltip-info">
                                         <i class="fas fa-edit"></i>
@@ -120,7 +121,10 @@
                                                     class="fas fa-trash"></i></button>
                                         </a>
                                     </form>
-                                    <button data-toggle="modal" data-target="#exampleModal" data-placement="top" class="btn btn-success btn-circle tooltip-success open-modal" onclick="openModal('{{url($route."/".$val->id."/pay")}}')"><i class="fas fa-money-bill-alt"></i></button>
+                                    <a href="{{$route."/".$val->id}}" data-toggle="tooltip"
+                                       data-placement="top" title="Այլ Ծախսեր" class="btn btn-info btn-circle tooltip-info">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
                                 </td>
                             </tr>
                         @endforeach
@@ -138,7 +142,7 @@
        <div class="modal-dialog" role="document">
            <div class="modal-content">
                <div class="modal-header">
-                   <h5 class="modal-title" id="exampleModalLabel">Գովազդի Պատվերի Մնացորդ Գումարի Վճարում</h5>
+                   <h5 class="modal-title" id="exampleModalLabel"><b>Գովազդի Պատվերի Մնացորդ Գումարի Վճարում</b></h5>
                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                        <span aria-hidden="true">&times;</span>
                    </button>
@@ -190,9 +194,13 @@
     <script src="{{ asset("assets/plugins/daterangepicker/daterangepicker.js") }}"></script>
     <script>
         $('#datatable').DataTable({
-            "ordering": false
+            "ordering": true,
+            "order": []
         });
+
         openModal = e => $(".pay-form").attr("action", e);
+        openSpendingModal = e => $(".spending-pay-form").attr("action", e);
+
         $(document).ready(function () {
             $(function() {
                 $('input[name="datefilter1"]').daterangepicker({
