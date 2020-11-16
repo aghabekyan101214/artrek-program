@@ -98,8 +98,10 @@
                                 <td>
                                     @if($doubt > 0)
                                         <span class="badge badge-danger">{{ $doubt }}</span>
+                                    @elseif($doubt < 0)
+                                        <span class="badge badge-warning">{{ $doubt }}</span>
                                     @else
-                                        <span class="badge badge-success">{{ $doubt }}</span>
+                                        <span class="badge badge-success">{{ 0 }}</span>
                                     @endif
                                 </td>
                                 <td>{{$val->due_date}}</td>
