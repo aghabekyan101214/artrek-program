@@ -99,7 +99,7 @@
                                     @if($doubt > 0)
                                         <span class="badge badge-danger">{{ $doubt }}</span>
                                     @else
-                                        <span class="badge badge-success">{{ 0 }}</span>
+                                        <span class="badge badge-success">{{ $doubt }}</span>
                                     @endif
                                 </td>
                                 <td>{{$val->due_date}}</td>
