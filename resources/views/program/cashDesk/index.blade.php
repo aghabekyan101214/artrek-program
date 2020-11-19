@@ -22,12 +22,24 @@
                             </tr>
                             <tr>
                                 <td></td>
-                                <td></td>
+                                <td>
+                                    <select class="form-control sum">
+                                        <option value="">Ամբողջը</option>
+                                        <option @if($request->sum == -1) selected @endif value="-1"> < 0</option>
+                                        <option @if($request->sum == 1) selected @endif value="1"> > 0</option>
+                                    </select>
+                                </td>
                                 <td></td>
                                 <td>
                                     <input type="text" autocomplete="off" name="datefilter1" class="form-control date datefilter1" value="{{ !is_null($request->registered_from) ? ($request->registered_from . " - " . $request->registered_to) : '' }}"/>
                                 </td>
-                                <td></td>
+                                <td>
+                                    <select class="form-control type">
+                                        <option value="">Ամբողջը</option>
+                                        <option @if($request->type == 1) selected @endif value="1"> Միայն Գովազդի Պատվերները</option>
+                                        <option @if($request->type == 2) selected @endif value="2"> Միայն Ավտոաշտարակի Պատվերները</option>
+                                    </select>
+                                </td>
                                 <th>
                                     <button class="btn btn-deafult" onclick="search()" style="margin-left: 10px;"><i class="fa fa-search"></i></button>
                                     <a href="{{ $route }}">
@@ -131,6 +143,8 @@
             let reg_search = $(".datefilter1").val().split(" - ");
             let url = location.href.split("?")[0];
             var urlParams = new URLSearchParams(window.location.search);
+            let sum = $('.sum').val();
+            let type = $('.type').val();
 
             if(!urlParams.has("registered_from")) {
                 urlParams.append('registered_from', reg_search[0] || '');
@@ -138,6 +152,18 @@
             } else {
                 urlParams.set('registered_from', reg_search[0] || '');
                 urlParams.set('registered_to', reg_search[1] || '');
+            }
+
+            if(!urlParams.has("sum")) {
+                urlParams.append('sum', sum || '');
+            } else {
+                urlParams.set('sum', sum || '');
+            }
+
+            if(!urlParams.has("type")) {
+                urlParams.append('type', type || '');
+            } else {
+                urlParams.set('type', type || '');
             }
 
             let params = urlParams.toString();

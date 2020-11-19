@@ -115,5 +115,15 @@ class CashDeskController extends Controller
         if(!is_null($request->registered_from)) {
             $query->whereDate("created_at", ">=", $request->registered_from)->whereDate("created_at", "<=", $request->registered_to);
         }
+
+        if(!is_null($request->sum)) {
+            $sign = $request->sum == -1 ? '<' : '>';
+            $query->where('price', $sign, 0);
+        }
+
+        if(!is_null($request->type)) {
+            $column = $request->type == 1 ? 'order_id' : 'crane_order_id';
+            $query->whereNotNull($column);
+        }
     }
 }
