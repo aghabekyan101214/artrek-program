@@ -18,16 +18,6 @@
                            width="100%">
                         <thead>
                             <tr>
-                                <th>Գրանցման Ամսաթիվ</th>
-                                <th>Հաճախորդ</th>
-                                <th>Վարորդ</th>
-                                <th>Ընդհանուր Գումար</th>
-                                <th>Վճարվել է</th>
-                                <th>Պարտք</th>
-                                <th>Վարորդի Մոտ</th>
-                                <th>Կարգավորումներ</th>
-                            </tr>
-                            <tr>
                                 <td>
                                     <input type="text" autocomplete="off" name="datefilter1" class="form-control date datefilter1" value="{{ !is_null($request->registered_from) ? ($request->registered_from . " - " . $request->registered_to) : '' }}"/>
                                 </td>
@@ -43,6 +33,16 @@
                                         <button class="btn btn-success"><i class="fa fa-recycle"></i></button>
                                     </a>
                                 </th>
+                            </tr>
+                            <tr>
+                                <th>Գրանցման Ամսաթիվ</th>
+                                <th>Հաճախորդ</th>
+                                <th>Վարորդ</th>
+                                <th>Ընդհանուր Գումար</th>
+                                <th>Վճարվել է</th>
+                                <th>Պարտք</th>
+                                <th>Վարորդի Մոտ</th>
+                                <th>Կարգավորումներ</th>
                             </tr>
                         </thead>
 
@@ -203,7 +203,7 @@
     <script src="{{ asset("assets/plugins/daterangepicker/daterangepicker.js") }}"></script>
     <script>
         $('#datatable').DataTable({
-            "ordering": false
+            "ordering": true
         });
         openModal = e => $(".pay-form").attr("action", e);
         $(document).ready(function () {
