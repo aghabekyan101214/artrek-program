@@ -62,6 +62,14 @@
                                 <input type="date" placeholder="YYYY-MM-DD" step="any" class="form-control" id="due_date" name="due_date" required value="{{ $order->due_date ?? old('due_date') }}">
                             </div>
 
+                            <div class="form-group">
+                                <label for="comment">Մեկնաբանություն</label>
+                                @error('comment')
+                                <p class="invalid-feedback text-danger" role="alert"><strong>{{ $message }}</strong></p>
+                                @enderror
+                                <textarea id="comment" class="form-control" name="comment" rows="5">{{ $order->comment ?? '' }}</textarea>
+                            </div>
+
                             <hr>
 
                             <span class="here">

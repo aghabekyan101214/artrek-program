@@ -77,6 +77,7 @@ class OrderController extends Controller
         $order->client_id = $request->client_id;
         $order->price = $request->price;
         $order->due_date = $request->due_date;
+        $order->comment = $request->comment;
         $order->save();
         $order->orderList()->createMany($orderListData);
         if(!empty($laserListData)) {
@@ -144,6 +145,7 @@ class OrderController extends Controller
         $order->client_id = $request->client_id;
         $order->price = $request->price;
         $order->due_date = $request->due_date;
+        $order->comment = $request->comment;
         $order->save();
 
         $order->orderList()->delete();
