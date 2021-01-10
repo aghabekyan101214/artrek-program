@@ -53,7 +53,7 @@
                                         <i class="fas fa-money-bill-alt"></i>
                                     </button>
 
-                                    <a href="{{ $route . "/" . $val->id }}">
+                                    <a href="{{ $route . "/" . $val->id . "?year=" . Carbon\Carbon::now()->year }}">
                                         <button data-placement="top" title="Տեսնել վճարված աշխատավարձերը" data-toggle="tooltip" class="btn btn-primary btn-circle tooltip-primary"><i class="fa fa-eye"></i></button>
                                     </a>
 
@@ -90,6 +90,14 @@
                                @foreach($months as $month)
                                    <option @if(Carbon\Carbon::now()->subMonth()->month == $month['index']) selected @endif value="{{ $month['index'] }}">{{ $month['name'] }}</option>
                                @endforeach
+                           </select>
+                       </div>
+                       <div class="form-group">
+                           <label for="year">Տարի</label>
+                           <select name="year" class="form-control" id="year">
+                               <option value="{{ Carbon\Carbon::now()->year - 1 }}">{{ Carbon\Carbon::now()->year - 1 }}</option>
+                               <option selected value="{{ Carbon\Carbon::now()->year }}">{{ Carbon\Carbon::now()->year }}</option>
+                               <option value="{{ Carbon\Carbon::now()->year + 1 }}">{{ Carbon\Carbon::now()->year + 1 }}</option>
                            </select>
                        </div>
                        <div class="form-group">

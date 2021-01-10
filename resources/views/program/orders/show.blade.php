@@ -31,7 +31,7 @@
                                         <ul>
                                             @foreach($s->paidList as $list)
                                                 <li>
-                                                    <small>{{ $list->price . " - " . $list->created_at }}</small>
+                                                    <small>{{ $list->price . " - " . $list->created_at . " - " . ($list->paidOrder->type ? 'Փոխանցում' : 'Կանխիկ') }}</small>
                                                     <form style="display: inline-block" action="{{ $route."/destroyPayment/".$list->paidOrder->id }}"
                                                           method="post" id="work-for-form">
                                                         @csrf
@@ -52,7 +52,7 @@
                                         {{ $s->price + $s->paidList->sum('price')}}
                                     </td>
                                     <td>
-                                        <a href="javascript:void(0)" data-toggle="modal" data-target="#spendingOrder" onclick="openModal('{{ $route."/$s->id/editSpending/" }}', '{{ $s->title }}', '{{ $s->price }}', 'Փոփոխել')" class="btn btn-info btn-circle tooltip-info">
+                                        <a href="javascript:void(0)" data-toggle="modal" data-target="#spendingOrder" onclick="openModal('{{ $route."/$s->id/editSpending/" }}', '{{ $s->title }}', '{{ $s->price }}')" class="btn btn-info btn-circle tooltip-info">
                                             <i class="fas fa-edit"></i>
                                         </a>
 
@@ -126,6 +126,12 @@
                        <div class="form-group">
                            <label for="price">Գումար</label>
                            <input type="number" step="any" id="price" name="price" required class="form-control">
+                       </div>
+                       <div class="form-group">
+                           <label for="transfer">
+                               Փոխանցում
+                               <input type="checkbox" style="width: 39px;" name="transfer_type" id="transfer" class="form-control">
+                           </label>
                        </div>
                    </div>
                    <div class="modal-footer">

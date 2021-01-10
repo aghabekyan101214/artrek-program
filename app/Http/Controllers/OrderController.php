@@ -222,7 +222,7 @@ class OrderController extends Controller
 
             $paidOrder = new PaidOrder();
             $paidOrder->price = -$request->price;
-            $paidOrder->type = 0;
+            $paidOrder->type = is_null($request->transfer_type) ? 0 : 1;
             $paidOrder->comment = 'Գովազդի պատվերի այլ ծախս';
             $paidOrder->save();
 

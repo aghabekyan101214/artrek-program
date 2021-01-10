@@ -32,7 +32,7 @@
                                     <td colspan="2" style="background: white; padding: 0 0 0 20px">
                                         <table style="width: 50%; background: white">
                                             <tr style="background: white">
-                                                <td style="background: white; width: 50%"><b>{{ $s->price * -1 }}</b>{{ " - " . $s->created_at }}</td>
+                                                <td style="background: white; width: 50%"><b>{{ $s->price * -1 }}</b>{{ " - " . $s->created_at . "(" . ($s->paidSalaries->type ? 'Փոխանցում' : 'Կանխիկ') .")" }}</td>
                                                 <td>
                                                     <form style="display: inline-block" action="{{ $route . '/' . $s->id . '/deleteSalary' }}"
                                                           method="post" id="work-for-form">
@@ -47,7 +47,7 @@
                                                         </a>
                                                     </form>
                                                     <button data-toggle="modal" data-target="#exampleModal"
-                                                            data-placement="top" class="btn btn-primary btn-circle btn-sm tooltip-primary open-modal" price="{{ $s->price }}" month="{{ $s->month }}" onclick="openModal('{{ url($route."/".$s->id."/updateGivenSalary") }}', '{{ $s->price * -1 }}', '{{ $s->month }}', {{ $s->year }})">
+                                                            data-placement="top" class="btn btn-primary btn-circle btn-sm tooltip-primary open-modal" price="{{ $s->price }}" month="{{ $s->month }}" onclick="openModal('{{ url($route."/".$s->id."/updateGivenSalary") }}', '{{ $s->price * -1 }}', '{{ $s->month }}', {{ $s->year }}, '{{ $s->paidSalaries->type }}')">
                                                         <i class="fas fa-edit"></i>
                                                     </button>
                                                 </td>
@@ -98,6 +98,12 @@
                                <option value="{{ Carbon\Carbon::now()->year + 1 }}">{{ Carbon\Carbon::now()->year + 1 }}</option>
                            </select>
                        </div>
+                       <div class="form-group">
+                           <label for="transfer">
+                               Փոխանցում
+                               <input type="checkbox" style="width: 39px;" name="transfer_type" id="transfer" class="form-control">
+                           </label>
+                       </div>
                    </div>
                    <div class="modal-footer">
                        <button class="btn btn-primary">Վճարել</button>
@@ -127,11 +133,13 @@
 
     <script src="{{asset('assets/plugins/swal/sweetalert.min.js')}}"></script>
     <script>
-        openModal = (url, price, month, year) => {
+        openModal = (url, price, month, year, transfer_type) => {
             $(".pay-form").attr("action", url);
             $("#sum").val(price);
             $('.months').val(month);
             $('.years').val(year);
+            if(transfer_type != 0) $("#transfer").prop('checked', true);
+            else $("#transfer").prop('checked', false);
         }
 
         openMonth = e => $("." + e).toggle();

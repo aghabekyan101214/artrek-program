@@ -149,7 +149,7 @@ class EmployeeController extends Controller
         $salary = new EmployeeSalary(['price' => -$request->price, 'month' => $request->month, 'year' => $request->year]);
         $employee->salaries()->save($salary);
 
-        $paidOrder = new PaidOrder(['price' => -$request->price, 'comment' => 'Աշխատավարձ ' . $employee->name . 'ին']);
+        $paidOrder = new PaidOrder(['price' => -$request->price, 'comment' => 'Աշխատավարձ ' . $employee->name . 'ին', 'type' => (is_null($request->transfer_type) ? 0 : 1)]);
         $salary->paidSalaries()->save($paidOrder);
 
         DB::commit();
@@ -172,7 +172,7 @@ class EmployeeController extends Controller
         $salary->year = $request->year;
         $salary->save();
 
-        $salary->paidSalaries()->update(['price' => -$request->price]);
+        $salary->paidSalaries()->update(['price' => -$request->price, 'type' => (is_null($request->transfer_type) ? 0 : 1)]);
 
         DB::commit();
         return redirect()->back();

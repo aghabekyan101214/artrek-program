@@ -159,6 +159,7 @@ class DriverController extends Controller
         $paidOrder = new PaidOrder();
         $paidOrder->driver_id = $id;
         $paidOrder->price = - $request->price;
+        $paidOrder->year = $request->year;
         $paidOrder->at_driver = 0;
         $paidOrder->comment = "Աշխատավարձ ".$driver->name."ին" . $request->comment;
         $paidOrder->type = $request->transfer_type ?? 0;
@@ -179,6 +180,8 @@ class DriverController extends Controller
         $paidOrder = PaidOrder::find($id);
         $paidOrder->price = - $request->price;
         $paidOrder->month = $request->month;
+        $paidOrder->year = $request->year;
+        $paidOrder->type = is_null($request->transfer_type) ? 0 : 1;
         $paidOrder->save();
 
         return redirect()->back();

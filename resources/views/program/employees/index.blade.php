@@ -95,6 +95,12 @@
                                <option value="{{ Carbon\Carbon::now()->year + 1 }}">{{ Carbon\Carbon::now()->year + 1 }}</option>
                            </select>
                        </div>
+                       <div class="form-group">
+                           <label for="transfer">
+                               Փոխանցում
+                               <input type="checkbox" style="width: 39px;" name="transfer_type" id="transfer" class="form-control">
+                           </label>
+                       </div>
                    </div>
                    <div class="modal-footer">
                        <button class="btn btn-primary">Վճարել</button>
