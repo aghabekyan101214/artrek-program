@@ -146,7 +146,7 @@ class EmployeeController extends Controller
         DB::beginTransaction();
 
         $employee = Employee::find($id);
-        $salary = new EmployeeSalary(['price' => -$request->price, 'month' => $request->month]);
+        $salary = new EmployeeSalary(['price' => -$request->price, 'month' => $request->month, 'year' => $request->year]);
         $employee->salaries()->save($salary);
 
         $paidOrder = new PaidOrder(['price' => -$request->price, 'comment' => 'Աշխատավարձ ' . $employee->name . 'ին']);
@@ -169,6 +169,7 @@ class EmployeeController extends Controller
         $salary = EmployeeSalary::find($id);
         $salary->price = -$request->price;
         $salary->month = $request->month;
+        $salary->year = $request->year;
         $salary->save();
 
         $salary->paidSalaries()->update(['price' => -$request->price]);
