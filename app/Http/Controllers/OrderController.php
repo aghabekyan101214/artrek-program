@@ -84,7 +84,7 @@ class OrderController extends Controller
             $order->laserList()->createMany($laserListData);
         }
         if($request->paid != 0) {
-            $paid = new PaidOrder(["price" => $request->paid, "type" => ($request->transfer_type ?? 0)]);
+            $paid = new PaidOrder(["price" => $request->paid, "type" => ($request->transfer_type ?? 0), 'comment' => 'Գովազդի պատվերի գումար']);
             $order->paidList()->save($paid);
         }
 
@@ -188,6 +188,7 @@ class OrderController extends Controller
         $paidOrder = new PaidOrder();
         $paidOrder->order_id = $id;
         $paidOrder->price = $request->price;
+        $paidOrder->comment = "Գովազդի պատվերի գումար";
         $paidOrder->type = $request->transfer_type ? 1 : 0;
         $paidOrder->save();
 

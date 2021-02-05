@@ -83,7 +83,7 @@ class CraneOrderController extends Controller
         $order->salary()->save($salary);
 
         if($request->paid != 0) {
-            $paid = new PaidOrder(["price" => $request->paid, "type" => ($request->transfer_type ?? 0), "at_driver" => ($request->at_driver ?? 0)]);
+            $paid = new PaidOrder(["price" => $request->paid, "type" => ($request->transfer_type ?? 0), "at_driver" => ($request->at_driver ?? 0), 'comment' => "Ավտոաշտարակի պատվերի գումար"]);
             $order->paidList()->save($paid);
         }
 
@@ -202,6 +202,7 @@ class CraneOrderController extends Controller
         $paidOrder->crane_order_id = $id;
         $paidOrder->at_driver = ($request->at_driver ?? 0);
         $paidOrder->price = $request->price;
+        $paidOrder->comment = "Ավտոաշտարակի պատվերի գումար";
         $paidOrder->type = $request->transfer_type ? 1 : 0;
         $paidOrder->save();
 
