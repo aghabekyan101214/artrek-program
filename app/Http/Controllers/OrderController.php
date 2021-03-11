@@ -84,7 +84,7 @@ class OrderController extends Controller
             $order->laserList()->createMany($laserListData);
         }
         if($request->paid != 0) {
-            $paid = new PaidOrder(["price" => $request->paid, "type" => ($request->transfer_type ?? 0), 'comment' => 'Գովազդի պատվերի գումար']);
+            $paid = new PaidOrder(["price" => $request->paid, "type" => ($request->transfer_type ?? 0), 'comment' => "Գովազդի պատվերի գումար " . $order->client->name]);
             $order->paidList()->save($paid);
         }
 
@@ -159,10 +159,10 @@ class OrderController extends Controller
         if(!empty($laserListData)) {
             $order->laserList()->createMany($laserListData);
         }
-
         if($request->paid != 0) {
             $paid = PaidOrder::where(["order_id" => $order->id])->orderBy("id", "DESC")->first() ?? new PaidOrder();
             $paid->order_id = $order->id;
+            $paid->comment = "Գովազդի պատվերի գումար " . $order->client->name;
             $paid->price = $request->paid;
             $paid->type = ($request->transfer_type ?? 0);
             $paid->save();
@@ -185,10 +185,11 @@ class OrderController extends Controller
 
     public function pay($id, Request $request)
     {
+        $order = Order::with('client')->find($id);
         $paidOrder = new PaidOrder();
         $paidOrder->order_id = $id;
         $paidOrder->price = $request->price;
-        $paidOrder->comment = "Գովազդի պատվերի գումար";
+        $paidOrder->comment = "Գովազդի պատվերի գումար " . $order->client->name;
         $paidOrder->type = $request->transfer_type ? 1 : 0;
         $paidOrder->save();
 

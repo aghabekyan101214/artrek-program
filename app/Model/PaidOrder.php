@@ -25,4 +25,9 @@ class PaidOrder extends Model
         ['index' => 12, 'name' => 'Դեկտեմբեր'],
     ];
 
+    public function order()
+    {
+        return $this->belongsTo(Order::class, 'order_id', 'id');
+    }
+
 }
