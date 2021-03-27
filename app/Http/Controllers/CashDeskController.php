@@ -43,7 +43,8 @@ class CashDeskController extends Controller
     public function store(Request $request)
     {
         $rules = [
-            "price" => "required|numeric",
+            "price_cash" => "required|numeric|min:0",
+            "price_transfer" => "required|numeric|min:0",
             "comment" => "max:3000",
             "type" => "required|min:-1|max:1|numeric"
         ];
@@ -54,12 +55,35 @@ class CashDeskController extends Controller
         ];
         $this->validate($request, $rules, $messages);
 
-        $paidOrder = new PaidOrder();
-        $paidOrder->price = $request->price * $request->type;
-        $paidOrder->at_driver = 0;
-        $paidOrder->type = $request->transfer_type ?? 0;
-        $paidOrder->comment = $request->comment;
-        $paidOrder->save();
+        if($request->price_cash > 0) {
+
+            $paidOrder = new PaidOrder();
+            $paidOrder->type = PaidOrder::CASH;
+            $paidOrder->at_driver = 0;
+            $paidOrder->comment = $request->comment;
+            $paidOrder->price = $request->price_cash * $request->type;
+            $paidOrder->save();
+            $paidOrder->thread_id = $paidOrder->id;
+            $paidOrder->save();
+
+        }
+        if ($request->price_transfer > 0) {
+
+            $paidOrderTransfer = new PaidOrder();
+            $paidOrderTransfer->type = PaidOrder::TRANSFER;
+            $paidOrderTransfer->at_driver = 0;
+            $paidOrderTransfer->comment = $request->comment;
+            $paidOrderTransfer->price = $request->price_transfer * $request->type;
+            if(isset($paidOrder)) {
+                $paidOrderTransfer->thread_id = $paidOrder->id;
+            }
+            $paidOrderTransfer->save();
+            if (!isset($paidOrder)) {
+                $paidOrderTransfer->thread_id = $paidOrderTransfer->id;
+                $paidOrderTransfer->save();
+            }
+
+        }
 
         return redirect(self::ROUTE);
     }
@@ -89,7 +113,7 @@ class CashDeskController extends Controller
         $paidOrder = PaidOrder::findOrFail($id);
         $paidOrder->price = $request->price * $request->type;
         $paidOrder->at_driver = 0;
-        $paidOrder->type = $request->transfer_type ?? 0;
+//        $paidOrder->type = $request->transfer_type ?? 0;
         $paidOrder->comment = $request->comment;
         $paidOrder->save();
 

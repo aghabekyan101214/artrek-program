@@ -29,24 +29,39 @@
                                 </select>
                             </div>
 
-                            <div class="form-group">
-                                <label for="price">Գումար</label>
-                                @error('price')
-                                <p class="invalid-feedback text-danger" role="alert"><strong>{{ $message }}</strong></p>
-                                @enderror
-                                <input type="number" step="any" min="1" class="form-control" id="price" name="price" required value="{{ isset($paidOrder->price) ? abs($paidOrder->price) : old('price') }}">
-                            </div>
+                            @if(!isset($paidOrder))
+
+                                <div class="form-group">
+                                    <label for="price_cash">Գումարի Չափ <strong>ԿԱՆԽԻԿ</strong></label>
+                                    @error('price_cash')
+                                    <p class="invalid-feedback text-danger" role="alert"><strong>{{ $message }}</strong></p>
+                                    @enderror
+                                    <input type="number" step="any" min="0" class="form-control" id="price_cash" name="price_cash" required value="{{ isset($paidOrder->price) ? abs($paidOrder->price) : (old('price') ?? 0) }}">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="price_transfer">Գումարի Չափ <strong>ՓՈԽԱՆՑՈՒՄ</strong></label>
+                                    @error('price_transfer')
+                                    <p class="invalid-feedback text-danger" role="alert"><strong>{{ $message }}</strong></p>
+                                    @enderror
+                                    <input type="number" step="any" min="0" class="form-control" id="price_transfer" name="price_transfer" required value="{{ isset($paidOrder->price_transfer) ? abs($paidOrder->price_transfer) : (old('price_transfer') ?? 0) }}">
+                                </div>
+
+                            @else
+
+                                <div class="form-group">
+                                    <label for="price">Գումարի Չափ <strong> @if($paidOrder->transfer_type) ՓՈԽԱՆՑՈՒՄ @else ԿԱՆԽԻԿ @endif</strong></label>
+                                    @error('price')
+                                    <p class="invalid-feedback text-danger" role="alert"><strong>{{ $message }}</strong></p>
+                                    @enderror
+                                    <input type="number" step="any" min="0" class="form-control" id="price" name="price" required value="{{ isset($paidOrder->price) ? abs($paidOrder->price) : (old('price') ?? 0) }}">
+                                </div>
+
+                            @endif
 
                             <div class="form-group">
-                                <label for="transfer">
-                                    Փոխանցում
-                                    <input type="checkbox" style="width: 39px;" name="transfer_type" @if(isset($paidOrder->type) && $paidOrder->type == 1) checked @endif value="1" id="transfer" class="form-control">
-                                </label>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="price">Comment</label>
-                                @error('price')
+                                <label for="comment">Comment</label>
+                                @error('comment')
                                 <p class="invalid-feedback text-danger" role="alert"><strong>{{ $message }}</strong></p>
                                 @enderror
                                 <textarea name="comment" cols="30" class="form-control" rows="10">{{ $paidOrder->comment ?? old("comment") }}</textarea>
