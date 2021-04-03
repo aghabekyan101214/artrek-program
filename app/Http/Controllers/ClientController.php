@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Model\Client;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 
 class ClientController extends Controller
 {

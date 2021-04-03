@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\EmployeeSalary;
 use App\Model\PaidOrder;
+use App\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class CashDeskController extends Controller
@@ -16,7 +18,7 @@ class CashDeskController extends Controller
 
     public function index(Request $request)
     {
-        $q_data = PaidOrder::orderBy("id", "DESC")->where("at_driver", "!=", 1);
+        $q_data = PaidOrder::with('created_by')->orderBy("id", "DESC")->where("at_driver", "!=", 1);
         $this->manageSearch($q_data, $request);
         $data = $q_data->get();
 
@@ -30,6 +32,9 @@ class CashDeskController extends Controller
 
         $title = self::TITLE;
         $route = self::ROUTE;
+        if(Auth::user()->role == User::ADMIN) {
+            $data = $data->whereNull('employee_salary_id');
+        }
         return view(self::FOLDER . '.index', compact('title', 'route', 'data', 'cash', 'transfer', 'request'));
     }
 

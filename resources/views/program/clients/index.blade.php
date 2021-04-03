@@ -5,7 +5,7 @@
         <div class="col-md-12">
             <div class="white-box">
                 <h3 class="box-title">{{$title}}</h3>
-                <a href="{{$route."/create"}}" class="btn btn-success m-b-30"><i class="fas fa-plus"></i> Ավելացնել Հաճախորդ</a>
+                <a data-route="{{ app('router')->getRoutes()->match(app('request')->create($route."/create"))->getName() }}" href="{{$route."/create"}}" class="btn btn-success m-b-30"><i class="fas fa-plus"></i> Ավելացնել Հաճախորդ</a>
 
                 {{--table--}}
                 <div class="table-responsive">
@@ -27,12 +27,12 @@
                                 <td>{{$val->name}}</td>
                                 <td>{{$val->phone}}</td>
                                 <td>
-                                    <a href="{{$route."/".$val->id."/edit"}}" data-toggle="tooltip"
+                                    <a data-route="{{ app('router')->getRoutes()->match(app('request')->create($route."/".$val->id."/edit"))->getName() }}" href="{{$route."/".$val->id."/edit"}}" data-toggle="tooltip"
                                        data-placement="top" title="Փոփոխել" class="btn btn-info btn-circle tooltip-info">
                                         <i class="fas fa-edit"></i>
                                     </a>
 
-                                    <form style="display: inline-block" action="{{ $route."/".$val->id }}"
+                                    <form data-route="clients.destroy" style="display: inline-block" action="{{ $route."/".$val->id }}"
                                           method="post" id="work-for-form">
                                         @csrf
                                         @method("DELETE")

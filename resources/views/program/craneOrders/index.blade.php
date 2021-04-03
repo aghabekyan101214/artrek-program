@@ -10,7 +10,7 @@
         <div class="col-md-12">
             <div class="white-box">
                 <h3 class="box-title">{{$title}}</h3>
-                <a href="{{$route."/create"}}" class="btn btn-success m-b-30"><i class="fas fa-plus"></i> Ավելացնել {{ $title }}</a>
+                <a data-route="{{ app('router')->getRoutes()->match(app('request')->create($route."/create"))->getName() }}" href="{{$route."/create"}}" class="btn btn-success m-b-30"><i class="fas fa-plus"></i> Ավելացնել {{ $title }}</a>
 
                 {{--table--}}
                 <div class="table-responsive">
@@ -106,12 +106,12 @@
                                     {{ $sum }}
                                 </td>
                                 <td>
-                                    <a href="{{$route."/".$val->id."/edit"}}" data-toggle="tooltip"
+                                    <a data-route="{{ app('router')->getRoutes()->match(app('request')->create($route."/".$val->id."/edit"))->getName() }}" href="{{$route."/".$val->id."/edit"}}" data-toggle="tooltip"
                                        data-placement="top" title="Փոփոխել" class="btn btn-info btn-circle tooltip-info">
                                         <i class="fas fa-edit"></i>
                                     </a>
 
-                                    <form style="display: inline-block" action="{{ $route."/".$val->id }}"
+                                    <form data-route="crane-orders.destroy" style="display: inline-block" action="{{ $route."/".$val->id }}"
                                           method="post" id="work-for-form">
                                         @csrf
                                         @method("DELETE")
@@ -124,6 +124,7 @@
                                     </form>
 
                                     <button data-toggle="modal" data-target="#exampleModal"
+                                            data-route="crane_orders_pay"
                                             data-placement="top" class="btn btn-success btn-circle tooltip-success open-modal" onclick="openModal('{{url($route."/".$val->id."/pay")}}')">
                                         <i class="fas fa-money-bill-alt"></i>
                                     </button>
@@ -135,8 +136,10 @@
                     </table>
                 </div>
             </div>
-            <div class="alert alert-success">Պատվերների Համագումար: {{ $wholeSum }} Որից Վճարված է։ {{ $wholeSum - $wholeDoubt }}</div>
-            <div class="alert alert-danger">Պարտք: {{ $wholeDoubt }}</div>
+            @if(Auth::user()->role == 1)
+                <div class="alert alert-success">Պատվերների Համագումար: {{ $wholeSum }} Որից Վճարված է։ {{ $wholeSum - $wholeDoubt }}</div>
+                <div class="alert alert-danger">Պարտք: {{ $wholeDoubt }}</div>
+            @endif
         </div>
     </div>
 

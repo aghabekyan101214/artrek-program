@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Route;
 
 class StaffController extends Controller
 {
@@ -33,9 +34,12 @@ class StaffController extends Controller
      */
     public function create()
     {
+        $routes = array_map(function (\Illuminate\Routing\Route $route)     {
+            return ['name' => $route->getName(), 'uri' => $route->uri];
+        }, (array) Route::getRoutes()->getIterator());
         $title = 'Ստեղծել '.self::TITLE;
         $route = self::ROUTE;
-        return view(self::FOLDER . ".create", compact("title", "route"));
+        return view(self::FOLDER . ".create", compact("title", "route", 'routes'));
     }
 
     /**
@@ -55,8 +59,8 @@ class StaffController extends Controller
             'name.required' => 'Խնդրում եմ նշել աշխատողի անունը',
             'username.required' => 'Խնդրում եմ նշել աշխատողի օգտանունը',
             'username.unique' => 'Այսպիսի օգտանուն արդեն գոյություն ունի',
-            'password.required' => 'Խնդրում եմ նշել աշխատողի գախտնաբառը',
-            'password.min' => 'Գախտնաբառը պետք է պաորունակի 6 կամ ավել նիշ',
+            'password.required' => 'Խնդրում եմ նշել աշխատողի գաղտնաբառը',
+            'password.min' => 'Գաղտնաբառը պետք է պաորունակի 6 կամ ավել նիշ',
         ];
         $this->validate($request, $rules, $messages);
 
@@ -65,6 +69,12 @@ class StaffController extends Controller
         $user->username = $request->username;
         $user->password = Hash::make($request->password);
         $user->save();
+
+        if(count($request->whitelist_routes)) {
+            foreach ($request->whitelist_routes as $r) {
+                $user->allowedRoutes()->create(['route' => $r]);
+            }
+        }
 
         return redirect(self::ROUTE);
     }
@@ -88,10 +98,14 @@ class StaffController extends Controller
      */
     public function edit($id)
     {
-        $user = User::find($id);
+        $user = User::with('allowedRoutes')->find($id);
+        $routes = array_map(function (\Illuminate\Routing\Route $route)     {
+            return ['name' => $route->getName(), 'uri' => $route->uri];
+        }, (array) Route::getRoutes()->getIterator());
+        $allow_routes = $user->allowedRoutes->pluck('route')->toArray();
         $title = 'Փոփոխել '.self::TITLE;
         $route = self::ROUTE;
-        return view(self::FOLDER . ".edit", compact("title", "route", 'user'));
+        return view(self::FOLDER . ".edit", compact("title", "route", 'user', 'routes', 'allow_routes'));
     }
 
     /**
@@ -106,22 +120,29 @@ class StaffController extends Controller
         $rules = [
             "name" => "required",
             "username" => "required|unique:users,username,". $id,
-            "password" => "required|min:6",
         ];
         $messages = [
             'name.required' => 'Խնդրում եմ նշել աշխատողի անունը',
             'username.required' => 'Խնդրում եմ նշել աշխատողի օգտանունը',
             'username.unique' => 'Այսպիսի օգտանուն արդեն գոյություն ունի',
-            'password.required' => 'Խնդրում եմ նշել աշխատողի գախտնաբառը',
-            'password.min' => 'Գախտնաբառը պետք է պաորունակի 6 կամ ավել նիշ',
+            'password.required' => 'Խնդրում եմ նշել աշխատողի գաղտնաբառը',
+            'password.min' => 'Գաղտնաբառը պետք է պարունակի 6 կամ ավել նիշ',
         ];
         $this->validate($request, $rules, $messages);
 
         $user = User::find($id);
         $user->name = $request->name;
         $user->username = $request->username;
-        $user->password = Hash::make($request->password);
+        if(!is_null($request->password)) {
+            $user->password = Hash::make($request->password);
+        }
         $user->save();
+        $user->allowedRoutes()->delete();
+        if($request->whitelist_routes) {
+            foreach ($request->whitelist_routes as $r) {
+                $user->allowedRoutes()->create(['route' => $r]);
+            }
+        }
 
         return redirect(self::ROUTE);
     }

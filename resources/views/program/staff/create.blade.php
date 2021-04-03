@@ -34,7 +34,19 @@
                                 @enderror
                                 <input type="text" class="form-control" id="password" name="password"
                                        value="{{old('password')}}">
-                                <button type="button" class="pass btn btn-primary m-t-5">Գեներացնել Գախտնաբառ</button>
+                                <button type="button" class="pass btn btn-primary m-t-5">Գեներացնել Գաղտնաբառ</button>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="allowed_routes">Թույլատրելի հղումներ</label>
+                                @error('allowed_routes')
+                                <p class="invalid-feedback text-danger" role="alert"><strong>{{ $message }}</strong></p>
+                                @enderror
+                                <select style="height: 300px" multiple name="whitelist_routes[]" class="form-control allowed_roles" id="">
+                                    @foreach($routes as $r)
+                                        <option value="{{ $r['uri'] }}">{{ $r['name'] }}</option>
+                                    @endforeach
+                                </select>
                             </div>
 
                             <button type="submit" class="btn btn-success waves-effect waves-light m-r-10">Պահպանել</button>
@@ -63,6 +75,8 @@
                 }
                 return retVal;
             }
+
+            $(".allowed_roles").bootstrapDualListbox();
         })
     </script>
 @endpush

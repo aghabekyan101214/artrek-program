@@ -5,7 +5,7 @@
         <div class="col-md-12">
             <div class="white-box">
                 <h3 class="box-title">{{$title}}</h3>
-                <a href="{{$route."/create"}}" class="btn btn-success m-b-30"><i class="fas fa-plus"></i> Գումարի Կառավարում</a>
+                <a data-route="{{ app('router')->getRoutes()->match(app('request')->create($route."/create"))->getName() }}" href="{{$route."/create"}}" class="btn btn-success m-b-30"><i class="fas fa-plus"></i> Գումարի Կառավարում</a>
 
                 {{--table--}}
                 <div class="table-responsive">
@@ -18,27 +18,32 @@
                                 <th>Վճարման Եղանակ</th>
                                 <th>Ամսաթիվ</th>
                                 <th>Մեկնաբանություն</th>
+                                <th>Ստեղծող</th>
                                 <th>Կարգավորումներ</th>
                             </tr>
                             <tr>
                                 <td></td>
                                 <td>
-                                    <select class="form-control sum">
-                                        <option value="">Ամբողջը</option>
-                                        <option @if($request->sum == -1) selected @endif value="-1"> < 0</option>
-                                        <option @if($request->sum == 1) selected @endif value="1"> > 0</option>
-                                    </select>
+                                    @if(Auth::user()->role == 1)
+                                        <select class="form-control sum">
+                                            <option value="">Ամբողջը</option>
+                                            <option @if($request->sum == -1) selected @endif value="-1"> < 0</option>
+                                            <option @if($request->sum == 1) selected @endif value="1"> > 0</option>
+                                        </select>
+                                    @endif
                                 </td>
                                 <td></td>
                                 <td>
                                     <input type="text" autocomplete="off" name="datefilter1" class="form-control date datefilter1" value="{{ !is_null($request->registered_from) ? ($request->registered_from . " - " . $request->registered_to) : '' }}"/>
                                 </td>
                                 <td>
-                                    <select class="form-control type">
-                                        <option value="">Ամբողջը</option>
-                                        <option @if($request->type == 1) selected @endif value="1"> Միայն Գովազդի Պատվերները</option>
-                                        <option @if($request->type == 2) selected @endif value="2"> Միայն Ավտոաշտարակի Պատվերները</option>
-                                    </select>
+                                    @if(Auth::user()->role == 1)
+                                        <select class="form-control type">
+                                            <option value="">Ամբողջը</option>
+                                            <option @if($request->type == 1) selected @endif value="1"> Միայն Գովազդի Պատվերները</option>
+                                            <option @if($request->type == 2) selected @endif value="2"> Միայն Ավտոաշտարակի Պատվերները</option>
+                                        </select>
+                                    @endif
                                 </td>
                                 <th>
                                     <button class="btn btn-deafult" onclick="search()" style="margin-left: 10px;"><i class="fa fa-search"></i></button>
@@ -57,13 +62,14 @@
                                 <td>{{ $val->type == 0 ? "Կանխիկ" : "Փոխանցում" }}</td>
                                 <td>{{ $val->created_at }}</td>
                                 <td>{{ $val->comment }}</td>
+                                <td>{{ isset($val->created_by->name) ? $val->created_by->name : 'Բաբկեն Սնապյան'  }}</td>
                                 <td>
-                                    <a href="{{$route."/".$val->id."/edit"}}" data-toggle="tooltip"
+                                    <a data-route="{{ app('router')->getRoutes()->match(app('request')->create($route."/".$val->id."/edit"))->getName() }}" href="{{$route."/".$val->id."/edit"}}" data-toggle="tooltip"
                                        data-placement="top" title="Փոփոխել" class="btn btn-info btn-circle tooltip-info">
                                         <i class="fas fa-edit"></i>
                                     </a>
 
-                                    <form style="display: inline-block" action="{{ $route."/".$val->id }}"
+                                    <form style="display: inline-block" data-route="cashdesk.destroy" action="{{ $route."/".$val->id }}"
                                           method="post" id="work-for-form">
                                         @csrf
                                         @method("DELETE")
@@ -81,9 +87,11 @@
                     </table>
                 </div>
             </div>
-            <div class="alert alert-success">Կանխիկ: {{ $cash }}</div>
-            <div class="alert alert-success">Փոխանցում: {{ $transfer }}</div>
-            <div class="alert alert-success">Ընդհանուր Գումար: {{ $transfer + $cash }}</div>
+            @if(Auth::user()->role == 1)
+                <div class="alert alert-success">Կանխիկ: {{ $cash }}</div>
+                <div class="alert alert-success">Փոխանցում: {{ $transfer }}</div>
+                <div class="alert alert-success">Ընդհանուր Գումար: {{ $transfer + $cash }}</div>
+            @endif
         </div>
     </div>
 @endsection

@@ -17,6 +17,7 @@
     <link href="{{asset('assets/css/style.css')}}" rel="stylesheet">
     <!-- This is a colors CSS -->
     <link href="{{asset('assets/css/colors/default.css')}}" id="theme" rel="stylesheet">
+    <link href="{{asset('assets/js/dualbox/dist/bootstrap-duallistbox.min.css')}}" id="theme" rel="stylesheet">
 
     {{--custom style--}}
     @stack('head')
@@ -78,28 +79,27 @@
             <ul class="nav" id="side-menu">
 
                 <li class="devider"></li>
-
-                <li><a href="/clients" class="waves-effect"><i class="mdi mdi-account fa-fw"></i>
+                <li><a href="/clients" data-route="{{ app('router')->getRoutes()->match(app('request')->create('/clients'))->getName() }}" class="waves-effect"><i class="mdi mdi-account fa-fw"></i>
                         <span class="hide-menu">Հաճախորդներ</span></a>
                 </li>
 
-                <li><a href="/employees" class="waves-effect"><i class="mdi mdi-worker fa-fw"></i>
+                <li><a href="/employees" data-route="{{ app('router')->getRoutes()->match(app('request')->create('/employees'))->getName() }}" class="waves-effect"><i class="mdi mdi-worker fa-fw"></i>
                         <span class="hide-menu">Աշխատակիցներ</span></a>
                 </li>
 
-{{--                <li><a href="/staffs" class="waves-effect"><i class="mdi mdi-account-settings-variant fa-fw"></i>--}}
-{{--                        <span class="hide-menu">Անձնակազմ</span></a>--}}
-{{--                </li>--}}
+                <li><a href="/staffs" data-route="{{ app('router')->getRoutes()->match(app('request')->create('/staffs'))->getName() }}" class="waves-effect"><i class="mdi mdi-account-settings-variant fa-fw"></i>
+                        <span class="hide-menu">Անձնակազմ</span></a>
+                </li>
 
-                <li><a href="/materials" class="waves-effect"><i class="mdi mdi-material-ui fa-fw"></i>
+                <li><a href="/materials" data-route="{{ app('router')->getRoutes()->match(app('request')->create('/materials'))->getName() }}" class="waves-effect"><i class="mdi mdi-material-ui fa-fw"></i>
                         <span class="hide-menu">Ապրանքներ</span></a>
                 </li>
 
-                <li><a href="/material-list" class="waves-effect"><i class="mdi mdi-numeric fa-fw"></i>
+                <li><a href="/material-list" data-route="{{ app('router')->getRoutes()->match(app('request')->create('/material-list'))->getName() }}" class="waves-effect"><i class="mdi mdi-numeric fa-fw"></i>
                         <span class="hide-menu">Ապրանքների Մուտք</span></a>
                 </li>
 
-                <li><a href="/orders" class="waves-effect"><i class="mdi mdi-coin fa-fw"></i>
+                <li><a href="/orders" data-route="{{ app('router')->getRoutes()->match(app('request')->create('/orders'))->getName() }}" class="waves-effect"><i class="mdi mdi-coin fa-fw"></i>
                         <span class="hide-menu">Գովազդի Պատվերներ</span></a>
                 </li>
 
@@ -107,23 +107,23 @@
 {{--                        <span class="hide-menu">Ծառայություններ</span></a>--}}
 {{--                </li>--}}
 
-                <li><a href="/cars" class="waves-effect"><i class="mdi mdi-car-wash fa-fw"></i>
+                <li><a href="/cars" data-route="{{ app('router')->getRoutes()->match(app('request')->create('/cars'))->getName() }}" class="waves-effect"><i class="mdi mdi-car-wash fa-fw"></i>
                         <span class="hide-menu">Ավտոաշտարակներ</span></a>
                 </li>
 
-                <li><a href="/drivers" class="waves-effect"><i class="mdi mdi-library fa-fw"></i>
+                <li><a href="/drivers" data-route="{{ app('router')->getRoutes()->match(app('request')->create('/drivers'))->getName() }}" class="waves-effect"><i class="mdi mdi-library fa-fw"></i>
                         <span class="hide-menu">Վարորդներ</span></a>
                 </li>
 
-                <li><a href="/crane-orders" class="waves-effect"><i class="mdi mdi-car fa-fw"></i>
+                <li><a href="/crane-orders" data-route="{{ app('router')->getRoutes()->match(app('request')->create('/crane-orders'))->getName() }}" class="waves-effect"><i class="mdi mdi-car fa-fw"></i>
                         <span class="hide-menu">Ավտոաշտարակի Պատվերներ</span></a>
                 </li>
 
-                <li><a href="/cashdesk" class="waves-effect"><i class="mdi mdi-cash fa-fw"></i>
+                <li><a href="/cashdesk" data-route="{{ app('router')->getRoutes()->match(app('request')->create('/cashdesk'))->getName() }}" class="waves-effect"><i class="mdi mdi-cash fa-fw"></i>
                         <span class="hide-menu">Դրամարկղ</span></a>
                 </li>
 
-                <li><a href="/spendings" class="waves-effect"><i class="mdi mdi-coins fa-fw"></i>
+                <li><a href="/spendings" data-route="{{ app('router')->getRoutes()->match(app('request')->create('/spendings'))->getName() }}" class="waves-effect"><i class="mdi mdi-coins fa-fw"></i>
                         <span class="hide-menu">Այլ Ծախսեր</span></a>
                 </li>
 
@@ -162,8 +162,33 @@
 <script src="{{asset('assets/js/waves.js')}}"></script>
 <!-- Custom Theme JavaScript min -->
 <script src="{{asset('assets/js/custom.min.js')}}"></script>
+<script src="{{asset('assets/js/dualbox/dist/jquery.bootstrap-duallistbox.min.js')}}"></script>
 
 {{--custom script--}}
 @stack('foot')
-
+<script>
+    @isset($whitelist_routes)
+        $(document).ready(function () {
+            let routes = {!! $whitelist_routes ?? [] !!};
+            console.log(routes)
+            $("#side-menu a").each(function () {
+                let route = $(this).attr('data-route');
+                let data = routes.find(e => e.route == route);
+                if (data === undefined) {
+                    $(this).parent().remove();
+                }
+            });
+            $(".white-box a, .white-box form, .white-box button").each(function() {
+                let route = $(this).attr('data-route');
+                if(route !== undefined) {
+                    console.log(route)
+                    let data = routes.find(e => e.route == route);
+                    if (data == undefined) {
+                        $(this).remove();
+                    }
+                }
+            });
+        });
+    @endisset
+</script>
 </html>
