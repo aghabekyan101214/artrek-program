@@ -21,7 +21,7 @@ class StaffController extends Controller
      */
     public function index()
     {
-        $data = User::where('role', User::ROLES['admin'])->get();
+        $data = User::all();
         $title = self::TITLE;
         $route = self::ROUTE;
         return view(self::FOLDER . ".index", compact("title", "route", 'data'));
