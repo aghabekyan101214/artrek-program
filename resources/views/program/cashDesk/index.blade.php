@@ -45,6 +45,7 @@
                                         </select>
                                     @endif
                                 </td>
+                                <td></td>
                                 <th>
                                     <button class="btn btn-deafult" onclick="search()" style="margin-left: 10px;"><i class="fa fa-search"></i></button>
                                     <a href="{{ $route }}">
