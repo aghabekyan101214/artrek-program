@@ -76,7 +76,7 @@
                                     <ul>
                                         @foreach($val->paidList as $list)
                                             <li><small>{{ intval($list->price) . " - " . $list->created_at->format('Y-m-d'). " " . ($list->type == 1 ? "(Փոխանցում)" : "(Կանխիկ)") }}</small>
-                                                <form style="display: inline-block" action="{{ $route."/destroyPayment/".$list->id }}"
+                                                <form data-route="orders_delete_payment" style="display: inline-block" action="{{ $route."/destroyPayment/".$list->id }}"
                                                       method="post" id="work-for-form">
                                                     @csrf
                                                     @method("DELETE")

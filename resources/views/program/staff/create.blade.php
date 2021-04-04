@@ -44,7 +44,7 @@
                                 @enderror
                                 <select style="height: 300px" multiple name="whitelist_routes[]" class="form-control allowed_roles" id="">
                                     @foreach($routes as $r)
-                                        <option value="{{ $r['uri'] }}">{{ $r['name'] }}</option>
+                                        <option value="{{ $r['name'] }}">{{ $r['name'] }}</option>
                                     @endforeach
                                 </select>
                             </div>

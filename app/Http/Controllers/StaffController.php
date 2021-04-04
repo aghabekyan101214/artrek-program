@@ -70,7 +70,7 @@ class StaffController extends Controller
         $user->password = Hash::make($request->password);
         $user->save();
 
-        if(count($request->whitelist_routes)) {
+        if($request->whitelist_routes) {
             foreach ($request->whitelist_routes as $r) {
                 $user->allowedRoutes()->create(['route' => $r]);
             }
