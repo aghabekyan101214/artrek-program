@@ -39,7 +39,7 @@ class PaidOrder extends Model
         return parent::save($options);
     }
 
-    public function created_by()
+    public function creator()
     {
         return $this->belongsTo(User::class, 'created_by', 'id');
     }

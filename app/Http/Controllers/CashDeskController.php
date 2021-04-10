@@ -18,7 +18,7 @@ class CashDeskController extends Controller
 
     public function index(Request $request)
     {
-        $q_data = PaidOrder::with('created_by')->orderBy("id", "DESC")->where("at_driver", "!=", 1);
+        $q_data = PaidOrder::with('creator')->orderBy("id", "DESC")->where("at_driver", "!=", 1);
         $this->manageSearch($q_data, $request);
         $data = $q_data->get();
 

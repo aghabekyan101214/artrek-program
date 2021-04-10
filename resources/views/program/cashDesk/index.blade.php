@@ -63,7 +63,7 @@
                                 <td>{{ $val->type == 0 ? "Կանխիկ" : "Փոխանցում" }}</td>
                                 <td>{{ $val->created_at }}</td>
                                 <td>{{ $val->comment }}</td>
-                                <td>{{ isset($val->created_by->name) ? $val->created_by->name : 'Բաբկեն Սնապյան'  }}</td>
+                                <td>{{ isset($val->creator) ? $val->creator->name : 'Բաբկեն Սնապյան'  }}</td>
                                 <td>
                                     <a data-route="{{ app('router')->getRoutes()->match(app('request')->create($route."/".$val->id."/edit"))->getName() }}" href="{{$route."/".$val->id."/edit"}}" data-toggle="tooltip"
                                        data-placement="top" title="Փոփոխել" class="btn btn-info btn-circle tooltip-info">
@@ -88,8 +88,8 @@
                     </table>
                 </div>
             </div>
+            <div class="alert alert-success">Կանխիկ: {{ $cash }}</div>
             @if(Auth::user()->role == 1)
-                <div class="alert alert-success">Կանխիկ: {{ $cash }}</div>
                 <div class="alert alert-success">Փոխանցում: {{ $transfer }}</div>
                 <div class="alert alert-success">Ընդհանուր Գումար: {{ $transfer + $cash }}</div>
             @endif
