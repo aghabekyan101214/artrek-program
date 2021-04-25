@@ -144,13 +144,22 @@ class EmployeeController extends Controller
     public function giveSalary($id, Request $request)
     {
         DB::beginTransaction();
+        if ($request->price_cash > 0) {
+            $employee = Employee::find($id);
+            $salary = new EmployeeSalary(['price' => -$request->price_cash, 'month' => $request->month, 'year' => $request->year]);
+            $employee->salaries()->save($salary);
 
-        $employee = Employee::find($id);
-        $salary = new EmployeeSalary(['price' => -$request->price, 'month' => $request->month, 'year' => $request->year]);
-        $employee->salaries()->save($salary);
+            $paidOrder = new PaidOrder(['price' => -$request->price_cash, 'comment' => 'Աշխատավարձ ' . $employee->name . 'ին', 'type' => PaidOrder::CASH]);
+            $salary->paidSalaries()->save($paidOrder);
+        }
+        if($request->price_transfer > 0) {
+            $employee = Employee::find($id);
+            $salary = new EmployeeSalary(['price' => -$request->price_transfer, 'month' => $request->month, 'year' => $request->year]);
+            $employee->salaries()->save($salary);
 
-        $paidOrder = new PaidOrder(['price' => -$request->price, 'comment' => 'Աշխատավարձ ' . $employee->name . 'ին', 'type' => (is_null($request->transfer_type) ? 0 : 1)]);
-        $salary->paidSalaries()->save($paidOrder);
+            $paidOrder = new PaidOrder(['price' => -$request->price_transfer, 'comment' => 'Աշխատավարձ ' . $employee->name . 'ին', 'type' => PaidOrder::TRANSFER]);
+            $salary->paidSalaries()->save($paidOrder);
+        }
 
         DB::commit();
         return redirect(self::ROUTE);

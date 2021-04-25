@@ -50,28 +50,30 @@
                                 @enderror
                                 <input type="number" step="any" class="form-control" id="price" name="price" required value="{{ $craneOrder->price ?? old('price') }}">
                             </div>
+                            @if(!isset($craneOrder))
+                                <div class="form-group">
+                                    <label for="price">Վճարվել է <strong>Կանխիկ</strong></label>
+                                    @error('paid_cash')
+                                    <p class="invalid-feedback text-danger" role="alert"><strong>{{ $message }}</strong></p>
+                                    @enderror
+                                    <input type="number" step="any" class="form-control" id="paid_cash" name="paid_cash" required value="{{ old('paid_cash') ?? 0 }}">
+                                </div>
 
-                            <div class="form-group">
-                                <label for="price">Վճարվել է</label>
-                                @error('paid')
-                                <p class="invalid-feedback text-danger" role="alert"><strong>{{ $message }}</strong></p>
-                                @enderror
-                                <input type="number" step="any" class="form-control" id="paid" name="paid" required value="{{ $craneOrder->paidList[0]->price ?? old('paid') ?? 0 }}">
-                            </div>
-                            <div class="form-group">
-                                <label for="transfer">
-                                    Փոխանցում
-                                    <input type="checkbox" style="width: 39px;" name="transfer_type" @if(isset($craneOrder->paidList[0]->type) && $craneOrder->paidList[0]->type == 1) checked @endif value="1" id="transfer" class="form-control">
-                                </label>
-                            </div>
+                                <div class="form-group">
+                                    <label for="price">Վճարվել է <strong>Փոխանցում</strong></label>
+                                    @error('paid_transfer')
+                                    <p class="invalid-feedback text-danger" role="alert"><strong>{{ $message }}</strong></p>
+                                    @enderror
+                                    <input type="number" step="any" class="form-control" id="paid_transfer" name="paid_transfer" required value="{{ old('paid_transfer') ?? 0 }}">
+                                </div>
 
-                            <div class="form-group">
-                                <label for="at_driver">
-                                    Գումարը Վարորդի Մոտ է
-                                    <input type="checkbox" style="width: 39px;" name="at_driver" @if(isset($craneOrder->paidList[0]->at_driver) && $craneOrder->paidList[0]->at_driver == 1) checked @endif value="1" id="at_driver" class="form-control">
-                                </label>
-                            </div>
-
+                                <div class="form-group">
+                                    <label for="at_driver">
+                                        Գումարը Վարորդի Մոտ է
+                                        <input type="checkbox" style="width: 39px;" name="at_driver" @if(isset($craneOrder->paidList[0]->at_driver) && $craneOrder->paidList[0]->at_driver == 1) checked @endif value="1" id="at_driver" class="form-control">
+                                    </label>
+                                </div>
+                            @endif
 
                             <button type="submit" class="btn btn-success waves-effect waves-light m-r-10">Պահպանել</button>
                         </form>

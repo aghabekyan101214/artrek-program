@@ -77,8 +77,12 @@
                    <div class="modal-body">
                        @csrf
                        <div class="form-group">
-                           <label for="sum">Գումարի Չափ</label>
-                           <input type="number" min="1" step="any" id="sum" name="price" required class="form-control">
+                           <label for="sum">Գումարի Չափ <strong>Կանխիկ</strong></label>
+                           <input type="number" step="any" id="sum" name="price_cash" class="form-control">
+                       </div>
+                       <div class="form-group">
+                           <label for="sum">Գումարի Չափ <strong>Փոխանցում</strong></label>
+                           <input type="number" step="any" id="sum" name="price_transfer" class="form-control">
                        </div>
                        <div class="form-group">
                            <label for="sum">Ամսաթիվ</label>
@@ -95,12 +99,6 @@
                                <option selected value="{{ Carbon\Carbon::now()->year }}">{{ Carbon\Carbon::now()->year }}</option>
                                <option value="{{ Carbon\Carbon::now()->year + 1 }}">{{ Carbon\Carbon::now()->year + 1 }}</option>
                            </select>
-                       </div>
-                       <div class="form-group">
-                           <label for="transfer">
-                               Փոխանցում
-                               <input type="checkbox" style="width: 39px;" name="transfer_type" id="transfer" class="form-control">
-                           </label>
                        </div>
                    </div>
                    <div class="modal-footer">

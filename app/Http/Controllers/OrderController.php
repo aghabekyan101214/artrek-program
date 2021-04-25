@@ -47,14 +47,17 @@ class OrderController extends Controller
         $rules = [
             "client_id" => "required|integer",
             "price" => "required|numeric",
-            "paid" => "required|numeric",
+            "paid_cash" => "numeric",
+            "paid_transfer" => "numeric",
         ];
         $messages = [
             'client_id.required' => 'Խնդրում եմ լրացնել հաճախորդի անունը',
             'price.required' => 'Խնդրում եմ լրացնել պատվերի գինը',
             'price.numeric' => 'Խնդրում եմ լրացնել ճիշտ թվանշաններ',
-            'paid.required' => 'Խնդրում եմ լրացնել վճարված գումարը',
-            'paid.numeric' => 'Խնդրում եմ լրացնել ճիշտ թվանշաններ',
+            'paid_cash.required' => 'Խնդրում եմ լրացնել վճարված գումարը',
+            'paid_cash.numeric' => 'Խնդրում եմ լրացնել ճիշտ թվանշաններ',
+            'paid_transfer.required' => 'Խնդրում եմ լրացնել վճարված գումարը',
+            'paid_transfer.numeric' => 'Խնդրում եմ լրացնել ճիշտ թվանշաններ',
         ];
         $this->validate($request, $rules, $messages);
         $orderListData = $this->getInsertData($request->data, 0);
@@ -83,8 +86,13 @@ class OrderController extends Controller
         if(!empty($laserListData)) {
             $order->laserList()->createMany($laserListData);
         }
-        if($request->paid != 0) {
-            $paid = new PaidOrder(["price" => $request->paid, "type" => ($request->transfer_type ?? 0), 'comment' => "Գովազդի պատվերի գումար " . $order->client->name]);
+
+        if($request->paid_cash > 0) {
+            $paid = new PaidOrder(["price" => $request->paid_cash, "type" => PaidOrder::CASH, 'comment' => "Գովազդի պատվերի գումար " . $order->client->name]);
+            $order->paidList()->save($paid);
+        }
+        if($request->paid_transfer > 0) {
+            $paid = new PaidOrder(["price" => $request->paid_transfer, "type" => PaidOrder::TRANSFER, 'comment' => "Գովազդի պատվերի գումար " . $order->client->name]);
             $order->paidList()->save($paid);
         }
 
@@ -116,14 +124,11 @@ class OrderController extends Controller
         $rules = [
             "client_id" => "required|integer",
             "price" => "required|numeric",
-            "paid" => "required|numeric",
         ];
         $messages = [
             'client_id.required' => 'Խնդրում եմ լրացնել հաճախորդի անունը',
             'price.required' => 'Խնդրում եմ լրացնել պատվերի գինը',
             'price.numeric' => 'Խնդրում եմ լրացնել ճիշտ թվանշաններ',
-            'paid.required' => 'Խնդրում եմ լրացնել վճարված գումարը',
-            'paid.numeric' => 'Խնդրում եմ լրացնել ճիշտ թվանշաններ',
         ];
         $this->validate($request, $rules, $messages);
         $orderListData = $this->getInsertData($request->data, 0);
@@ -159,14 +164,6 @@ class OrderController extends Controller
         if(!empty($laserListData)) {
             $order->laserList()->createMany($laserListData);
         }
-        if($request->paid != 0) {
-            $paid = PaidOrder::where(["order_id" => $order->id])->orderBy("id", "DESC")->first() ?? new PaidOrder();
-            $paid->order_id = $order->id;
-            $paid->comment = "Գովազդի պատվերի գումար " . $order->client->name;
-            $paid->price = $request->paid;
-            $paid->type = ($request->transfer_type ?? 0);
-            $paid->save();
-        }
 
         DB::commit();
         return redirect(self::ROUTE);
@@ -186,12 +183,22 @@ class OrderController extends Controller
     public function pay($id, Request $request)
     {
         $order = Order::with('client')->find($id);
-        $paidOrder = new PaidOrder();
-        $paidOrder->order_id = $id;
-        $paidOrder->price = $request->price;
-        $paidOrder->comment = "Գովազդի պատվերի գումար " . $order->client->name;
-        $paidOrder->type = $request->transfer_type ? 1 : 0;
-        $paidOrder->save();
+        if ($request->price_cash > 0) {
+            $paidOrder = new PaidOrder();
+            $paidOrder->order_id = $id;
+            $paidOrder->price = $request->price_cash;
+            $paidOrder->comment = "Գովազդի պատվերի գումար " . $order->client->name;
+            $paidOrder->type = PaidOrder::CASH;
+            $paidOrder->save();
+        }
+        if($request->price_transfer > 0) {
+            $paidOrder = new PaidOrder();
+            $paidOrder->order_id = $id;
+            $paidOrder->price = $request->price_transfer;
+            $paidOrder->comment = "Գովազդի պատվերի գումար " . $order->client->name;
+            $paidOrder->type = PaidOrder::TRANSFER;
+            $paidOrder->save();
+        }
 
         return redirect(self::ROUTE);
     }

@@ -39,20 +39,23 @@
                                     <input type="number" step="any" class="form-control" id="price" name="price" required value="{{ $order->price ?? old('price') }}">
                                 </div>
                             </div>
+                            @if(!isset($order))
+                                <div class="form-group">
+                                    <label for="price">Վճարվել է <strong>Կանխիկ</strong></label>
+                                    @error('paid_cash')
+                                    <p class="invalid-feedback text-danger" role="alert"><strong>{{ $message }}</strong></p>
+                                    @enderror
+                                    <input type="number" step="any" class="form-control" id="paid_cash" name="paid_cash" required value="{{ old('paid_cash') ?? 0 }}">
+                                </div>
 
-                            <div class="form-group">
-                                <label for="price">Վճարվել է</label>
-                                @error('paid')
-                                <p class="invalid-feedback text-danger" role="alert"><strong>{{ $message }}</strong></p>
-                                @enderror
-                                <input type="number" step="any" class="form-control" id="paid" name="paid" required value="{{ isset($order) ? ($order->paidList->last()->price ?? 0) : old('paid') ?? 0 }}">
-                            </div>
-                            <div class="form-group">
-                                <label for="transfer">
-                                    Փոխանցում
-                                    <input type="checkbox" style="width: 39px;" name="transfer_type" @if(isset($order) && isset($order->paidList->last()->type) && $order->paidList->last()->type == 1) checked @endif value="1" id="transfer" class="form-control">
-                                </label>
-                            </div>
+                                <div class="form-group">
+                                    <label for="price">Վճարվել է <strong>Փոխանցում</strong></label>
+                                    @error('paid_transfer')
+                                    <p class="invalid-feedback text-danger" role="alert"><strong>{{ $message }}</strong></p>
+                                    @enderror
+                                    <input type="number" step="any" class="form-control" id="paid_transfer" name="paid_transfer" required value="{{ old('paid_transfer') ?? 0 }}">
+                                </div>
+                            @endif
 
                             <div class="form-group">
                                 <label for="due_date">Հանձնման Ժամկետ</label>

@@ -58,15 +58,18 @@ class CraneOrderController extends Controller
             "client_id" => "required|integer",
             "driver_id" => "required|integer",
             "price" => "required|numeric",
-            "paid" => "required|numeric",
+            "paid_cash" => "numeric",
+            "paid_transfer" => "numeric",
         ];
         $messages = [
             'client_id.required' => 'Խնդրում եմ ընտրել հաճախորդ',
             'driver_id.required' => 'Խնդրում եմ ընտրել վարորդ',
             'price.required' => 'Խնդրում եմ լրացնել պատվերի գինը',
             'price.numeric' => 'Խնդրում եմ լրացնել ճիշտ թվանշաններ',
-            'paid.required' => 'Խնդրում եմ լրացնել վճարված գումարը',
-            'paid.numeric' => 'Խնդրում եմ լրացնել ճիշտ թվանշաններ',
+            'paid_cash.required' => 'Խնդրում եմ լրացնել վճարված գումարը',
+            'paid_cash.numeric' => 'Խնդրում եմ լրացնել ճիշտ թվանշաններ',
+            'paid_transfer.required' => 'Խնդրում եմ լրացնել վճարված գումարը',
+            'paid_transfer.numeric' => 'Խնդրում եմ լրացնել ճիշտ թվանշաններ',
         ];
         $this->validate($request, $rules, $messages);
 
@@ -82,10 +85,15 @@ class CraneOrderController extends Controller
         $salary = new DriverSalary(["price" => ( $request->price * Driver::PERCENTAGE / 100 ), "driver_id" => $order->driver_id]);
         $order->salary()->save($salary);
 
-        if($request->paid != 0) {
-            $paid = new PaidOrder(["price" => $request->paid, "type" => ($request->transfer_type ?? 0), "at_driver" => ($request->at_driver ?? 0), 'comment' => "Ավտոաշտարակի պատվերի գումար"]);
+        if($request->paid_cash > 0) {
+            $paid = new PaidOrder(["price" => $request->paid_cash, "type" => PaidOrder::CASH, "at_driver" => ($request->at_driver ?? 0), 'comment' => "Ավտոաշտարակի պատվերի գումար " . $order->client->name]);
             $order->paidList()->save($paid);
         }
+        if($request->paid_transfer > 0) {
+            $paid = new PaidOrder(["price" => $request->paid_transfer, "type" => PaidOrder::TRANSFER, "at_driver" => 0, 'comment' => "Ավտոաշտարակի պատվերի գումար " . $order->client->name]);
+            $order->paidList()->save($paid);
+        }
+
 
         DB::commit();
         return redirect(self::ROUTE);
@@ -130,15 +138,12 @@ class CraneOrderController extends Controller
             "client_id" => "required|integer",
             "driver_id" => "required|integer",
             "price" => "required|numeric",
-            "paid" => "required|numeric",
         ];
         $messages = [
             'client_id.required' => 'Խնդրում եմ ընտրել հաճախորդ',
             'driver_id.required' => 'Խնդրում եմ ընտրել վարորդ',
             'price.required' => 'Խնդրում եմ լրացնել պատվերի գինը',
             'price.numeric' => 'Խնդրում եմ լրացնել ճիշտ թվանշաններ',
-            'paid.required' => 'Խնդրում եմ լրացնել վճարված գումարը',
-            'paid.numeric' => 'Խնդրում եմ լրացնել ճիշտ թվանշաններ',
         ];
         $this->validate($request, $rules, $messages);
         DB::beginTransaction();
@@ -153,16 +158,6 @@ class CraneOrderController extends Controller
         $craneOrder->driver_id = $request->driver_id;
         $craneOrder->price = $request->price;
         $craneOrder->save();
-
-        // Save paid price if it is more than 0
-        if($request->paid != 0) {
-            $paid = PaidOrder::where(["crane_order_id" => $craneOrder->id])->orderBy("id", "DESC")->first() ?? new PaidOrder(["crane_order_id" => $craneOrder->id, "price" => $request->paid, "type" => ($request->transfer_type ?? 0), "at_driver" => ($request->at_driver ?? 0)]);
-            $paid->price = $request->paid;
-            $paid->type = ($request->transfer_type ?? 0);
-            $paid->at_driver = ($request->at_driver ?? 0);
-            $paid->save();
-        }
-
 
         $driverSalary = DriverSalary::where("crane_order_id", $craneOrder->id)->orderBy("id", "DESC")->first() ?? new DriverSalary();
         $driverSalary->crane_order_id = $craneOrder->id;
@@ -197,14 +192,26 @@ class CraneOrderController extends Controller
 
     public function pay($id, Request $request)
     {
-        $craneOrder = CraneOrder::find($id);
-        $paidOrder = new PaidOrder();
-        $paidOrder->crane_order_id = $id;
-        $paidOrder->at_driver = ($request->at_driver ?? 0);
-        $paidOrder->price = $request->price;
-        $paidOrder->comment = "Ավտոաշտարակի պատվերի գումար " . $craneOrder->client->name;
-        $paidOrder->type = $request->transfer_type ? 1 : 0;
-        $paidOrder->save();
+        if ($request->price_cash > 0) {
+            $craneOrder = CraneOrder::find($id);
+            $paidOrder = new PaidOrder();
+            $paidOrder->crane_order_id = $id;
+            $paidOrder->at_driver = ($request->at_driver ?? 0);
+            $paidOrder->price = $request->price_cash;
+            $paidOrder->comment = "Ավտոաշտարակի պատվերի գումար " . $craneOrder->client->name;
+            $paidOrder->type = PaidOrder::CASH;
+            $paidOrder->save();
+        }
+        if($request->price_transfer > 0) {
+            $craneOrder = CraneOrder::find($id);
+            $paidOrder = new PaidOrder();
+            $paidOrder->crane_order_id = $id;
+            $paidOrder->at_driver = 0;
+            $paidOrder->price = $request->price_transfer;
+            $paidOrder->comment = "Ավտոաշտարակի պատվերի գումար " . $craneOrder->client->name;
+            $paidOrder->type = PaidOrder::TRANSFER;
+            $paidOrder->save();
+        }
 
         // Collect the driver salary
 //        if($request->price != 0) {

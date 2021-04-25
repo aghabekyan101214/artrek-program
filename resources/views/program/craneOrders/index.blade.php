@@ -65,7 +65,7 @@
                                     <p>Ընդ․ ՝ {{ $val->paidList->sum("price") }}</p>
                                     <ul>
                                         @foreach($val->paidList as $list)
-                                            <li><small>{{ intval($list->price) . " - " . $list->created_at->format('Y-m-d'). " " . ($list->at_driver == 1 ? "(Վարորդի Մոտ)" : "") }}</small>
+                                            <li><small>{{ intval($list->price) . " - " . $list->created_at->format('Y-m-d'). " " . ($list->at_driver == 1 ? "(Վարորդի Մոտ)" : "") . ($list->type == 1 ? "(Փոխանցում)" : "(Կանխիկ)") }}</small>
                                                 @if($list->at_driver)
                                                     <form style="display: inline-block; margin-left: 5px;" action="{{$route."/take-from-driver/$list->id"}}" method="post">
                                                         @csrf
@@ -157,19 +157,17 @@
                    <div class="modal-body">
                        @csrf
                        <div class="form-group">
-                           <label for="sum">Գումարի Չափ</label>
-                           <input type="number" step="any" id="sum" name="price" class="form-control">
+                           <label for="sum">Գումարի Չափ <strong>Կանխիկ</strong></label>
+                           <input type="number" step="any" id="sum" name="price_cash" class="form-control">
+                       </div>
+                       <div class="form-group">
+                           <label for="sum">Գումարի Չափ <strong>Փոխանցում</strong></label>
+                           <input type="number" step="any" id="sum" name="price_transfer" class="form-control">
                        </div>
                        <div class="form-group">
                            <label for="at_driver">
-                               Գումարը Վարորդի Մոտ է
+                               Գումարը Վարորդի Մոտ է (հաշվարկվելու է կանխիկ գումարից)
                                <input type="checkbox" style="width: 39px;" name="at_driver" @if(isset($craneOrder->paidList[0]->at_driver) && $craneOrder->paidList[0]->at_driver == 1) checked @endif value="1" id="at_driver" class="form-control">
-                           </label>
-                       </div>
-                       <div class="form-group">
-                           <label for="transfer">
-                               Փոխանցում
-                               <input type="checkbox" style="width: 39px;" name="transfer_type" @if(isset($craneOrder->paidList[0]->type) && $craneOrder->paidList[0]->type == 1) checked @endif value="1" id="transfer" class="form-control">
                            </label>
                        </div>
                    </div>
