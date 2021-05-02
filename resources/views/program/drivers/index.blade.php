@@ -29,7 +29,7 @@
                                 <td>{{$val->name}}</td>
                                 <td>{{$val->car->name}}</td>
                                 <td>{{$val->phone}}</td>
-                                <td>{{$val->salary->sum("price") + $val->paidSalary->sum("price") }}</td>
+                                <td>{{$val->salary->sum("price") + $val->paidSalary->where('driver_salary_type', \App\Model\PaidOrder::DRIVER_SALARY_COLLECTED)->sum("price") }}</td>
                                 <td>
                                     <a data-route="{{ app('router')->getRoutes()->match(app('request')->create($route."/".$val->id."/edit"))->getName() }}" href="{{$route."/".$val->id."/edit"}}" data-toggle="tooltip"
                                        data-placement="top" title="Փոփոխել" class="btn btn-info btn-circle tooltip-info">
@@ -82,8 +82,12 @@
                    <div class="modal-body">
                        @csrf
                        <div class="form-group">
-                           <label for="sum">Գումարի Չափ</label>
-                           <input type="number" step="any" required id="sum" name="price" class="form-control">
+                           <label for="sum">Գումարի Չափ <strong>Կանխիկ</strong></label>
+                           <input type="number" step="any" id="sum" name="price_cash" class="form-control">
+                       </div>
+                       <div class="form-group">
+                           <label for="sum">Գումարի Չափ <strong>Փոխանցում</strong></label>
+                           <input type="number" step="any" id="sum" name="price_transfer" class="form-control">
                        </div>
                        <div class="form-group">
                            <label for="sum">Ամսաթիվ</label>
@@ -102,11 +106,12 @@
                            </select>
                        </div>
                        <div class="form-group">
-                           <label for="transfer">
-                               Փոխանցում
-                               <input type="checkbox" style="width: 39px;" name="transfer_type" @if(isset($craneOrder->paidList[0]->type) && $craneOrder->paidList[0]->type == 1) checked @endif value="1" id="transfer" class="form-control">
+                           <label for="driver_salary_fixed">
+                               Ֆիքսված աշխատավարձ
+                               <input type="checkbox" style="width: 39px;" name="driver_salary_fixed" value="1" id="driver_salary_fixed" class="form-control">
                            </label>
                        </div>
+
                    </div>
                    <div class="modal-footer">
                        <button class="btn btn-primary">Վճարել</button>

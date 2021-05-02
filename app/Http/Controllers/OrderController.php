@@ -226,23 +226,40 @@ class OrderController extends Controller
 
     public function paySpending($id, Request $request)
     {
-        if($request->price > 0) {
-            DB::beginTransaction();
+        DB::beginTransaction();
+        if ($request->price_cash > 0) {
 
             $paidOrder = new PaidOrder();
-            $paidOrder->price = -$request->price;
-            $paidOrder->type = is_null($request->transfer_type) ? 0 : 1;
+            $paidOrder->price = -$request->price_cash;
+            $paidOrder->type = PaidOrder::CASH;
             $paidOrder->comment = 'Գովազդի պատվերի այլ ծախս';
             $paidOrder->save();
 
             $spending = new OrderSpendingList();
             $spending->spending_order_id = $id;
             $spending->paid_order_id = $paidOrder->id;
-            $spending->price = -$request->price;
+            $spending->price = -$request->price_cash;
             $spending->save();
 
-            DB::commit();
         }
+
+        if ($request->price_transfer > 0) {
+
+            $paidOrder = new PaidOrder();
+            $paidOrder->price = -$request->price_transfer;
+            $paidOrder->type = PaidOrder::TRANSFER;
+            $paidOrder->comment = 'Գովազդի պատվերի այլ ծախս';
+            $paidOrder->save();
+
+            $spending = new OrderSpendingList();
+            $spending->spending_order_id = $id;
+            $spending->paid_order_id = $paidOrder->id;
+            $spending->price = -$request->price_transfer;
+            $spending->save();
+
+        }
+
+        DB::commit();
 
         return redirect()->back();
     }

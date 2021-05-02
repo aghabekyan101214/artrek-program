@@ -47,7 +47,7 @@
                                                         </a>
                                                     </form>
                                                     <button data-toggle="modal" data-target="#exampleModal"
-                                                            data-placement="top" class="btn btn-primary btn-circle btn-sm tooltip-primary open-modal" price="{{ $s->price }}" month="{{ $s->month }}" onclick="openModal('{{ url($route."/".$s->id."/updateGivenSalary") }}', '{{ $s->price * -1 }}', '{{ $s->month }}', {{ $s->year }}, {{ $s->type }})">
+                                                            data-placement="top" class="btn btn-primary btn-circle btn-sm tooltip-primary open-modal" price="{{ $s->price }}" month="{{ $s->month }}" onclick="openModal('{{ url($route."/".$s->id."/updateGivenSalary") }}', '{{ $s->price * -1 }}', '{{ $s->month }}', {{ $s->year }}, {{ $s->type }}, '{{ $s->driver_salary_type }}')">
                                                         <i class="fas fa-edit"></i>
                                                     </button>
                                                 </td>
@@ -102,6 +102,12 @@
                                <input type="checkbox" style="width: 39px;" name="transfer_type" id="transfer" class="form-control">
                            </label>
                        </div>
+                       <div class="form-group">
+                           <label for="driver_salary_fixed">
+                               Ֆիքսված աշխատավարձ
+                               <input type="checkbox" style="width: 39px;" name="driver_salary_fixed" value="1" id="driver_salary_fixed" class="form-control">
+                           </label>
+                       </div>
                    </div>
                    <div class="modal-footer">
                        <button class="btn btn-primary">Վճարել</button>
@@ -131,13 +137,15 @@
 
     <script src="{{asset('assets/plugins/swal/sweetalert.min.js')}}"></script>
     <script>
-        openModal = (url, price, month, year, transfer_type) => {
+        openModal = (url, price, month, year, transfer_type, is_fixed_salary) => {
             $(".pay-form").attr("action", url);
             $("#sum").val(price);
             $('.months').val(month)
             $('.years').val(year);
             if(transfer_type != 0) $("#transfer").prop('checked', true);
             else $("#transfer").prop('checked', false);
+            if(is_fixed_salary == 2) $("#driver_salary_fixed").prop('checked', true);
+            else if(is_fixed_salary == 1) $("#driver_salary_fixed").prop('checked', false);
         }
         openMonth = e => $("." + e).toggle();
 

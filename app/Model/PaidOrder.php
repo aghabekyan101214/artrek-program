@@ -13,6 +13,9 @@ class PaidOrder extends Model
     const CASH = 0;
     const TRANSFER = 1;
 
+    const DRIVER_SALARY_COLLECTED = 1;
+    const DRIVER_SALARY_FIXED = 2;
+
     const MONTHS = [
         ['index' => 1, 'name' => 'Հունվար'],
         ['index' => 2, 'name' => 'Փետրվար'],
