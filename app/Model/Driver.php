@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Driver extends Model
 {
+    use CreatorTrait;
+
     const PERCENTAGE = 25;
     const PAID = 1;
     const NOT_PAID = 0;

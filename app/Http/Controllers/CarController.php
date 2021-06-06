@@ -21,7 +21,7 @@ class CarController extends Controller
      */
     public function index()
     {
-        $data = Car::with("driver")->orderBy("id", "DESC")->get();
+        $data = Car::with("driver", "creator")->orderBy("id", "DESC")->get();
         $title = self::TITLE;
         $route = self::ROUTE;
         return view(self::FOLDER . '.index', compact('title', 'route', 'data'));

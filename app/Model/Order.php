@@ -6,6 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Order extends Model
 {
+
+    use CreatorTrait;
+
     public function client()
     {
         return $this->belongsTo("App\Model\Client", "client_id", "id");

@@ -2,13 +2,14 @@
 
 namespace App;
 
+use App\Model\CreatorTrait;
 use App\Model\UserAllowedRoutes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
-    use Notifiable;
+    use Notifiable, CreatorTrait;
 
     const SUPER_ADMIN = 1;
     const ADMIN = 2;

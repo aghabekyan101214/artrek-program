@@ -24,7 +24,7 @@ class DriverController extends Controller
      */
     public function index()
     {
-        $data = Driver::with(["salary", "paidSalary", "car"])->orderBy("id", "DESC")->get();
+        $data = Driver::with(["salary", "paidSalary", "car", "creator"])->orderBy("id", "DESC")->get();
         $title = self::TITLE;
         $route = self::ROUTE;
         $months = PaidOrder::MONTHS;

@@ -8,6 +8,9 @@ use Illuminate\Support\Facades\Auth;
 
 class PaidOrder extends Model
 {
+
+    use CreatorTrait;
+
     protected $guarded = [];
 
     const CASH = 0;
@@ -34,17 +37,6 @@ class PaidOrder extends Model
     public function order()
     {
         return $this->belongsTo(Order::class, 'order_id', 'id');
-    }
-
-    public function save(array $options = [])
-    {
-        $this->created_by = Auth::user()->id;
-        return parent::save($options);
-    }
-
-    public function creator()
-    {
-        return $this->belongsTo(User::class, 'created_by', 'id');
     }
 
 }

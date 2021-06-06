@@ -6,6 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Material extends Model
 {
+
+    use CreatorTrait;
+
     const UNITS = [
         "Մ²",
         "Մետր",

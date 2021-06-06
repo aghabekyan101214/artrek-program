@@ -19,7 +19,7 @@ class MaterialListController extends Controller
      */
     public function index()
     {
-        $data = MaterialList::orderBy("id", "DESC")->with("material")->get();
+        $data = MaterialList::orderBy("id", "DESC")->with("material", "creator")->get();
         $title = self::TITLE;
         $route = self::ROUTE;
         $units = Material::UNITS;

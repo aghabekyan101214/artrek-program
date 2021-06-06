@@ -22,7 +22,7 @@ class OrderController extends Controller
 
     public function index(Request $request)
     {
-        $query = Order::with(["client", "paidList"])->orderBy("id", "DESC");
+        $query = Order::with(["client", "paidList", "creator"])->orderBy("id", "DESC");
         $this->manageSearch($query, $request);
         $title = self::TITLE;
         $route = self::ROUTE;

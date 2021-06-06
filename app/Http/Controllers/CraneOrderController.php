@@ -24,7 +24,7 @@ class CraneOrderController extends Controller
      */
     public function index(Request $request)
     {
-        $query = CraneOrder::with(["client", "paidList", "driver"])->orderBy("id", "DESC");
+        $query = CraneOrder::with(["client", "paidList", "driver", "creator"])->orderBy("id", "DESC");
         $this->manageSearch($query, $request);
         $data = $query->get();
         $title = self::TITLE;

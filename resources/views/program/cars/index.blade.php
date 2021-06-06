@@ -16,6 +16,7 @@
                                 <th>#</th>
                                 <th>Անուն</th>
                                 <th>Վարորդ</th>
+                                <th>Ստեղծող</th>
                                 <th>Կարգավորումներ</th>
                             </tr>
                         </thead>
@@ -26,6 +27,7 @@
                                 <td>{{$key + 1}}</td>
                                 <td>{{$val->name}}</td>
                                 <td>{!! $val->driver->name ?? "<span style='color: red;'>Մեքենային վարորդ կցված չէ</span>" !!}</td>
+                                <td>{{ isset($val->creator) ? $val->creator->name : 'Բաբկեն Սնապյան'  }}</td>
                                 <td>
                                     <a data-route="{{ app('router')->getRoutes()->match(app('request')->create($route."/".$val->id."/edit"))->getName() }}" href="{{$route."/".$val->id."/edit"}}" data-toggle="tooltip"
                                        data-placement="top" title="Փոփոխել" class="btn btn-info btn-circle tooltip-info">

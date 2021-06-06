@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class CraneOrder extends Model
 {
+    use CreatorTrait;
+
     public function paidList()
     {
         return $this->hasMany("App\Model\PaidOrder", "crane_order_id", "id")->orderBy("id");

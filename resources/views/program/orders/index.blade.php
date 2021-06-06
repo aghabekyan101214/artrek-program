@@ -53,6 +53,7 @@
                                 <th>Վճարվել է</th>
                                 <th>Պարտք</th>
                                 <th>Ավարտ</th>
+                                <th>Ստեղծող</th>
                                 <th>Կարգավորումներ</th>
                             </tr>
                         </thead>
@@ -105,6 +106,7 @@
                                     @endif
                                 </td>
                                 <td>{{$val->due_date}}</td>
+                                <td>{{ isset($val->creator) ? $val->creator->name : 'Բաբկեն Սնապյան'  }}</td>
                                 <td>
                                     <button data-route="orders_pay" data-toggle="modal" data-target="#exampleModal" data-placement="top" class="btn btn-success btn-circle tooltip-success open-modal" onclick="openModal('{{url($route."/".$val->id."/pay")}}')"><i class="fas fa-money-bill-alt"></i></button>
                                     <a data-route="{{ app('router')->getRoutes()->match(app('request')->create($route."/".$val->id."/edit"))->getName() }}" href="{{$route."/".$val->id."/edit"}}" data-toggle="tooltip"

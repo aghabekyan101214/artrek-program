@@ -21,7 +21,7 @@ class StaffController extends Controller
      */
     public function index()
     {
-        $data = User::all();
+        $data = User::with('creator')->get();
         $title = self::TITLE;
         $route = self::ROUTE;
         return view(self::FOLDER . ".index", compact("title", "route", 'data'));

@@ -25,7 +25,7 @@ class EmployeeController extends Controller
      */
     public function index()
     {
-        $data = Employee::orderBy("id", "DESC")->get();
+        $data = Employee::with('creator')->orderBy("id", "DESC")->get();
         $title = self::TITLE;
         $route = self::ROUTE;
         $months = PaidOrder::MONTHS;

@@ -18,7 +18,7 @@ class ClientController extends Controller
      */
     public function index()
     {
-        $data = Client::all();
+        $data = Client::with('creator')->get();
         $title = self::TITLE;
         $route = self::ROUTE;
         return view(self::FOLDER . '.index', compact('title', 'route', 'data'));

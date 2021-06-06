@@ -18,6 +18,7 @@
                                 <th>Կցված Ավտոաշտարակ</th>
                                 <th>Հեռախոսահամար</th>
                                 <th>Կուտակված Աշխատավարձ</th>
+                                <th>Ստեղծող</th>
                                 <th>Կարգավորումներ</th>
                             </tr>
                         </thead>
@@ -30,6 +31,7 @@
                                 <td>{{$val->car->name}}</td>
                                 <td>{{$val->phone}}</td>
                                 <td>{{$val->salary->sum("price") + $val->paidSalary->where('driver_salary_type', \App\Model\PaidOrder::DRIVER_SALARY_COLLECTED)->sum("price") }}</td>
+                                <td>{{ isset($val->creator) ? $val->creator->name : 'Բաբկեն Սնապյան'  }}</td>
                                 <td>
                                     <a data-route="{{ app('router')->getRoutes()->match(app('request')->create($route."/".$val->id."/edit"))->getName() }}" href="{{$route."/".$val->id."/edit"}}" data-toggle="tooltip"
                                        data-placement="top" title="Փոփոխել" class="btn btn-info btn-circle tooltip-info">
