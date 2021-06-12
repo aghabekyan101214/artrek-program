@@ -27,6 +27,8 @@
                                 <th></th>
                                 <th></th>
                                 <th></th>
+                                <th></th>
+                                <th></th>
                                 <th>
                                     <button class="btn btn-deafult" onclick="search()" style="margin-left: 10px;"><i class="fa fa-search"></i></button>
                                     <a href="{{ $route }}">
@@ -42,6 +44,7 @@
                                 <th>Վճարվել է</th>
                                 <th>Պարտք</th>
                                 <th>Վարորդի Մոտ</th>
+                                <th>Մեկնաբանություն</th>
                                 <th>Ստեղծող</th>
                                 <th>Կարգավորումներ</th>
                             </tr>
@@ -106,6 +109,7 @@
                                     @endforeach
                                     {{ $sum }}
                                 </td>
+                                <td>{{ $val->description }}</td>
                                 <td>{{ isset($val->creator) ? $val->creator->name : 'Բաբկեն Սնապյան'  }}</td>
                                 <td>
                                     <a data-route="{{ app('router')->getRoutes()->match(app('request')->create($route."/".$val->id."/edit"))->getName() }}" href="{{$route."/".$val->id."/edit"}}" data-toggle="tooltip"
@@ -206,7 +210,7 @@
     <script src="{{ asset("assets/plugins/daterangepicker/daterangepicker.js") }}"></script>
     <script>
         $('#datatable').DataTable({
-            "ordering": true
+            "ordering": false
         });
         openModal = e => $(".pay-form").attr("action", e);
         $(document).ready(function () {

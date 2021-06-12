@@ -60,6 +60,7 @@ class CraneOrderController extends Controller
             "price" => "required|numeric",
             "paid_cash" => "numeric",
             "paid_transfer" => "numeric",
+            "description" => "max:3000",
         ];
         $messages = [
             'client_id.required' => 'Խնդրում եմ ընտրել հաճախորդ',
@@ -70,6 +71,7 @@ class CraneOrderController extends Controller
             'paid_cash.numeric' => 'Խնդրում եմ լրացնել ճիշտ թվանշաններ',
             'paid_transfer.required' => 'Խնդրում եմ լրացնել վճարված գումարը',
             'paid_transfer.numeric' => 'Խնդրում եմ լրացնել ճիշտ թվանշաններ',
+            'description.max' => 'Խնդրում եմ լրացնել ոչ ավել քան 3000 նիշ',
         ];
         $this->validate($request, $rules, $messages);
 
@@ -79,6 +81,7 @@ class CraneOrderController extends Controller
         $order->client_id = $request->client_id;
         $order->driver_id = $request->driver_id;
         $order->price = $request->price;
+        $order->description = $request->description;
         $order->save();
 
         // Push to drivers salary
@@ -138,12 +141,14 @@ class CraneOrderController extends Controller
             "client_id" => "required|integer",
             "driver_id" => "required|integer",
             "price" => "required|numeric",
+            "description" => "max:3000",
         ];
         $messages = [
             'client_id.required' => 'Խնդրում եմ ընտրել հաճախորդ',
             'driver_id.required' => 'Խնդրում եմ ընտրել վարորդ',
             'price.required' => 'Խնդրում եմ լրացնել պատվերի գինը',
             'price.numeric' => 'Խնդրում եմ լրացնել ճիշտ թվանշաններ',
+            'description.max' => 'Խնդրում եմ լրացնել ոչ ավել քան 3000 նիշ',
         ];
         $this->validate($request, $rules, $messages);
         DB::beginTransaction();
@@ -157,6 +162,7 @@ class CraneOrderController extends Controller
         $craneOrder->client_id = $request->client_id;
         $craneOrder->driver_id = $request->driver_id;
         $craneOrder->price = $request->price;
+        $craneOrder->description = $request->description;
         $craneOrder->save();
 
         $driverSalary = DriverSalary::where("crane_order_id", $craneOrder->id)->orderBy("id", "DESC")->first() ?? new DriverSalary();

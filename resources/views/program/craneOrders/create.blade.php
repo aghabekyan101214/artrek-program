@@ -75,6 +75,14 @@
                                 </div>
                             @endif
 
+                            <div class="form-group">
+                                <label for="description">Մեկնաբանություն</label>
+                                @error('description')
+                                <p class="invalid-feedback text-danger" role="alert"><strong>{{ $message }}</strong></p>
+                                @enderror
+                                <textarea class="form-control" name="description" id="description">{{ $craneOrder->description ?? old('description') }}</textarea>
+                            </div>
+
                             <button type="submit" class="btn btn-success waves-effect waves-light m-r-10">Պահպանել</button>
                         </form>
                     </div>
