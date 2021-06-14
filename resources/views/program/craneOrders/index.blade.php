@@ -210,7 +210,8 @@
     <script src="{{ asset("assets/plugins/daterangepicker/daterangepicker.js") }}"></script>
     <script>
         $('#datatable').DataTable({
-            "ordering": false
+            "ordering": true,
+            "order": []
         });
         openModal = e => $(".pay-form").attr("action", e);
         $(document).ready(function () {
