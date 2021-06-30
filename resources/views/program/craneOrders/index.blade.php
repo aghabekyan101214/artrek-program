@@ -3,8 +3,15 @@
 @section('content')
     <style>
         .badge-danger{
-            font-size: 16px;
+            font-size: 15px;
         }
+        td{
+            font-size: 13px;
+        }
+        th {
+            font-size: 12px;
+        }
+
     </style>
    <div class="row">
         <div class="col-md-12">
@@ -14,7 +21,7 @@
 
                 {{--table--}}
                 <div class="table-responsive">
-                    <table id="datatable" class="display table table-hover table-striped nowrap" cellspacing="0"
+                    <table id="datatable" class="display table table-hover table-striped nowrap" cellspacing="1"
                            width="100%">
                         <thead>
                             <tr>
@@ -37,16 +44,16 @@
                                 </th>
                             </tr>
                             <tr>
-                                <th>Գրանցման Ամսաթիվ</th>
+                                <th>Գրանցման <br> Ամսաթիվ</th>
                                 <th>Հաճախորդ</th>
                                 <th>Վարորդ</th>
-                                <th>Ընդհանուր Գումար</th>
+                                <th>Ընդհանուր <br> Գումար</th>
                                 <th>Վճարվել է</th>
                                 <th>Պարտք</th>
-                                <th>Վարորդի Մոտ</th>
+                                <th>Վարորդի <br> Մոտ</th>
                                 <th>Մեկնաբանություն</th>
                                 <th>Ստեղծող</th>
-                                <th>Կարգավորումներ</th>
+                                <th>*</th>
                             </tr>
                         </thead>
 
