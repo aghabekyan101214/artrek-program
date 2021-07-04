@@ -6,12 +6,23 @@
             <div class="white-box">
                 <h3 class="box-title">{{$title}}</h3>
                 <a data-route="{{ app('router')->getRoutes()->match(app('request')->create($route."/create"))->getName() }}" href="{{$route."/create"}}" class="btn btn-success m-b-30"><i class="fas fa-plus"></i> Ավելացնել {{ $title }}</a>
-
                 {{--table--}}
                 <div class="table-responsive">
                     <table id="datatable" class="display table table-hover table-striped nowrap" cellspacing="0"
                            width="100%">
                         <thead>
+                            <tr>
+                                <th></th>
+                                <th>
+                                    <select onchange="handleTypeChange($(this).val())" class="form-control">
+                                        <option value="">Ակտիվ Աշխատակիցներ</option>
+                                        <option @if(request()->get('type') == 'archived') selected @endif value="archived">Արխիվ</option>
+                                    </select>
+                                </th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                            </tr>
                             <tr>
                                 <th>#</th>
                                 <th>Անուն</th>
@@ -38,11 +49,18 @@
                                           method="post" id="work-for-form">
                                         @csrf
                                         @method("DELETE")
-                                        <a href="javascript:void(0);" data-text="աշխատակցին" class="delForm" data-id ="{{$val->id}}">
-                                            <button data-toggle="tooltip"
-                                                    data-placement="top" title="Հեռացնել"
-                                                    class="btn btn-danger btn-circle tooltip-danger"><i
-                                                    class="fas fa-trash"></i></button>
+                                        <a href="javascript:void(0);" @if($val->trashed()) data-type="վերականգնել" @endif data-text="աշխատակցին" class="delForm" data-id ="{{$val->id}}">
+                                            @if (!$val->trashed())
+                                                <button data-toggle="tooltip"
+                                                        data-placement="top" title="Հեռացնել"
+                                                        class="btn btn-danger btn-circle tooltip-danger"><i
+                                                        class="fas fa-trash"></i></button>
+                                            @else
+                                                <button data-toggle="tooltip"
+                                                        data-placement="top" title="Վերականգնել"
+                                                        class="btn btn-success btn-circle tooltip-success"><i
+                                                        class="fa fa-backward"></i></button>
+                                            @endif
                                         </a>
                                     </form>
 
@@ -133,6 +151,11 @@
     <script>
         $('#datatable').DataTable();
         openModal = e => $(".pay-form").attr("action", e);
+        handleTypeChange = val => {
+            if(val) location.href = document.location.href+"?type=" + val;
+            else location.href = document.location.href.split('?')[0];
+
+        }
     </script>
 @endpush
 

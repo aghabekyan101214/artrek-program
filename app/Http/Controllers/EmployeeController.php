@@ -23,9 +23,14 @@ class EmployeeController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $data = Employee::with('creator')->orderBy("id", "DESC")->get();
+        if (is_null($request->type)) {
+            $data = Employee::with('creator')->orderBy("id", "DESC")->get();
+        } else {
+            $data = Employee::onlyTrashed()->with('creator')->orderBy("id", "DESC")->get();
+        }
+
         $title = self::TITLE;
         $route = self::ROUTE;
         $months = PaidOrder::MONTHS;
@@ -76,8 +81,9 @@ class EmployeeController extends Controller
      * @param  \App\Employee  $employee
      * @return \Illuminate\Http\Response
      */
-    public function show(Employee $employee)
+    public function show($id)
     {
+        $employee = Employee::withTrashed()->find($id);
         $title = $employee->name . 'ի աշխատավարձերի ցուցակ';
         $route = self::ROUTE;
         $months = PaidOrder::MONTHS;
@@ -90,8 +96,9 @@ class EmployeeController extends Controller
      * @param  \App\Employee  $employee
      * @return \Illuminate\Http\Response
      */
-    public function edit(Employee $employee)
+    public function edit($id)
     {
+        $employee = Employee::withTrashed()->find($id);
         $title = 'Փոփոխել ' . self::TITLE;
         $route = self::ROUTE;
         return view(self::FOLDER . '.create', compact('title', 'route', 'employee'));
@@ -104,8 +111,9 @@ class EmployeeController extends Controller
      * @param  \App\Employee  $employee
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Employee $employee)
+    public function update(Request $request, $id)
     {
+        $employee = Employee::withTrashed()->find($id);
         $rules = [
             "name" => "required|max:191",
             "phone" => "max:191",
@@ -129,9 +137,14 @@ class EmployeeController extends Controller
      * @param  \App\Employee  $employee
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Employee $employee)
+    public function destroy($id)
     {
-        $employee->delete();
+        $employee = Employee::withTrashed()->find($id);
+        if($employee->trashed()) {
+            $employee->restore();
+        } else {
+            $employee->delete();
+        }
         return redirect(self::ROUTE);
     }
 
@@ -144,8 +157,8 @@ class EmployeeController extends Controller
     public function giveSalary($id, Request $request)
     {
         DB::beginTransaction();
+        $employee = Employee::withTrashed()->find($id);
         if ($request->price_cash > 0) {
-            $employee = Employee::find($id);
             $salary = new EmployeeSalary(['price' => -$request->price_cash, 'month' => $request->month, 'year' => $request->year]);
             $employee->salaries()->save($salary);
 
@@ -153,7 +166,6 @@ class EmployeeController extends Controller
             $salary->paidSalaries()->save($paidOrder);
         }
         if($request->price_transfer > 0) {
-            $employee = Employee::find($id);
             $salary = new EmployeeSalary(['price' => -$request->price_transfer, 'month' => $request->month, 'year' => $request->year]);
             $employee->salaries()->save($salary);
 
