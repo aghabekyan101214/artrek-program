@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Model\Material;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class MaterialController extends Controller
 {
@@ -18,7 +19,12 @@ class MaterialController extends Controller
      */
     public function index()
     {
-        $data = Material::with("quantity", 'creator')->get();
+        $data = Material::with("quantity", 'creator', 'used', 'usedLaser')->select('*')
+            ->selectRaw(DB::raw("(SELECT (COALESCE(sum(quantity), 0) -
+(SELECT COALESCE(sum(quantity), 0) FROM public.laser_lists where material_id = materials.id)-
+(SELECT COALESCE(sum(quantity), 0) FROM public.order_lists where material_id = materials.id)) sum
+ FROM public.material_lists where material_id = materials.id)"))
+            ->get();
         $title = self::TITLE;
         $route = self::ROUTE;
         $units = Material::UNITS;
