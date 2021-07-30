@@ -14,16 +14,15 @@ class MaterialController extends Controller
 
     /**
      * Display a listing of the resource.
-     *
      * @return \Illuminate\Http\Response
      */
     public function index()
     {
         $data = Material::with("quantity", 'creator', 'used', 'usedLaser')->select('*')
             ->selectRaw(DB::raw("(SELECT (COALESCE(sum(quantity), 0) -
-(SELECT COALESCE(sum(quantity), 0) FROM public.laser_lists where material_id = materials.id)-
-(SELECT COALESCE(sum(quantity), 0) FROM public.order_lists where material_id = materials.id)) sum
- FROM public.material_lists where material_id = materials.id)"))
+                                        (SELECT COALESCE(sum(quantity), 0) FROM public.laser_lists where material_id = materials.id)-
+                                        (SELECT COALESCE(sum(quantity), 0) FROM public.order_lists where material_id = materials.id))
+                                        FROM public.material_lists where material_id = materials.id) sum"))
             ->get();
         $title = self::TITLE;
         $route = self::ROUTE;
@@ -33,7 +32,6 @@ class MaterialController extends Controller
 
     /**
      * Show the form for creating a new resource.
-     *
      * @return \Illuminate\Http\Response
      */
     public function create()
@@ -46,8 +44,7 @@ class MaterialController extends Controller
 
     /**
      * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -72,8 +69,7 @@ class MaterialController extends Controller
 
     /**
      * Display the specified resource.
-     *
-     * @param  \App\Material  $material
+     * @param \App\Material $material
      * @return \Illuminate\Http\Response
      */
     public function show(Material $material)
@@ -83,8 +79,7 @@ class MaterialController extends Controller
 
     /**
      * Show the form for editing the specified resource.
-     *
-     * @param  \App\Material  $material
+     * @param \App\Material $material
      * @return \Illuminate\Http\Response
      */
     public function edit(Material $material)
@@ -97,9 +92,8 @@ class MaterialController extends Controller
 
     /**
      * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Material  $material
+     * @param \Illuminate\Http\Request $request
+     * @param \App\Material            $material
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Material $material)
@@ -123,8 +117,7 @@ class MaterialController extends Controller
 
     /**
      * Remove the specified resource from storage.
-     *
-     * @param  \App\Material  $material
+     * @param \App\Material $material
      * @return \Illuminate\Http\Response
      */
     public function destroy(Material $material)
