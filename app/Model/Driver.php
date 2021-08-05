@@ -8,7 +8,7 @@ class Driver extends Model
 {
     use CreatorTrait;
 
-    const PERCENTAGE = 25;
+    const PERCENTAGE = 30;
     const PAID = 1;
     const NOT_PAID = 0;
 
