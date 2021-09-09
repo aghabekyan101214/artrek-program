@@ -13,7 +13,7 @@
                            width="100%">
                         <thead>
                         <tr>
-                            <th>#</th>
+                            <th>Գրանցման  Ամսաթիվ</th>
                             <th>Նյութի Անուն</th>
                             <th>Չափման Միավոր</th>
                             <th>Մնացորդ</th>
@@ -26,7 +26,7 @@
                         <tbody>
                         @foreach($data as $key => $val)
                             <tr>
-                                <td>{{ $key + 1 }}</td>
+                                <td>{{ $val->created_at }}</td>
                                 <td>{{ $val->material->name }}</td>
                                 <td>{{ $units[$val->material->unit] }}</td>
 {{--                                <td>{{ $val->quantity->sum("quantity") - $val->used->sum("quantity") }}</td>--}}
