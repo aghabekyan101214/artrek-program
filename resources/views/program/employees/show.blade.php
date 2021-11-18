@@ -23,16 +23,16 @@
                             <td>Վճարված Աշխատավարձ</td>
                         </tr>
                         @foreach($months as $bin => $month)
-                            <tr onclick="openMonth('month-{{ $bin }}')" style="cursor: pointer">
+                            <tr class="month-tr month-tr-{{ $bin }}" onclick="openMonth('month-{{ $bin }}')" style="cursor: pointer">
                                 <td>{{ $month['name'] }}</td>
                                 <td><span style="font-size: 16px;" class="badge badge-success ">{{ $employee->salaries->where('month', $month['index'])->where('year', Request::get("year"))->sum('price') * - 1 }}</span></td>
                             </tr>
                             @foreach($employee->salaries->where('month', $month['index'])->where('year', Request::get("year")) as $s)
-                                <tr class="month-{{ $bin }}" style="display: none">
+                                <tr class="month-{{ $bin }}" style="display: none; ">
                                     <td colspan="2" style="background: white; padding: 0 0 0 20px">
-                                        <table style="width: 50%; background: white">
+                                        <table data-month-class="month-tr-{{ $bin }}" class="salary-table @if(is_null($s->paidSalaries)) make-red @endif" style="width: 50%; background: white; @if(is_null($s->paidSalaries)) border: 1px solid red @endif">
                                             <tr style="background: white">
-                                                <td style="background: white; width: 50%"><b>{{ $s->price * -1 }}</b>{{ " - " . $s->created_at . "(" . ($s->paidSalaries->type ? 'Փոխանցում' : 'Կանխիկ') .")" }}</td>
+                                                <td style="background: white; width: 50%;"><b>{{ $s->price * -1 }}</b>{{ " - " . $s->created_at . "(" . (!is_null($s->paidSalaries) && $s->paidSalaries->type ? 'Փոխանցում' : 'Կանխիկ') .")" }}</td>
                                                 <td>
                                                     <form style="display: inline-block" action="{{ $route . '/' . $s->id . '/deleteSalary' }}"
                                                           method="post" id="work-for-form">
@@ -46,10 +46,12 @@
                                                                     class="fas fa-trash"></i></button>
                                                         </a>
                                                     </form>
+                                                    @if(!is_null($s->paidSalaries))
                                                     <button data-toggle="modal" data-target="#exampleModal"
-                                                            data-placement="top" class="btn btn-primary btn-circle btn-sm tooltip-primary open-modal" price="{{ $s->price }}" month="{{ $s->month }}" onclick="openModal('{{ url($route."/".$s->id."/updateGivenSalary") }}', '{{ $s->price * -1 }}', '{{ $s->month }}', {{ $s->year }}, '{{ $s->paidSalaries->type }}')">
+                                                            data-placement="top" class="btn btn-primary btn-circle btn-sm tooltip-primary open-modal" price="{{ $s->price }}" month="{{ $s->month }}" onclick="openModal('{{ url($route."/".$s->id."/updateGivenSalary") }}', '{{ $s->price * -1 }}', '{{ $s->month }}', {{ $s->year }}, '{{ !is_null($s->paidSalaries) ? $s->paidSalaries->type : '' }}')">
                                                         <i class="fas fa-edit"></i>
                                                     </button>
+                                                    @endif
                                                 </td>
                                             </tr>
                                         </table>
@@ -133,6 +135,15 @@
 
     <script src="{{asset('assets/plugins/swal/sweetalert.min.js')}}"></script>
     <script>
+
+        $(document).ready(function () {
+            $(".salary-table").each(function () {
+                if($(this).hasClass("make-red")) {
+                    $("." + $(this).attr("data-month-class")).css({"border": "2px solid red"})
+                }
+            })
+        })
+
         openModal = (url, price, month, year, transfer_type) => {
             $(".pay-form").attr("action", url);
             $("#sum").val(price);
