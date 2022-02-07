@@ -81,9 +81,7 @@ class DriverController extends Controller
      */
     public function show($id)
     {
-        $driver = Driver::with(["paidSalary" => function($q) {
-            $q->whereYear('created_at', Carbon::now()->year);
-        }])->find($id);
+        $driver = Driver::with(["paidSalary"])->find($id);
         $title = $driver->name . 'ի աշխատավարձերի ցուցակ';
         $route = self::ROUTE;
         $months = PaidOrder::MONTHS;
